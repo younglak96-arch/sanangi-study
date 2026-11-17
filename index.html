@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>산안기 출퇴근 학습 · 2027 산업안전기사</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+:root{
+  --bg:#0b1220;--surface:#141f30;--surface2:#1a2739;--line:rgba(255,255,255,.09);
+  --text:#e9eef7;--muted:#93a3b8;--accent:#5b8def;--accent-soft:rgba(91,141,239,.16);
+  --green:#34d399;--red:#f87171;--amber:#f5a524;
+  --header:rgba(11,18,32,.84);
+  --shadow:0 18px 40px -26px rgba(0,0,0,.95);
+  --s1:#5b8def;--s2:#a78bfa;--s3:#f5a524;--s4:#34d399;--s5:#f472b6;
+}
+body.light{
+  --bg:#eef2f7;--surface:#ffffff;--surface2:#f2f5fa;--line:rgba(16,32,56,.13);
+  --text:#132033;--muted:#56677c;--accent:#2563eb;--accent-soft:rgba(37,99,235,.10);
+  --green:#047857;--red:#dc2626;--amber:#b45309;
+  --header:rgba(247,249,252,.88);
+  --shadow:0 14px 32px -24px rgba(16,32,56,.45);
+  --s1:#2563eb;--s2:#7c3aed;--s3:#b45309;--s4:#047857;--s5:#db2777;
+}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",system-ui,sans-serif;
+  font-size:17px;line-height:1.62;-webkit-text-size-adjust:100%;
+  transition:background .25s ease,color .25s ease;
+}
+button{font-family:inherit}
+.app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+
+/* header */
+header{position:sticky;top:0;z-index:30;background:var(--header);
+  -webkit-backdrop-filter:saturate(170%) blur(16px);backdrop-filter:saturate(170%) blur(16px);
+  border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 18px 10px}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand b{font-size:16.5px;letter-spacing:-.3px;line-height:1.25}
+.brand span{font-size:11.5px;color:var(--muted);letter-spacing:.01em}
+.iconbtn{flex:0 0 auto;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);color:var(--text);font-size:17px;line-height:1;
+  display:flex;align-items:center;justify-content:center;transition:transform .12s ease}
+.iconbtn:active{transform:scale(.94)}
+
+/* main */
+main{flex:1;padding:15px 18px calc(96px + env(safe-area-inset-bottom))}
+.view{display:none}
+.view.active{display:block;animation:fade .26s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .view.active{animation:none}
+  .fcard{transition:none}
+}
+
+/* tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;padding-bottom:env(safe-area-inset-bottom);
+  background:var(--header);-webkit-backdrop-filter:saturate(170%) blur(16px);backdrop-filter:saturate(170%) blur(16px);
+  border-top:1px solid var(--line)}
+.tabs-inner{max-width:480px;margin:0 auto;display:flex}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 4px 7px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:700;letter-spacing:-.1px}
+.tab .ic{font-size:19px;line-height:1;transition:transform .15s ease}
+.tab.active{color:var(--accent)}
+.tab.active .ic{transform:translateY(-1px) scale(1.06)}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 9px;margin:0}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  border-radius:999px;padding:6px 8px;font-size:12px;font-weight:700;white-space:nowrap;transition:background .15s,color .15s}
+.chip.active{background:var(--accent-soft);border-color:transparent;color:var(--text)}
+
+/* meters */
+.meter{height:6px;border-radius:99px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.meter>i{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s ease}
+.metaline{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:12px;color:var(--muted);margin:0 0 8px;font-weight:600}
+
+/* flashcard */
+.scene{perspective:1400px;margin-top:10px}
+.fcard{position:relative;width:100%;height:clamp(280px,46vh,400px);transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.3,.72,.2,1);cursor:pointer}
+.fcard.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:22px;border:1px solid var(--line);
+  background:linear-gradient(160deg,var(--surface2),var(--surface));
+  box-shadow:var(--shadow);padding:18px 19px 15px;display:flex;flex-direction:column;overflow:hidden;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden}
+.face.back{transform:rotateY(180deg);background:linear-gradient(160deg,var(--accent-soft),var(--surface))}
+.face-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:13px;flex:0 0 auto}
+.badge{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;
+  padding:5px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);
+  color:var(--muted);max-width:76%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--s1);flex:0 0 7px}
+.kicker{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.1em}
+.face-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:2px;
+  display:flex;flex-direction:column}
+.face-inner{width:100%;margin:auto 0}
+.face-body::-webkit-scrollbar{width:0}
+.qtext{margin:0;font-size:19.5px;line-height:1.55;font-weight:700;letter-spacing:-.3px;word-break:keep-all}
+.atext{margin:0;font-size:19.5px;line-height:1.55;font-weight:800;letter-spacing:-.3px;word-break:keep-all}
+.note{margin-top:13px;padding:11px 13px;border-radius:14px;background:var(--surface2);
+  border:1px solid var(--line);color:var(--muted);font-size:13.5px;line-height:1.6;word-break:keep-all}
+.face-bottom{flex:0 0 auto;margin-top:9px;font-size:11.5px;color:var(--muted);text-align:center;letter-spacing:.01em}
+
+/* buttons */
+.row{display:flex;align-items:center;gap:9px;margin-top:13px}
+.row.tight{gap:8px;margin-top:10px}
+.btn{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--text);
+  font-size:15px;font-weight:700;padding:13px 10px;border-radius:14px;transition:transform .12s ease,background .15s}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--accent);border-color:transparent;color:#fff}
+.btn.done{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.4);color:var(--green)}
+.btn.small{flex:0 0 auto;font-size:12.5px;padding:9px 12px;border-radius:11px;color:var(--muted)}
+.btn.small.on{background:var(--accent-soft);color:var(--text);border-color:transparent}
+.btn:disabled{opacity:.45}
+
+/* quiz */
+.qcard{border:1px solid var(--line);border-radius:20px;background:var(--surface);
+  padding:16px 16px 14px;box-shadow:var(--shadow)}
+.qmeta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}
+.qtype{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted)}
+.qnum{font-size:12px;font-weight:700;color:var(--muted)}
+.qtext2{margin:0;font-size:18px;line-height:1.55;font-weight:700;letter-spacing:-.25px;word-break:keep-all}
+.opts{display:flex;flex-direction:column;gap:9px;margin-top:15px}
+.opt{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;padding:12px 13px;
+  border-radius:14px;border:1px solid var(--line);background:var(--surface2);color:var(--text);
+  font-size:15px;line-height:1.5;font-weight:600;word-break:keep-all;transition:border-color .15s,background .15s}
+.opt .mark{flex:0 0 23px;height:23px;border-radius:50%;background:var(--surface);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;color:var(--muted);margin-top:1px}
+.opt.correct{border-color:rgba(52,211,153,.65);background:rgba(52,211,153,.14)}
+.opt.correct .mark{background:var(--green);color:#04150f;border-color:transparent}
+.opt.wrong{border-color:rgba(248,113,113,.65);background:rgba(248,113,113,.13)}
+.opt.wrong .mark{background:var(--red);color:#1b0505;border-color:transparent}
+.opt.ox .mark{font-size:14px}
+.opt.ox{justify-content:center;font-size:17px;font-weight:800;padding:15px 13px}
+.opt.ox .txt{flex:0 0 auto}
+.expl{margin-top:13px;padding:13px 14px;border-radius:14px;background:var(--accent-soft);
+  border:1px solid var(--line);font-size:14px;line-height:1.62;word-break:keep-all;animation:fade .2s ease both}
+.expl b{display:block;font-size:11.5px;letter-spacing:.08em;color:var(--muted);margin-bottom:5px}
+.expl.ok{background:rgba(52,211,153,.12)}
+.expl.no{background:rgba(248,113,113,.12)}
+
+/* quiz setup / result */
+.panel{border:1px solid var(--line);border-radius:18px;background:var(--surface);
+  padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+.panel h3{margin:0 0 4px;font-size:15.5px;letter-spacing:-.2px}
+.panel p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.6;word-break:keep-all}
+.panel .label{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin:16px 0 7px}
+.statgrid{display:flex;gap:8px;margin-top:14px}
+.stat{flex:1;border:1px solid var(--line);border-radius:13px;background:var(--surface2);padding:9px 6px;text-align:center}
+.stat b{display:block;font-size:17px;letter-spacing:-.3px}
+.stat span{font-size:10.5px;color:var(--muted);font-weight:600}
+.ring{width:136px;height:136px;border-radius:50%;margin:8px auto 12px;display:grid;place-items:center;
+  background:conic-gradient(var(--accent) calc(var(--p) * 1%), var(--surface2) 0)}
+.ring>div{width:106px;height:106px;border-radius:50%;background:var(--surface);
+  display:grid;place-items:center;text-align:center;line-height:1.15}
+.ring b{font-size:26px;letter-spacing:-.5px;display:block}
+.ring span{font-size:11px;color:var(--muted);font-weight:700}
+.rlist{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.rlist .ri{padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.5;color:var(--muted);word-break:keep-all}
+.rlist .ri b{color:var(--text);font-weight:700;display:block;font-size:13.5px}
+
+/* roadmap */
+.sect{margin:0 0 18px}
+.sect h2{font-size:15.5px;margin:0 0 9px;letter-spacing:-.25px}
+/* change list */
+.chg{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.chg:first-child{padding-top:0}
+.chg:last-child{border-bottom:0;padding-bottom:0}
+.chg-k{flex:0 0 68px;font-size:12px;font-weight:800;color:var(--muted);padding-top:1px}
+.chg-v{flex:1;font-size:13.5px;line-height:1.5;word-break:keep-all}
+.chg-v .old{color:var(--muted)}
+.chg-v .ar{color:var(--muted);margin:0 5px;font-weight:700}
+.chg-v b{font-weight:800}
+.table-wrap{display:none}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;line-height:1.45}
+th{color:var(--muted);font-size:11.5px;font-weight:800;letter-spacing:.02em}
+td:first-child{color:var(--muted);white-space:nowrap;font-weight:700;font-size:12px;padding-right:8px}
+tr:last-child td{border-bottom:0}
+td.hl{font-weight:700}
+.fine{font-size:11px;color:var(--muted);margin:11px 0 0;line-height:1.55}
+.subjrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.subjrow:last-child{border-bottom:0}
+.subjrow .nm{font-size:13.5px;font-weight:700;flex:1;letter-spacing:-.2px;word-break:keep-all}
+.subjrow .pc{font-size:11.5px;color:var(--muted);font-weight:700;flex:0 0 auto}
+.sbar{height:5px;border-radius:99px;background:var(--surface2);width:64px;flex:0 0 64px;overflow:hidden}
+.sbar>i{display:block;height:100%;border-radius:99px}
+.crit{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+.crit:last-child{border-bottom:0;padding-bottom:0}
+.crit:first-child{padding-top:0}
+.crit-k{flex:0 0 46px;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);padding-top:2px}
+.crit div{flex:1}
+.crit b{font-size:14px;letter-spacing:-.2px;word-break:keep-all}
+.crit p{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.55;word-break:keep-all}
+details{border:1px solid var(--line);border-radius:14px;background:var(--surface2);margin-bottom:8px;overflow:hidden}
+summary{padding:12px 14px;font-weight:700;font-size:14px;list-style:none;display:flex;gap:10px;
+  align-items:center;letter-spacing:-.2px;word-break:keep-all}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";margin-left:auto;color:var(--muted);font-weight:700;font-size:15px;flex:0 0 auto}
+details[open] summary:after{content:"–"}
+.wk{flex:0 0 34px;height:34px;border-radius:10px;background:var(--surface);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--accent)}
+.dbody{padding:0 14px 13px;font-size:13px;color:var(--muted);line-height:1.62;word-break:keep-all}
+.dbody b{color:var(--text);font-weight:700}
+.dbody .ln{display:flex;gap:8px;padding:5px 0}
+.dbody .ln em{font-style:normal;flex:0 0 42px;color:var(--accent);font-weight:800;font-size:11px;padding-top:2px}
+.dbody .ln div{flex:1}
+.duo{display:flex;gap:9px;margin-top:12px}
+.duo>div{flex:1;border:1px solid var(--line);border-radius:13px;padding:11px;background:var(--surface2)}
+.duo b{font-size:12px;display:block;margin-bottom:5px;letter-spacing:-.1px}
+.duo ul{margin:0;padding-left:15px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.duo li{margin:2px 0}
+.tiplist{margin:0;padding:0;list-style:none}
+.tiplist li{display:flex;gap:9px;padding:7px 0;font-size:13.5px;line-height:1.6;color:var(--muted);
+  border-bottom:1px solid var(--line);word-break:keep-all}
+.tiplist li:last-child{border-bottom:0}
+.tiplist li b{color:var(--text);font-weight:700}
+.tiplist .em{flex:0 0 auto;font-size:15px;line-height:1.4}
+.banner{border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:var(--accent-soft);
+  font-size:13px;line-height:1.6;color:var(--text);word-break:keep-all;margin-bottom:14px}
+.banner b{font-weight:800}
+.empty{text-align:center;padding:40px 12px;color:var(--muted);font-size:14px}
+.empty .big{font-size:34px;display:block;margin-bottom:10px}
+footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;padding:6px 0 4px;word-break:keep-all}
+@media (max-height:720px){
+  .fcard{height:clamp(236px,40vh,320px)}
+  .btn{padding:11px 10px;font-size:14.5px}
+  .row{margin-top:10px}
+  .row.tight{margin-top:8px}
+  main{padding-top:12px}
+}
+@media (max-width:360px){
+  body{font-size:16px}
+  .qtext,.atext{font-size:18px}
+  .chip{font-size:11.5px;padding:5px 7px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="hdr">
+      <div class="brand">
+        <b>산안기 출퇴근 학습</b>
+        <span>2027 산업안전기사 · 필기 5과목</span>
+      </div>
+      <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 암기카드 ============ -->
+    <section class="view active" id="viewCards">
+      <div class="metaline">
+        <span id="fcMasteredCount">0 / 0 외웠음</span>
+        <span id="fcPos">0 / 0</span>
+      </div>
+      <div class="meter"><i id="fcProgress"></i></div>
+      <div class="chips" id="fcChips"></div>
+
+      <div class="scene" id="fcScene">
+        <div class="fcard" id="fcCard">
+          <div class="face front">
+            <div class="face-top">
+              <span class="badge"><i class="dot" id="fcDot"></i><span id="fcSubj">1과목</span></span>
+              <span class="kicker">문제</span>
+            </div>
+            <div class="face-body"><div class="face-inner"><p class="qtext" id="fcQ"></p></div></div>
+            <div class="face-bottom">카드를 탭하면 정답이 보입니다</div>
+          </div>
+          <div class="face back">
+            <div class="face-top">
+              <span class="badge"><i class="dot" id="fcDot2"></i><span id="fcSubj2">1과목</span></span>
+              <span class="kicker">정답</span>
+            </div>
+            <div class="face-body"><div class="face-inner">
+                <p class="atext" id="fcA"></p>
+                <div class="note" id="fcNote"></div>
+              </div></div>
+            <div class="face-bottom">다시 탭하면 문제로 돌아갑니다</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty" id="fcEmpty" style="display:none">
+        <span class="big">🎉</span>
+        이 범위의 카드를 모두 외웠습니다.<br>전체 카드를 다시 돌아보세요.
+        <div class="row"><button class="btn primary" id="btnShowAll">전체 카드 보기</button></div>
+      </div>
+
+      <div class="row" id="fcNav">
+        <button class="btn" id="btnPrev" aria-label="이전 카드">← 이전</button>
+        <button class="btn" id="btnFlip">뒤집기</button>
+        <button class="btn" id="btnNext" aria-label="다음 카드">다음 →</button>
+      </div>
+      <div class="row tight">
+        <button class="btn" id="btnMaster">외웠음 표시</button>
+      </div>
+      <div class="row tight">
+        <button class="btn small" id="btnShuffle">순서 섞기</button>
+        <button class="btn small" id="btnOnlyUnmastered">안 외운 것만</button>
+      </div>
+      <footer class="foot" id="fcFoot"></footer>
+    </section>
+
+    <!-- ============ 출퇴근 퀴즈 ============ -->
+    <section class="view" id="viewQuiz">
+      <div id="quizSetup">
+        <div class="panel">
+          <h3>출퇴근 퀴즈</h3>
+          <p>실제 필기와 같은 4지선다·O/X 문제입니다. 답을 고르면 바로 채점하고 해설을 보여줘요.</p>
+          <div class="label">과목</div>
+          <div class="chips" id="quizChips"></div>
+          <div class="label">문제 수</div>
+          <div class="row tight" style="margin-top:0">
+            <button class="btn small on" data-size="10">10문항</button>
+            <button class="btn small" data-size="20">20문항</button>
+            <button class="btn small" data-size="0">전체</button>
+          </div>
+          <div class="row" style="margin-top:16px">
+            <button class="btn primary" id="btnStartQuiz">퀴즈 시작</button>
+          </div>
+          <div class="row tight">
+            <button class="btn" id="btnWrongOnly" disabled>틀린 문제만 다시 풀기</button>
+          </div>
+          <div class="statgrid">
+            <div class="stat"><b id="stTotal">0</b><span>전체 문제</span></div>
+            <div class="stat"><b id="stDone">0</b><span>지금까지 푼 문제</span></div>
+            <div class="stat"><b id="stBest">-</b><span>최고 점수</span></div>
+          </div>
+        </div>
+        <div class="banner">💡 <b>오는 길 20분 루틴</b> — 10문항 풀고, 틀린 문제만 한 번 더. 정답률이 80%를 넘으면 문제 수를 20으로 늘려보세요.</div>
+      </div>
+
+      <div id="quizPlay" style="display:none">
+        <div class="metaline">
+          <span id="qpLabel">1 / 10</span>
+          <span id="qpScore">정답 0</span>
+        </div>
+        <div class="meter"><i id="qpProgress"></i></div>
+        <div class="qcard" style="margin-top:12px">
+          <div class="qmeta">
+            <span class="badge"><i class="dot" id="qpDot"></i><span id="qpSubj">1과목</span></span>
+            <span class="qtype" id="qpType">4지선다</span>
+          </div>
+          <p class="qtext2" id="qpQ"></p>
+          <div class="opts" id="qpOpts"></div>
+          <div id="qpExpl"></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="qpNext" disabled>다음 문제</button>
+        </div>
+        <div class="row tight">
+          <button class="btn small" id="qpQuit">퀴즈 그만두기</button>
+        </div>
+      </div>
+
+      <div id="quizResult" style="display:none">
+        <div class="panel">
+          <div class="ring" id="qrRing" style="--p:0"><div><b id="qrScore">0점</b><span id="qrSub">정답 0 / 0</span></div></div>
+          <p id="qrMsg" style="text-align:center;font-size:14px"></p>
+          <div class="rlist" id="qrList"></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="btnRetryWrong">틀린 문제만 다시</button>
+        </div>
+        <div class="row tight">
+          <button class="btn" id="btnNewQuiz">새 퀴즈</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 로드맵 ============ -->
+    <section class="view" id="viewRoadmap">
+      <div class="banner"><b>2027년 1월 1일부터 필기는 5과목·100문항·150분.</b><br>전기설비와 화학설비가 한 과목으로 합쳐집니다. 지금부터 8주면 출퇴근 시간만으로 1회독이 끝납니다.</div>
+
+      <div class="sect">
+        <h2>무엇이 바뀌나</h2>
+        <div class="panel">
+          <div class="chg"><span class="chg-k">필기 과목</span><span class="chg-v"><span class="old">6과목</span><span class="ar">→</span><b>5과목</b></span></div>
+          <div class="chg"><span class="chg-k">문항·시간</span><span class="chg-v"><span class="old">120문항 · 180분</span><span class="ar">→</span><b>100문항 · 150분</b></span></div>
+          <div class="chg"><span class="chg-k">4·5과목</span><span class="chg-v"><span class="old">전기설비 · 화학설비 (각 20문항)</span><br><b>전기 및 화학설비 안전관리 (20문항으로 통합)</b></span></div>
+          <div class="chg"><span class="chg-k">합격 기준</span><span class="chg-v">과목당 40점 · 평균 60점 <span class="old">(그대로)</span></span></div>
+          <div class="chg"><span class="chg-k">실기</span><span class="chg-v">복합형 · 필답 55 + 작업 45 <span class="old">(그대로)</span></span></div>
+          <p class="fine">근거: 국가기술자격법 시행규칙 별표 8 개정(2026.9.7 공포, 2027.1.1 시행), Q-Net 산업안전기사 출제기준(2027.1.1~2029.12.31). 시험 일정은 매 회차 Q-Net 공고가 최종입니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>5과목 한눈에 (각 20문항 · 20%)</h2>
+        <div class="panel">
+          <div class="subjrow"><span class="dot" style="background:var(--s1)"></span><span class="nm">1과목 산업재해 예방 및 안전보건교육</span><span class="sbar"><i style="width:100%;background:var(--s1)"></i></span><span class="pc">20%</span></div>
+          <div class="subjrow"><span class="dot" style="background:var(--s2)"></span><span class="nm">2과목 인간공학 및 위험성 평가·관리</span><span class="sbar"><i style="width:100%;background:var(--s2)"></i></span><span class="pc">20%</span></div>
+          <div class="subjrow"><span class="dot" style="background:var(--s3)"></span><span class="nm">3과목 기계·기구 및 설비 안전관리</span><span class="sbar"><i style="width:100%;background:var(--s3)"></i></span><span class="pc">20%</span></div>
+          <div class="subjrow"><span class="dot" style="background:var(--s4)"></span><span class="nm">4과목 전기 및 화학설비 안전관리</span><span class="sbar"><i style="width:100%;background:var(--s4)"></i></span><span class="pc">20%</span></div>
+          <div class="subjrow"><span class="dot" style="background:var(--s5)"></span><span class="nm">5과목 건설공사 안전관리</span><span class="sbar"><i style="width:100%;background:var(--s5)"></i></span><span class="pc">20%</span></div>
+          <p class="fine">2026년까지는 전기 40문항 + 화학 40문항이 전체의 33%였지만, 2027년부터는 통합 20문항(20%)입니다. 출제 범위는 줄지 않으니 한쪽만 버리는 공부는 위험합니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>합격 기준</h2>
+        <div class="panel">
+          <div class="crit">
+            <span class="crit-k">필기</span>
+            <div><b>과목당 40점 이상 · 전 과목 평균 60점 이상</b>
+              <p>5과목 × 20문항, 150분. 한 과목이라도 40점 미만이면 평균과 관계없이 과락입니다.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">실기</span>
+            <div><b>필답형 55점 + 작업형 45점 = 100점 중 60점 이상</b>
+              <p>필답 90분(서술형), 작업형 60분 정도(영상 보고 위험요인·대책 작성). 파트별 과락은 없지만 둘 중 하나라도 응시하지 않으면 불합격입니다. 배점은 회차에 따라 달라질 수 있습니다.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">면제</span>
+            <div><b>필기 합격 후 2년간 실기 응시 가능</b>
+              <p>필기 합격일부터 2년이 지나면 필기부터 다시 봐야 합니다.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>8주 출퇴근 플랜 (왕복 2시간)</h2>
+        <div class="panel" style="padding:13px">
+          <details open>
+            <summary><span class="wk">1주</span>1과목 · 안전관리론 기초</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>하인리히 1:29:300, 버드 1:10:30:600, 재해 통계 3형제(도수율·강도율·연천인율) 카드를 소리 내어 2회독.</div></div>
+              <div class="ln"><em>오는 길</em><div>1과목 퀴즈 10문항 → 틀린 문제 해설을 다음 역에서 다시 읽기.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">2주</span>1과목 · 산업안전보건법 체계</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>안전보건관리책임자·관리감독자·안전관리자 선임 기준(50·500·300·20)과 교육시간(분기 3시간 / 매월 2시간 / 연 16시간)을 손으로 써보기.</div></div>
+              <div class="ln"><em>오는 길</em><div>법규 퀴즈 10문항. 숫자는 카드에 적어 지하철에서 다시 확인.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">3주</span>2과목 · 인간공학</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>인체 측정 5~95백분위, 소음 90dB(A)/115dB(A)/충격 140dB(A), 근골격계 부담작업, NIOSH 들기지수.</div></div>
+              <div class="ln"><em>오는 길</em><div>2과목 퀴즈 10문항. '정량적 기법 / 정성적 기법' 구분을 입으로 설명해보기.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">4주</span>2과목 · 위험성평가 기법</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>위험성평가 6단계, FTA(연역) · ETA(귀납) · FMEA · HAZOP · PHA 카드.</div></div>
+              <div class="ln"><em>오는 길</em><div>2과목 오답만 다시 풀고, 3과목 첫 5문항 예습.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">5주</span>3과목 · 기계·기구 및 설비</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>프레스 3종(양수조작·손쳐내기·게이트가드), 전단기·연삭기(3분 시운전), 크레인 방호장치 4종, 컨베이어·보일러.</div></div>
+              <div class="ln"><em>오는 길</em><div>3과목 퀴즈 10문항. '어느 기계에 붙는 장치인지' 짝 맞추기.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">6주</span>4과목 · 전기</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>접지 4종 저항값(10·4·100·10), 누전차단기 30mA·0.03초, 방폭구조 기호, 방폭지역 0·1·2종.</div></div>
+              <div class="ln"><em>오는 길</em><div>전기 파트 퀴즈 10문항. 2027년 신설 '열축적'까지 확인.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">7주</span>4과목 · 화학</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>폭발범위·위험도, 인화점·연소점·발화점, MSDS 16항목, 밀폐공간 산소 18~23.5%, 분진폭발 5요소, PSM.</div></div>
+              <div class="ln"><em>오는 길</em><div>화학 파트 퀴즈 10문항 + 6·7주 오답 합쳐 풀기.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">8주</span>5과목 · 건설 + 실전 정리</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>추락 방호 4종, 안전난간 90cm·발끝막이판 10cm, 비계·거푸집 동바리·굴착, 달기구 안전계수(10·5·3·4).</div></div>
+              <div class="ln"><em>오는 길</em><div>5과목 퀴즈 10문항 → '틀린 문제만 다시 풀기'로 전체 오답 한 바퀴.</div></div>
+            </div>
+          </details>
+          <p class="fine">주말에는 그 주 카드를 전부 다시 넘기고, 20문항을 시간 재고 풀어보세요. 실제 시험은 과목당 30분(20문항)입니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>하루 2시간 쓰는 법</h2>
+        <div class="panel">
+          <div class="duo">
+            <div>
+              <b style="color:var(--accent)">가는 길 60분 · 입력</b>
+              <ul>
+                <li>암기카드 25장 (25분)</li>
+                <li>같은 카드 한 번 더 (15분)</li>
+                <li>어제 틀린 문제 10개 (20분)</li>
+              </ul>
+            </div>
+            <div>
+              <b style="color:var(--green)">오는 길 60분 · 출력</b>
+              <ul>
+                <li>오늘 과목 퀴즈 10문항 (15분)</li>
+                <li>해설 정독 (20분)</li>
+                <li>틀린 문제만 다시 (15분)</li>
+                <li>내일 카드 예습 (10분)</li>
+              </ul>
+            </div>
+          </div>
+          <p class="fine">아침에 외운 것을 저녁에 꺼내 쓰는 것이 가장 오래 남습니다. 같은 날 두 번 만나는 과목이 그 주의 핵심입니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>아이폰에서 쓰는 법</h2>
+        <div class="panel">
+          <ul class="tiplist">
+            <li><span class="em">📶</span><div><b>데이터 없이도 동작합니다.</b> 외부 인터넷 연결이 전혀 없는 한 개의 파일이라 지하철 터널에서도 그대로 열립니다.</div></li>
+            <li><span class="em">📱</span><div><b>Safari에서 열어 주세요.</b> 파일 미리보기로 열면 '외웠음' 표시가 저장되지 않을 수 있습니다. Safari로 열었다면 공유 → '홈 화면에 추가'로 앱처럼 전체 화면으로 쓸 수 있습니다.</div></li>
+            <li><span class="em">💾</span><div><b>외운 카드·틀린 문제는 이 기기에만 저장</b>됩니다(브라우저 저장소). 서버로 보내지 않습니다.</div></li>
+            <li><span class="em">🌗</span><div><b>밝기 전환</b>은 오른쪽 위 버튼. 지하철 실내에서는 밝은 화면이 눈이 편합니다.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>일정 (예상)</h2>
+        <div class="panel">
+          <p>2027년 제1회 필기는 예년 기준 <b style="color:var(--text)">1월 중순 원서접수 → 2월경 시험</b>이었습니다. 2027년 일정은 Q-Net 공고로 확정되니, 접수 시작 전에 꼭 확인하세요. 지금 8주 플랜을 시작하면 접수 시점에 1회독이 끝나 있습니다.</p>
+        </div>
+      </div>
+
+      <footer class="foot">
+        학습용 요약 자료입니다. 법령 수치·시험 일정은 개정될 수 있으니<br>응시 전 Q-Net 공고와 법령 원문으로 확인하세요.
+      </footer>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <div class="tabs-inner">
+      <button class="tab active" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
+      <button class="tab" data-tab="quiz"><span class="ic">✅</span>출퇴근 퀴즈</button>
+      <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
+    </div>
+  </nav>
+</div>
+
+<script>
+var CARDS = [
+{i:'c1',s:1,q:'하인리히의 법칙 1 : 29 : 300에서 각 숫자는 무엇을 뜻하나?',a:'중상해 1 : 경상해 29 : 무상해 사고 300',n:'같은 종류의 사고 330건 중 큰 부상은 1건. 나머지 300건은 다치지 않은 사고로, 그 1건을 막으려면 작은 사고부터 줄여야 합니다.'},
+{i:'c2',s:1,q:'버드(Bird)의 신도미노 이론 5단계를 순서대로 쓰면?',a:'관리·통제의 부족 → 기본원인 → 직접원인 → 사고 → 상해·손실',n:'하인리히는 사고에서 시작했고, 버드는 원인을 관리까지 끌어올렸습니다. 재해 비율은 1 : 10 : 30 : 600.'},
+{i:'c3',s:1,q:'도수율(재해빈도율)을 구하는 식은?',a:'(재해 건수 ÷ 연근로시간수) × 1,000,000',n:'근로시간 100만 시간당 재해 건수. 얼마나 자주 일어나는지를 봅니다. 단위는 없습니다.'},
+{i:'c4',s:1,q:'강도율을 구하는 식은?',a:'(근로손실일수 ÷ 연근로시간수) × 1,000',n:'근로시간 1,000시간당 손실일수. 얼마나 크게 다쳤는지를 봅니다. 사망 1명은 7,500일로 계산합니다.'},
+{i:'c5',s:1,q:'연천인율을 구하는 식은?',a:'(연간 재해자수 ÷ 연평균근로자수) × 1,000',n:'근로자 1,000명당 1년간 재해자 수. 도수율과 함께 대표적인 빈도 지표입니다.'},
+{i:'c6',s:1,q:'종합재해지수(FSI)를 구하는 식은?',a:'√(도수율 × 강도율)',n:'빈도와 강도를 하나로 합친 값. 작을수록 안전한 사업장입니다.'},
+{i:'c7',s:1,q:'하인리히 방식에서 간접비와 총손실비는 직접비의 몇 배인가?',a:'간접비 = 직접비 × 4, 총손실비 = 직접비 × 5',n:'직접비는 보상·치료비, 간접비는 생산 손실·대체 인력·설비 손상 등입니다.'},
+{i:'c8',s:1,q:'안전계수(안전율)를 구하는 식은?',a:'극한강도 ÷ 허용응력',n:'허용응력 = 극한강도 ÷ 안전계수. 값이 클수록 안전 여유가 큽니다.'},
+{i:'c9',s:1,q:'재해 원인을 분석하는 4M의 네 가지는?',a:'Man(인간) · Machine(기계) · Media(환경·매체) · Management(관리)',n:'재해는 한 가지 원인보다 이 네 가지가 겹쳐 일어난다고 봅니다.'},
+{i:'c10',s:1,q:'위험성평가 6단계를 순서대로 쓰면?',a:'① 사전준비 ② 유해·위험요인 파악 ③ 위험성 추정 ④ 위험성 결정 ⑤ 위험성 감소대책 수립·실행 ⑥ 기록·보존',n:'사·파·추·결·감·기로 외웁니다. ③은 가능성 × 중대성, ④는 허용 가능한지 판단입니다.'},
+{i:'c11',s:1,q:'산업안전보건법상 관리감독자란?',a:'사업장의 부서 단위 조직에서 근로자를 직접 지휘·감독하는 사람',n:'사업주·안전보건관리책임자·안전관리자는 관리감독자가 아닙니다. 현장의 직장·팀장급입니다.'},
+{i:'c12',s:1,q:'관리감독자 정기 안전보건교육 시간은?',a:'연간 16시간 이상',n:'근로자 정기교육(사무직 분기 3시간, 그 밖의 근로자 매월 2시간)과 구분해 기억합니다.'},
+{i:'c13',s:1,q:'사무직 종사 근로자의 정기 안전보건교육 시간은?',a:'매분기 3시간 이상',n:'판매업무 종사자와 그 밖의 근로자는 매월 2시간 이상입니다.'},
+{i:'c14',s:1,q:'시행령 별표 3에서 안전관리자를 두어야 하는 상시근로자 수와 인원은?',a:'제1~27호 업종(제조업 등) 50명 이상 1명, 500명 이상 2명 / 제28~48호 업종 50명 이상 1명, 1,000명 이상 2명',n:'건설업은 상시근로자가 아니라 공사금액 기준입니다(50억 원 이상, 관계수급인은 100억 원 이상).'},
+{i:'c15',s:1,q:'다른 업무를 겸할 수 없는 전담 안전관리자를 두어야 하는 규모는?',a:'상시근로자 300명 이상 (건설업은 공사금액 120억 원 이상, 토목공사 150억 원 이상)',n:'전담이므로 안전관리 업무 외의 다른 업무를 맡길 수 없습니다.'},
+{i:'c16',s:1,q:'안전보건관리담당자를 두어야 하는 사업장은?',a:'상시근로자 20명 이상 50명 미만 사업장 중 제조업 등 5개 업종',n:'5개 업종은 제조업, 임업, 하수·폐수 및 분뇨 처리업, 폐기물 수집·운반·처리 및 원료 재생업, 환경 정화 및 복원업입니다.'},
+{i:'c17',s:1,q:'산업안전보건법상 중대재해의 기준은?',a:'사망자 1명 이상 / 동일한 사고로 6개월 이상 치료가 필요한 부상자 2명 이상 / 동일한 유해요인으로 직업성 질병자 1년 이내 3명 이상',n:'3개월·2명으로 외우면 틀립니다. 부상자는 6개월 이상 치료·2명, 직업성 질병자는 1년 이내·3명입니다.'},
+{i:'c18',s:1,q:'산업재해가 발생했을 때 사업주가 가장 먼저 할 일은?',a:'작업을 중지하고 근로자를 안전한 곳으로 대피시킨 뒤 위험요인을 제거',n:'원인 조사나 보상 협의보다 사람을 지키는 조치가 먼저입니다.'},
+{i:'c19',s:1,q:'안전보건표지 4가지 종류와 기본 색은?',a:'금지(빨강) · 경고(노랑) · 지시(파랑) · 안내(초록)',n:'금지는 빨간 원, 경고는 노란 삼각형, 지시는 파란 원, 안내는 초록 사각형이 기본입니다.'},
+{i:'c83',s:1,q:'위험성평가는 얼마나 자주 실시해야 하나?',a:'최초 1회 실시 후 매년 1회 이상 정기적으로 실시',n:'유해·위험요인이 새로 생기거나 공정·설비·인력이 바뀌면 수시로 다시 실시합니다.'},
+{i:'c20',s:2,q:'인간공학(인간-기계 시스템)의 궁극적인 목표 세 가지는?',a:'안전성 · 효율성 · 쾌적성 향상',n:'사람을 기계에 맞추는 것이 아니라, 사람에 맞게 기계·작업·환경을 설계합니다.'},
+{i:'c21',s:2,q:'인체 측정치를 설계에 적용할 때 일반적인 적용 범위는?',a:'5 ~ 95 백분위수',n:'5백분위는 작은 사람, 95백분위는 큰 사람. 조절식 설계는 5~95를 모두 수용하도록 합니다.'},
+{i:'c22',s:2,q:'산업장 소음의 노출기준은?',a:'8시간 기준 90dB(A), 115dB(A) 초과 금지, 충격소음은 140dB(A) 이하',n:'5dB(A) 올라가면 허용 노출시간은 절반이 됩니다(5dB 교환율).'},
+{i:'c23',s:2,q:'FTA(결함수 분석)를 한 문장으로 설명하면?',a:'사고 결과(탑 이벤트)에서 출발해 원인을 거꾸로 파고드는 연역적·정량적 기법',n:'AND·OR 게이트로 트리를 만들고, 사고를 일으키는 최소 조합(최소절단집합)을 찾습니다.'},
+{i:'c24',s:2,q:'ETA(사건수 분석)는 어느 방향으로 분석하나?',a:'초기 사건에서 출발해 결과까지 진행하며 확률을 계산하는 귀납적 기법',n:'FTA와 방향이 반대입니다. FTA는 결과에서 원인으로, ETA는 원인에서 결과로.'},
+{i:'c25',s:2,q:'FMEA(고장형태와 영향분석)란?',a:'구성요소의 고장 형태와 그 고장이 시스템에 미치는 영향을 분석하는 귀납적·정성적 기법',n:'심각도·발생도·검출도를 점수화해 개선 우선순위를 정하기도 합니다.'},
+{i:'c26',s:2,q:'HAZOP에서 가이드 워드를 쓰는 목적은?',a:'공정의 설계 의도에서 벗어난 변위(Deviation)를 체계적으로 찾아내기 위해',n:'온도·압력·유량 등에 없음·많음·적음·반대 같은 단어를 붙여 위험을 검토합니다.'},
+{i:'c27',s:2,q:'PHA(예비 위험성 분석)는 언제 하는가?',a:'설계 초기 단계에서 전체 위험을 대략 파악할 때',n:'상세한 정량 분석 전에 위험 요인을 빠르게 훑는 용도입니다.'},
+{i:'c28',s:2,q:'정량적 위험성 평가 기법과 정성적 기법을 구분하면?',a:'정량적 - FTA·ETA·FMEA·THERP·CA / 정성적 - 체크리스트·4M·What-if·HAZOP',n:'숫자로 확률을 계산하면 정량, 경험과 판단으로 순위를 매기면 정성입니다.'},
+{i:'c29',s:2,q:'근골격계 부담작업의 대표 요인은?',a:'반복 동작 · 부적합한 자세 · 과도한 힘 · 진동과 접촉',n:'하루 2시간 이상 반복하는 작업 등 고시된 11가지 작업이 근골격계 부담작업입니다.'},
+{i:'c30',s:2,q:'NIOSH 들기지수(LI)가 1 이상이면 무엇을 뜻하나?',a:'권장무게(RWL)를 넘어 허용 기준을 초과한 상태',n:'LI = 들기 무게 ÷ RWL. 1.0 이하가 권장, 3.0 이상이면 즉시 개선이 필요합니다.'},
+{i:'c31',s:2,q:'THERP는 무엇을 구하는 기법인가?',a:'인간 오류율(HEP)을 추정하는 인간 신뢰도 분석 기법',n:'작업을 단계별로 나눠 각 단계의 오류 확률을 곱해 전체 신뢰도를 봅니다.'},
+{i:'c32',s:2,q:'고온 작업장의 열 스트레스 지표 WBGT는 무엇의 약자인가?',a:'습구흑구온도지수 (Wet Bulb Globe Temperature)',n:'기온·습도·복사열·기류를 함께 반영합니다. 열사병 예방에는 물·그늘·휴식과 적응기간이 중요합니다.'},
+{i:'c33',s:2,q:'VDT 증후군의 대표 증상과 예방법은?',a:'눈의 피로·목과 어깨 통증·손목 통증 / 1시간마다 짧게라도 휴식, 화면과의 거리 확보',n:'화면은 눈높이보다 약간 아래, 팔꿈치는 90도, 발은 바닥에 닿게 맞춥니다.'},
+{i:'c34',s:2,q:'작업장 조명 설계에서 피해야 할 것은?',a:'눈부심(글레어), 심한 명암 대비, 화면과 작업면의 반사',n:'밝기 자체보다 균일도가 중요합니다. 광원은 시선 밖에 두고 간접 조명을 씁니다.'},
+{i:'c35',s:3,q:'프레스의 자동 방호장치 3가지는?',a:'양수조작식 · 손쳐내기식 · 게이트가드식',n:'광전자식·방호울도 방호장치이지만 자동 방호장치 3종에는 들어가지 않습니다.'},
+{i:'c36',s:3,q:'전단기의 대표 방호장치를 들면?',a:'고정가드식 · 가동가드식 · 광전자식 · 손쳐내기식',n:'칼날 사이로 손이 들어가지 못하도록 가드나 광선으로 막습니다.'},
+{i:'c37',s:3,q:'연삭 숫돌을 교체한 뒤 지켜야 할 것은?',a:'3분 이상 공회전(시운전)한 뒤 사용',n:'숫돌 파손 사고를 막기 위한 조치입니다. 덮개와 작업대도 함께 점검합니다.'},
+{i:'c38',s:3,q:'연삭작업에서 해서는 안 되는 것은?',a:'숫돌 옆면(측면)으로 작업하기, 정격 회전수 초과 사용',n:'측면 연삭은 숫돌 파열의 주된 원인입니다. 작업대와 숫돌 사이 틈은 3mm 이내로 유지합니다.'},
+{i:'c39',s:3,q:'크레인의 방호장치 4가지는?',a:'과부하방지장치 · 권과방지장치 · 제동장치 · 비상정지장치',n:'권과방지장치는 달기구가 정해진 높이를 넘어 올라가는 것을 막습니다.'},
+{i:'c40',s:3,q:'양중기(크레인류)의 종류를 들면?',a:'크레인 · 이동식 크레인 · 데릭 · 곤돌라 · 리프트 등',n:'지게차는 양중기가 아니라 차량계 하역운반기계입니다.'},
+{i:'c41',s:3,q:'지게차 작업 시 지켜야 할 사항은?',a:'안전띠 착용, 화물을 낮게 유지, 경음기와 전조등 사용, 지게 위 탑승 금지',n:'주행 중 앞을 가리지 않게 화물을 낮추고, 경사로에서는 화물을 높은 쪽에 둡니다.'},
+{i:'c42',s:3,q:'컨베이어에 설치하는 방호장치는?',a:'역전방지장치 · 이탈방지장치 · 비상정지장치 · 덮개',n:'권과방지장치는 크레인용입니다. 롤러와 벨트에 손이 닿지 않게 덮개를 씁니다.'},
+{i:'c43',s:3,q:'보일러에 설치하는 방호장치는?',a:'압력방출장치 · 압력제한스위치 · 과열방지장치 · 화염검출기 · 수위저하 경보장치',n:'과부하방지장치는 크레인용이라 보일러 방호장치가 아닙니다.'},
+{i:'c44',s:3,q:'표면 결함과 내부 결함에 각각 맞는 비파괴검사는?',a:'표면 - 자분탐상·액체침투 / 내부 - 방사선투과·초음파',n:'2027년 출제기준에서 자기탐상이 자분탐상으로 용어가 정리되었습니다.'},
+{i:'c45',s:3,q:'산업용 로봇의 안전조치는?',a:'방호울·안전매트·광전자 안전장치를 설치하고, 운전 중 작동범위 출입 금지',n:'사람과 함께 일하는 구역에는 비상정지장치를 여러 위치에 두고 정기 점검합니다.'},
+{i:'c46',s:3,q:'설비의 이상을 조기에 찾는 진단 방법은?',a:'진동·소음·온도·윤활 상태를 정기 측정해 경향을 비교',n:'비파괴검사는 결함을 찾는 것이고, 설비진단은 상태 변화의 추세를 봅니다.'},
+{i:'c47',s:3,q:'가스 용기의 안전한 보관·취급 방법은?',a:'넘어지지 않게 고정하고, 밸브를 확실히 잠그고, 화기와 직사광선을 피한다',n:'충전 용기는 전도 방지 조치를 하고, 밸브 보호 캡을 씌워 보관합니다.'},
+{i:'c48',s:3,q:'목재 가공기계의 반발(킥백) 사고를 막는 장치는?',a:'반발예방장치(톱날 앞의 분할날) · 덮개 · 송급 장치',n:'톱날 뒤쪽이 아니라 앞쪽에 분할날을 두어 재료가 되튀는 것을 막습니다.'},
+{i:'c49',s:3,q:'롤러기에 사람이 말려 들어갈 위험이 있을 때 필요한 것은?',a:'급정지장치와 덮개(방호장치)',n:'앞면과 뒷면 어느 쪽에서든 즉시 멈출 수 있어야 합니다.'},
+{i:'c50',s:3,q:'기계·구조물에서 안전계수를 크게 잡으면?',a:'허용응력이 낮아져 더 안전하지만 재료가 더 든다',n:'반복 하중·충격·부식이 큰 곳은 안전계수를 높입니다.'},
+{i:'c51',s:4,q:'감전의 피해 정도를 좌우하는 요인 5가지는?',a:'통전전류의 크기 · 통전시간 · 통전경로 · 전원 주파수 · 인체 저항',n:'같은 전류라도 심장을 지나가는 경로면 훨씬 위험합니다.'},
+{i:'c52',s:4,q:'심실세동을 일으키는 전류와 통전시간의 관계는?',a:'통전시간의 제곱근에 반비례한다',n:'시간이 4배 길어지면 위험한 전류값은 절반이 됩니다.'},
+{i:'c53',s:4,q:'제1종·제2종·제3종·특별제3종 접지공사의 접지저항 값은?',a:'제1종 10Ω · 제2종 4Ω · 제3종 100Ω · 특별제3종 10Ω',n:'고압·특고압은 1종, 저압 일반은 3종, 습윤한 저압 장소는 특별3종으로 기억합니다.'},
+{i:'c54',s:4,q:'인체 감전을 막기 위한 누전차단기의 정격감도전류와 동작시간은?',a:'30mA 이하, 0.03초 이내',n:'물이 있는 습윤 장소에서는 15mA 이하를 씁니다.'},
+{i:'c55',s:4,q:'방폭구조 기호 d, p, o, e, ia/ib, m은 각각 무엇인가?',a:'d 내압방폭 · p 압력방폭 · o 유입방폭 · e 안전증방폭 · ia/ib 본질안전방폭 · m 몰드방폭',n:'기호와 이름을 서로 바꿔 출제하는 경우가 많습니다.'},
+{i:'c56',s:4,q:'방폭지역 0종·1종·2종 장소의 차이는?',a:'0종 - 정상상태에서 위험분위기가 연속·장기간 / 1종 - 정상작동 중 발생 / 2종 - 이상상태에서만 발생',n:'0종이 가장 위험합니다. 숫자가 커질수록 위험분위기가 생기는 빈도가 낮습니다.'},
+{i:'c57',s:4,q:'정전기 발생을 줄이는 방법은?',a:'가습(습도 높이기) · 접지 · 제전기 · 도전성 재료 · 유속 낮추기',n:'습도를 낮추면 정전기가 더 잘 생깁니다. 반대 방향이라 주의하세요.'},
+{i:'c58',s:4,q:'전기화재 원인 9가지에 2027년 새로 추가된 것은?',a:'열축적',n:'기존 9가지(단락·누전·과전류·스파크·접촉부 과열·절연열화·지락·낙뢰·정전기)에 열축적이 더해졌습니다.'},
+{i:'c59',s:4,q:'저압 전로의 절연저항 측정 기준은?',a:'절연저항계(500V)로 1MΩ 이상',n:'정전 작업 후 측정하고, 측정 전에 잔류 전하를 방전합니다.'},
+{i:'c60',s:4,q:'피뢰설비의 세 가지 구성은?',a:'피뢰침(돌침) · 인하도선 · 접지극',n:'낙뢰를 받아 안전하게 땅으로 흘려보내는 구조입니다.'},
+{i:'c61',s:4,q:'아크용접 작업의 감전을 막는 장치는?',a:'자동전격방지기',n:'용접봉 교체 등 무부하 시 전압을 낮춥니다. 절연장갑과 홀더 점검도 함께 합니다.'},
+{i:'c62',s:4,q:'가연성 가스의 폭발범위와 위험도 계산식은?',a:'폭발하한계(LEL)와 폭발상한계(UEL) 사이 / 위험도 = (UEL − LEL) ÷ LEL',n:'범위가 넓고 하한이 낮을수록 위험합니다.'},
+{i:'c63',s:4,q:'인화점·연소점·발화점의 차이는?',a:'인화점 - 불꽃에 의해 불이 붙는 최저 온도 / 연소점 - 불꽃 없이도 연소가 계속되는 온도 / 발화점 - 점화원 없이 스스로 타오르는 온도',n:'보통 인화점 < 연소점 < 발화점 순서입니다.'},
+{i:'c64',s:4,q:'MSDS(물질안전보건자료)는 몇 개 항목으로 되어 있나?',a:'16개 항목',n:'화학물질의 명칭·성분, 유해·위험성, 응급조치, 취급·저장, 폭로 방지 대책 등이 들어 있습니다.'},
+{i:'c65',s:4,q:'공정안전보고서(PSM)는 어떤 사업장이 제출하나?',a:'유해·위험물질을 규정량 이상 취급하는 유해·위험설비를 보유한 사업장',n:'공정안전자료, 위험성평가, 안전운전계획, 비상조치계획 등을 담아 제출합니다.'},
+{i:'c66',s:4,q:'밀폐공간 작업에서 적정한 산소농도는?',a:'18% 이상 23.5% 미만',n:'이 범위를 벗어나면 즉시 환기하고, 측정·감시인 배치·구조 장비를 준비합니다.'},
+{i:'c67',s:4,q:'분진폭발의 5요소는?',a:'연소성 분진 · 산소 · 점화원 · 분산(분진운) · 구속',n:'다섯 가지가 모두 갖춰져야 폭발합니다. 하나를 없애는 것이 예방입니다.'},
+{i:'c68',s:4,q:'화학설비에서 압력 상승을 막는 대표 장치는?',a:'안전밸브 · 파열판',n:'안전밸브는 반복 작동하고, 파열판은 한 번 파열되면 교체해야 합니다.'},
+{i:'c84',s:4,q:'공정안전보고서(PSM)는 제출 후 얼마마다 다시 작성하나?',a:'4년마다 재작성·제출',n:'그 사이에도 공정 변경이 있으면 보완·재제출합니다. 위험성평가는 매년 1회 이상입니다.'},
+{i:'c69',s:5,q:'건설현장에서 추락을 막는 4가지 방호 시설은?',a:'안전난간 · 개구부 덮개 · 추락방호망 · 안전대',n:'난간을 설치하기 곤란하면 방호망, 그것도 어려우면 안전대 순으로 대체합니다.'},
+{i:'c70',s:5,q:'안전난간의 높이와 구성 기준은?',a:'상부 난간대 90cm 이상, 발끝막이판 10cm 이상, 가장 취약한 지점에서 100kg 이상 견디는 구조',n:'난간대는 지름 2.7cm 이상의 금속 파이프 또는 그 이상 강도여야 합니다.'},
+{i:'c71',s:5,q:'개구부 덮개를 설치할 때 지켜야 할 것은?',a:'뒤집히거나 떨어지지 않게 고정하고, 어두운 곳에서도 알아볼 수 있게 표시',n:'덮개 위에 자재를 쌓거나 통행로로 쓰면 안 됩니다.'},
+{i:'c72',s:5,q:'비계의 종류를 5가지 들면?',a:'강관비계 · 강관틀비계 · 통나무비계 · 달비계 · 시스템비계',n:'달비계는 위에서 매달아 쓰는 비계로 곤돌라가 대표적입니다.'},
+{i:'c73',s:5,q:'강관비계를 구성하는 부재는?',a:'비계기둥 · 띠장 · 장선 · 작업발판 · 벽이음',n:'동바리는 거푸집을 받치는 부재로, 비계 부재가 아닙니다.'},
+{i:'c74',s:5,q:'이동식 비계를 쓸 때 지켜야 할 것은?',a:'바퀴 고정장치로 바닥을 고정하고, 승강설비를 갖추며, 작업 중에는 이동하지 않는다',n:'작업발판에는 최대적재하중을 넘겨 실을 수 없습니다.'},
+{i:'c75',s:5,q:'거푸집 동바리를 조립할 때 반드시 해야 하는 것은?',a:'조립도 작성, 침하·변형 방지 조치, 조립 후 점검',n:'콘크리트 타설 중 동바리가 무너지는 사고가 많습니다.'},
+{i:'c76',s:5,q:'굴착작업의 기본 안전조치는?',a:'지반 사전조사, 흙막이 지보공 설치, 사면 기울기 유지, 작업반경 출입 금지',n:'굴착기 작업반경 안으로 들어가 신호하는 것은 금지입니다.'},
+{i:'c77',s:5,q:'철골 세우기 작업에서 필요한 조치는?',a:'안전대 부착설비(지주·구명줄) 설치, 볼트 체결 전까지 임시 고정',n:'2m 이상 고소작업에서는 안전대를 걸 곳을 먼저 확보합니다.'},
+{i:'c78',s:5,q:'건축물 해체 작업의 기본 순서는?',a:'구조 검토 → 해체 계획(순서) 수립 → 위에서 아래로 해체 → 낙하물 방지',n:'해체는 세우는 순서의 역순, 즉 위에서 아래로 진행합니다.'},
+{i:'c79',s:5,q:'양중기 달기구의 안전계수는?',a:'근로자 탑승 운반구 10 이상 · 화물 직접 지지 5 이상 · 훅·샤클·클램프 3 이상 · 그 밖 4 이상',n:'사람 10, 화물 5, 고리 3으로 기억합니다.'},
+{i:'c80',s:5,q:'건설업에서 안전관리자를 두어야 하는 공사금액 기준은?',a:'공사금액 50억 원 이상 (관계수급인은 100억 원 이상)',n:'건설업은 상시근로자 수가 아니라 공사금액으로 정합니다.'},
+{i:'c81',s:5,q:'건설업 산업안전보건관리비는 어떻게 쓰나?',a:'공사금액별 요율로 계상하고, 근로자의 안전·보건에만 사용',n:'목적 외 사용은 법 위반입니다. 안전시설·보호구·교육 등에 씁니다.'},
+{i:'c82',s:5,q:'사다리식 통로의 기울기는?',a:'75도 정도 (밑변 : 높이 = 1 : 4)',n:'미끄럼 방지 조치를 하고, 2m 이상은 바닥에 고정하며, 높이 10m 초과 시 5m마다 계단참을 둡니다.'}
+];
+var QUIZ = [
+{i:'q1',s:1,t:'mc',q:'하인리히의 법칙 1 : 29 : 300에서 300이 뜻하는 것은?',o:['사망자 수','중상자 수','경상자 수','무상해 사고 건수'],k:3,e:'같은 종류의 사고 330건 중 중상해 1건, 경상해 29건, 무상해 300건입니다. 300은 다치지 않은 사고입니다.'},
+{i:'q2',s:1,t:'mc',q:'연간 근로시간수가 500,000시간, 재해건수가 25건일 때 도수율은?',o:['25','50','0.05','5'],k:1,e:'(25 ÷ 500,000) × 1,000,000 = 50. 근로시간 100만 시간당 50건입니다.'},
+{i:'q3',s:1,t:'mc',q:'연 근로시간수 400,000시간, 근로손실일수 1,200일일 때 강도율은?',o:['0.3','0.03','3','30'],k:2,e:'(1,200 ÷ 400,000) × 1,000 = 3.0입니다.'},
+{i:'q4',s:1,t:'mc',q:'연평균 근로자 500명, 연간 재해자 10명일 때 연천인율은?',o:['2','10','20','50'],k:2,e:'(10 ÷ 500) × 1,000 = 20. 근로자 1,000명당 20명입니다.'},
+{i:'q5',s:1,t:'mc',q:'도수율 4, 강도율 4일 때 종합재해지수(FSI)는?',o:['2','4','8','16'],k:1,e:'√(4 × 4) = 4입니다.'},
+{i:'q6',s:1,t:'mc',q:'안전계수를 옳게 나타낸 것은?',o:['허용응력 ÷ 극한강도','극한강도 ÷ 허용응력','극한강도 × 허용응력','파단하중 − 허용하중'],k:1,e:'안전계수 = 극한강도 ÷ 허용응력. 허용응력 = 극한강도 ÷ 안전계수입니다.'},
+{i:'q7',s:1,t:'ox',q:'관리감독자는 사업장의 부서 단위 조직에서 근로자를 직접 지휘·감독하는 사람이다.',o:['O','X'],k:0,e:'맞습니다. 사업주·안전보건관리책임자·안전관리자는 관리감독자에 해당하지 않습니다.'},
+{i:'q8',s:1,t:'mc',q:'시행령 별표 3에서 제조업 등 제1~27호 업종의 상시근로자 500명 이상 사업장에 두어야 하는 안전관리자 수는?',o:['1명 이상','2명 이상','3명 이상','5명 이상'],k:1,e:'50명 이상 500명 미만은 1명 이상, 500명 이상은 2명 이상입니다.'},
+{i:'q9',s:1,t:'mc',q:'위험성평가 절차의 순서로 옳은 것은?',o:['유해·위험요인 파악 → 사전준비 → 위험성 추정 → 감소대책','사전준비 → 유해·위험요인 파악 → 위험성 추정 → 위험성 결정 → 감소대책 수립·실행','사전준비 → 위험성 결정 → 위험성 추정 → 유해·위험요인 파악','위험성 추정 → 사전준비 → 감소대책 → 기록'],k:1,e:'사전준비 → 유해·위험요인 파악 → 위험성 추정 → 위험성 결정 → 위험성 감소대책 수립·실행 → 기록의 6단계입니다.'},
+{i:'q10',s:1,t:'mc',q:'산업재해가 발생했을 때 사업주가 가장 먼저 해야 할 조치는?',o:['재해 원인 조사','근로자 작업 중지 및 대피','보상 협의','언론 대응'],k:1,e:'작업을 중지하고 근로자를 대피시킨 뒤 위험요인을 제거하는 것이 가장 먼저입니다.'},
+{i:'q11',s:2,t:'mc',q:'인간공학적 설계에서 인체 측정치를 적용할 때 일반적으로 쓰는 범위는?',o:['평균값만','5~95 백분위수','최대값','50 백분위수'],k:1,e:'5백분위(작은 사람)부터 95백분위(큰 사람)까지 수용하도록 설계합니다.'},
+{i:'q12',s:2,t:'mc',q:'산업장 소음의 노출기준으로 옳은 것은?',o:['8시간 85dB(A)','8시간 90dB(A)','8시간 100dB(A)','4시간 90dB(A)'],k:1,e:'8시간 기준 90dB(A)이며 115dB(A)를 초과해서는 안 됩니다. 85dB(A)는 청력보존프로그램 기준입니다.'},
+{i:'q13',s:2,t:'mc',q:'FTA(결함수 분석)에 대한 설명으로 옳은 것은?',o:['귀납적으로 초기 사건에서 결과로 진행','연역적으로 결과(탑 이벤트)에서 원인으로 진행','구성요소 고장의 영향만 분석','공정 변위를 가이드 워드로 분석'],k:1,e:'FTA는 탑 이벤트에서 출발해 원인을 파고드는 연역적 기법입니다.'},
+{i:'q14',s:2,t:'mc',q:'FMEA에 대한 설명으로 옳은 것은?',o:['고장 형태와 그 영향을 분석하는 귀납적 기법','탑 이벤트에서 원인으로 내려가는 기법','인간 오류율을 추정하는 기법','사고 결과의 확률만 계산하는 기법'],k:0,e:'FMEA는 구성요소 고장이 시스템에 미치는 영향을 보는 귀납적 기법입니다.'},
+{i:'q15',s:2,t:'mc',q:'HAZOP에서 가이드 워드를 사용하는 목적은?',o:['공정 변위를 체계적으로 찾기 위해','인간 오류 확률을 계산하기 위해','고장률 데이터를 수집하기 위해','공사비를 산정하기 위해'],k:0,e:'설계 의도에서 벗어난 변위(Deviation)를 빠짐없이 찾는 것이 목적입니다.'},
+{i:'q16',s:2,t:'mc',q:'4M 분석의 구성요소가 아닌 것은?',o:['Man','Machine','Media','Money'],k:3,e:'4M은 Man·Machine·Media·Management입니다. Money는 들어가지 않습니다.'},
+{i:'q17',s:2,t:'mc',q:'정량적 위험성 평가 기법이 아닌 것은?',o:['FTA','ETA','체크리스트','THERP'],k:2,e:'체크리스트는 경험에 기반한 정성적 기법입니다.'},
+{i:'q18',s:2,t:'ox',q:'NIOSH 들기지수(LI)가 1 이상이면 허용 기준을 초과한 것으로 본다.',o:['O','X'],k:0,e:'맞습니다. LI 1.0 이하가 권장 수준이고, 3.0 이상이면 즉시 개선해야 합니다.'},
+{i:'q19',s:2,t:'mc',q:'근골격계 부담작업의 요인으로 보기 어려운 것은?',o:['반복성','부적합한 자세','과도한 힘','조도 부족'],k:3,e:'조도는 눈의 피로와 관련된 요인입니다. 근골격계는 반복·자세·힘·진동 등이 원인입니다.'},
+{i:'q20',s:3,t:'mc',q:'프레스의 자동 방호장치 3종에 해당하지 않는 것은?',o:['양수조작식','손쳐내기식','게이트가드식','광전자식'],k:3,e:'자동 방호장치 3종은 양수조작식·손쳐내기식·게이트가드식입니다. 광전자식은 방호장치이지만 자동 3종은 아닙니다.'},
+{i:'q21',s:3,t:'mc',q:'연삭 숫돌을 교체한 뒤의 안전조치로 옳은 것은?',o:['교체 직후 바로 작업','3분 이상 공회전 후 사용','30초 시운전 후 사용','시운전은 필요 없다'],k:1,e:'숫돌 파손을 막기 위해 3분 이상 공회전(시운전)합니다.'},
+{i:'q22',s:3,t:'mc',q:'크레인의 권과방지장치의 목적은?',o:['과부하 방지','달기구가 정해진 높이를 넘어 올라가는 것 방지','와이어로프 이탈 방지','운전자 보호'],k:1,e:'권과방지장치는 권상 장치가 한도를 넘어 올라가는 것을 막습니다. 과부하는 과부하방지장치가 막습니다.'},
+{i:'q23',s:3,t:'mc',q:'내부 결함을 찾는 데 적합한 비파괴검사는?',o:['액체침투탐상','자분탐상','방사선투과검사','육안검사'],k:2,e:'방사선투과와 초음파는 내부 결함, 자분탐상과 액체침투는 표면 결함에 씁니다.'},
+{i:'q24',s:3,t:'mc',q:'보일러의 방호장치로 보기 어려운 것은?',o:['압력방출장치','과열방지장치','화염검출기','과부하방지장치'],k:3,e:'과부하방지장치는 크레인·호이스트의 장치입니다.'},
+{i:'q25',s:3,t:'mc',q:'컨베이어의 방호장치로 보기 어려운 것은?',o:['역전방지장치','이탈방지장치','비상정지장치','권과방지장치'],k:3,e:'권과방지장치는 크레인용입니다.'},
+{i:'q26',s:3,t:'ox',q:'프레스 작업에서 손이 위험한계에 들어갈 수 있는 경우에는 자동 방호장치를 설치해야 한다.',o:['O','X'],k:0,e:'맞습니다. 방호장치 없이 프레스를 운전하면 안 됩니다.'},
+{i:'q27',s:3,t:'mc',q:'산업용 로봇의 안전조치로 옳은 것은?',o:['운전 중에도 방호울 안 출입 허용','작동범위 출입 금지, 방호울·안전장치 설치','비상정지장치를 설치하지 않음','안전매트는 필요 없음'],k:1,e:'방호울·안전매트·광전자 안전장치로 사람과 로봇의 접근을 막습니다.'},
+{i:'q28',s:4,t:'mc',q:'제3종 접지공사의 접지저항 기준은?',o:['10Ω 이하','4Ω 이하','100Ω 이하','0.1Ω 이하'],k:2,e:'제1종 10Ω, 제2종 4Ω, 제3종 100Ω, 특별제3종 10Ω입니다.'},
+{i:'q29',s:4,t:'mc',q:'누전차단기의 정격감도전류와 동작시간으로 옳은 것은?',o:['30mA, 0.03초','100mA, 0.1초','15mA, 0.3초','300mA, 0.5초'],k:0,e:'인체 감전 방지용은 30mA 이하·0.03초 이내입니다. 습윤 장소는 15mA 이하를 씁니다.'},
+{i:'q30',s:4,t:'mc',q:'방폭구조 기호 d가 뜻하는 것은?',o:['압력방폭','내압방폭','유입방폭','안전증방폭'],k:1,e:'d는 내압방폭, p는 압력방폭, o는 유입방폭, e는 안전증방폭입니다.'},
+{i:'q31',s:4,t:'mc',q:'방폭지역 0종 장소의 정의로 옳은 것은?',o:['정상상태에서 위험분위기가 연속 또는 장기간 유지되는 장소','정상작동 중 위험분위기가 발생하는 장소','이상상태에서만 위험분위기가 발생하는 장소','위험분위기가 전혀 없는 장소'],k:0,e:'0종은 가장 위험한 장소, 1종은 정상작동 중, 2종은 이상상태에서만 위험분위기가 생기는 장소입니다.'},
+{i:'q32',s:4,t:'mc',q:'정전기 발생을 억제하는 대책으로 옳지 않은 것은?',o:['접지','가습','제전기 사용','습도 낮추기'],k:3,e:'습도를 높여야 정전기가 줄어듭니다. 낮추면 오히려 잘 생깁니다.'},
+{i:'q33',s:4,t:'mc',q:'폭발범위에 대한 설명으로 옳은 것은?',o:['하한과 상한 사이가 폭발 범위','하한보다 낮은 농도에서 폭발','상한보다 높은 농도에서 폭발','농도와 관계없이 항상 폭발'],k:0,e:'LEL과 UEL 사이의 농도에서만 연소·폭발합니다.'},
+{i:'q34',s:4,t:'mc',q:'밀폐공간작업에서 적정한 산소농도는?',o:['16% 이상 20% 미만','18% 이상 23.5% 미만','20% 이상 25% 미만','23.5% 이상 30% 미만'],k:1,e:'18% 미만이면 산소결핍, 23.5% 이상이면 과산소로 위험합니다.'},
+{i:'q35',s:4,t:'mc',q:'분진폭발 5요소에 해당하지 않는 것은?',o:['연소성 분진','점화원','구속','습도 상승'],k:3,e:'5요소는 연소성 분진·산소·점화원·분산·구속입니다.'},
+{i:'q36',s:4,t:'mc',q:'2027년 개정 출제기준에서 전기설비 위험요인 파악 항목에 새로 추가된 전기화재 원인은?',o:['단락','낙뢰','열축적','정전기'],k:2,e:'열축적이 10번째 전기화재 원인으로 추가되었습니다.'},
+{i:'q37',s:4,t:'mc',q:'아크용접 작업에서 감전을 막기 위해 설치하는 것은?',o:['자동전격방지기','권과방지장치','과부하방지장치','역전방지장치'],k:0,e:'자동전격방지기는 무부하 시 전압을 낮춰 감전을 막습니다.'},
+{i:'q38',s:4,t:'mc',q:'MSDS(물질안전보건자료)의 항목 수는?',o:['8개','12개','16개','20개'],k:2,e:'MSDS는 16개 항목으로 구성됩니다.'},
+{i:'q39',s:5,t:'mc',q:'안전난간 상부 난간대의 높이 기준은?',o:['60cm 이상','75cm 이상','90cm 이상','110cm 이상'],k:2,e:'상부 난간대는 바닥면·발판에서 90cm 이상입니다. 85~110cm는 건축법상 계단 손잡이 기준이라 구분해야 합니다.'},
+{i:'q40',s:5,t:'mc',q:'발끝막이판의 높이 기준은?',o:['5cm 이상','10cm 이상','15cm 이상','20cm 이상'],k:1,e:'발끝막이판은 바닥면에서 10cm 이상이어야 합니다.'},
+{i:'q41',s:5,t:'mc',q:'양중기에서 화물 하중을 직접 지지하는 와이어로프의 안전계수는?',o:['3 이상','4 이상','5 이상','10 이상'],k:2,e:'화물 직접 지지는 5 이상, 근로자 탑승 운반구는 10 이상, 훅·샤클은 3 이상입니다.'},
+{i:'q42',s:5,t:'mc',q:'근로자가 탑승하는 운반구를 지지하는 달기 와이어로프의 안전계수는?',o:['5 이상','6 이상','8 이상','10 이상'],k:3,e:'사람이 타는 운반구를 지지하는 달기구는 10 이상입니다.'},
+{i:'q43',s:5,t:'mc',q:'건설업에서 안전관리자를 두어야 하는 공사금액 기준은?',o:['20억 원 이상','50억 원 이상(관계수급인 100억 원 이상)','100억 원 이상','200억 원 이상'],k:1,e:'건설업은 상시근로자 수가 아니라 공사금액으로 정합니다.'},
+{i:'q44',s:5,t:'mc',q:'거푸집 동바리 조립 시 옳은 것은?',o:['조립도 없이 시공','조립도를 작성하고 침하·변형 방지 조치','재료를 임의로 교체','해체 시 구조 검토 불필요'],k:1,e:'조립도 작성, 침하·변형 방지, 조립 후 점검이 기본입니다.'},
+{i:'q45',s:5,t:'mc',q:'개구부 방호 조치로 옳은 것은?',o:['덮개만 올려 둔다','덮개를 고정하고 개구부임을 표시','개구부를 통로로 쓴다','표시는 따로 필요 없다'],k:1,e:'덮개가 뒤집히거나 떨어지지 않게 고정하고, 어두운 곳에서도 알아볼 수 있게 표시합니다.'},
+{i:'q46',s:5,t:'ox',q:'이동식 비계는 바퀴를 고정하고 승강설비를 갖추어야 한다.',o:['O','X'],k:0,e:'맞습니다. 작업 중에는 이동하지 않고 바닥을 고정합니다.'},
+{i:'q47',s:5,t:'mc',q:'강관비계의 구성요소가 아닌 것은?',o:['비계기둥','띠장','장선','동바리'],k:3,e:'동바리는 거푸집을 받치는 부재입니다.'},
+{i:'q48',s:5,t:'mc',q:'굴착작업의 안전조치로 옳지 않은 것은?',o:['흙막이 지보공 설치','지반 사전조사','굴착기 작업반경 안으로 들어가 신호','사면 기울기 유지'],k:2,e:'작업반경 안으로 들어가는 것은 중대한 위반입니다.'},
+{i:'q49',s:1,t:'ox',q:'도수율은 근로시간 100만 시간당 재해 건수를 나타낸다.',o:['O','X'],k:0,e:'맞습니다. 강도율은 근로시간 1,000시간당 근로손실일수입니다.'},
+{i:'q50',s:1,t:'ox',q:'관리감독자 정기 안전보건교육은 연간 8시간 이상이면 된다.',o:['O','X'],k:1,e:'아닙니다. 관리감독자는 연간 16시간 이상입니다.'},
+{i:'q51',s:2,t:'ox',q:'FTA는 초기 사건에서 결과로 진행하는 귀납적 기법이다.',o:['O','X'],k:1,e:'아닙니다. FTA는 결과(탑 이벤트)에서 원인으로 가는 연역적 기법이고, 귀납적은 ETA입니다.'},
+{i:'q52',s:3,t:'ox',q:'크레인의 과부하방지장치는 달기구가 정해진 높이를 넘어 올라가는 것을 막는 장치다.',o:['O','X'],k:1,e:'아닙니다. 그것은 권과방지장치입니다. 과부하방지장치는 정격하중 초과를 막습니다.'},
+{i:'q53',s:4,t:'ox',q:'정전기로 인한 폭발을 막으려면 실내 습도를 높이는 것이 좋다.',o:['O','X'],k:0,e:'맞습니다. 가습·접지·제전기가 대표적인 정전기 대책입니다.'},
+{i:'q54',s:5,t:'ox',q:'안전난간의 발끝막이판 높이는 10cm 이상이어야 한다.',o:['O','X'],k:0,e:'맞습니다. 상부 난간대 90cm 이상, 발끝막이판 10cm 이상입니다.'}
+];
+var SUBJECTS = [
+  {id:1, short:'1과목', tag:'산업재해 예방', name:'산업재해 예방 및 안전보건교육'},
+  {id:2, short:'2과목', tag:'인간공학·위험성평가', name:'인간공학 및 위험성 평가·관리'},
+  {id:3, short:'3과목', tag:'기계·기구·설비', name:'기계·기구 및 설비 안전관리'},
+  {id:4, short:'4과목', tag:'전기·화학설비', name:'전기 및 화학설비 안전관리'},
+  {id:5, short:'5과목', tag:'건설공사', name:'건설공사 안전관리'}
+];
+
+var KEYS = {m:'sanangi.mastered.v1', w:'sanangi.wrong.v1', s:'sanangi.stats.v1', t:'sanangi.theme.v1'};
+var memoryFallback = {};
+
+function sGet(k, d){
+  try {
+    var v = window.localStorage.getItem(k);
+    if (v === null || v === undefined) return d;
+    return JSON.parse(v);
+  } catch (e) {
+    return (k in memoryFallback) ? memoryFallback[k] : d;
+  }
+}
+function sSet(k, v){
+  try { window.localStorage.setItem(k, JSON.stringify(v)); }
+  catch (e) { memoryFallback[k] = v; }
+}
+function $(id){ return document.getElementById(id); }
+function closestEl(el, sel){
+  while (el && el !== document){
+    if (el.nodeType === 1 && el.matches && el.matches(sel)) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+function escapeHtml(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function shuffleArr(a){
+  for (var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function findQuiz(id){
+  for (var i = 0; i < QUIZ.length; i++) if (QUIZ[i].i === id) return QUIZ[i];
+  return null;
+}
+
+/* ---------- theme ---------- */
+var theme = sGet(KEYS.t, 'dark');
+function applyTheme(t){
+  if (t === 'light'){
+    document.body.classList.add('light');
+    $('themeBtn').textContent = '\u2600\uFE0F';
+  } else {
+    document.body.classList.remove('light');
+    $('themeBtn').textContent = '\uD83C\uDF19';
+  }
+  var mc = document.querySelector('meta[name="theme-color"]');
+  if (mc) mc.setAttribute('content', t === 'light' ? '#eef2f7' : '#0b1220');
+}
+$('themeBtn').addEventListener('click', function(){
+  theme = (theme === 'light') ? 'dark' : 'light';
+  sSet(KEYS.t, theme);
+  applyTheme(theme);
+});
+
+/* ---------- tabs ---------- */
+var state = {tab:'cards'};
+function switchTab(name){
+  state.tab = name;
+  var views = {cards:'viewCards', quiz:'viewQuiz', roadmap:'viewRoadmap'};
+  for (var k in views){
+    var el = $(views[k]);
+    if (el) el.className = 'view' + (k === name ? ' active' : '');
+  }
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++){
+    var on = tabs[i].getAttribute('data-tab') === name;
+    tabs[i].className = 'tab' + (on ? ' active' : '');
+  }
+  if (name === 'quiz') renderQuizSetup();
+  window.scrollTo(0, 0);
+}
+var tabBtns = document.querySelectorAll('.tab');
+for (var ti = 0; ti < tabBtns.length; ti++){
+  tabBtns[ti].addEventListener('click', function(){
+    switchTab(this.getAttribute('data-tab'));
+  });
+}
+
+/* ---------- flashcards ---------- */
+var mastered = sGet(KEYS.m, {});
+var wrongSet = sGet(KEYS.w, {});
+var stats = sGet(KEYS.s, {sessions:0, answered:0, correct:0, best:0});
+
+var cs = {filter:0, idx:0, flipped:false, shuffle:false, onlyUnmastered:false, deck:[]};
+
+function chipsHtml(){
+  var h = '<button class="chip active" data-f="0">전체</button>';
+  for (var i = 0; i < SUBJECTS.length; i++){
+    h += '<button class="chip" data-f="' + SUBJECTS[i].id + '">' + SUBJECTS[i].short + '</button>';
+  }
+  return h;
+}
+function cardsPool(){
+  var out = [];
+  for (var i = 0; i < CARDS.length; i++){
+    var c = CARDS[i];
+    if (cs.filter && c.s !== cs.filter) continue;
+    if (cs.onlyUnmastered && mastered[c.i]) continue;
+    out.push(c);
+  }
+  return out;
+}
+function rebuildDeck(reset){
+  var pool = cardsPool();
+  if (cs.shuffle) shuffleArr(pool);
+  cs.deck = pool;
+  if (reset || cs.idx >= pool.length) cs.idx = 0;
+  cs.flipped = false;
+}
+function masteredCount(){
+  var n = 0;
+  for (var k in mastered) if (mastered[k]) n++;
+  return n;
+}
+function renderCards(){
+  var n = cs.deck.length;
+  var mc = masteredCount();
+  $('fcMasteredCount').textContent = mc + ' / ' + CARDS.length + ' 외웠음';
+  $('fcProgress').style.width = Math.round(mc / CARDS.length * 100) + '%';
+  $('fcPos').textContent = n ? (cs.idx + 1) + ' / ' + n : '0 / 0';
+  $('fcScene').style.display = n ? '' : 'none';
+  $('fcNav').style.display = n ? '' : 'none';
+  $('fcEmpty').style.display = n ? 'none' : 'block';
+  $('btnShuffle').className = 'btn small' + (cs.shuffle ? ' on' : '');
+  $('btnOnlyUnmastered').className = 'btn small' + (cs.onlyUnmastered ? ' on' : '');
+  if (!n) return;
+  var c = cs.deck[cs.idx];
+  var s = SUBJECTS[c.s - 1];
+  var label = s.short + ' · ' + s.tag;
+  $('fcQ').textContent = c.q;
+  $('fcA').textContent = c.a;
+  $('fcNote').textContent = c.n;
+  $('fcDot').style.background = 'var(--s' + c.s + ')';
+  $('fcDot2').style.background = 'var(--s' + c.s + ')';
+  $('fcSubj').textContent = label;
+  $('fcSubj2').textContent = label;
+  $('fcCard').classList.toggle('flipped', cs.flipped);
+  var on = !!mastered[c.i];
+  var mb = $('btnMaster');
+  mb.textContent = on ? '외웠음 \u2713' : '외웠음 표시';
+  mb.className = 'btn' + (on ? ' done' : '');
+  var subjCount = 0;
+  for (var i = 0; i < CARDS.length; i++) if (CARDS[i].s === c.s) subjCount++;
+  $('fcFoot').textContent = s.name + ' \u00B7 ' + subjCount + '장 \u00B7 전체 ' + CARDS.length + '장';
+}
+function goCard(d){
+  if (!cs.deck.length) return;
+  cs.idx = (cs.idx + d + cs.deck.length) % cs.deck.length;
+  cs.flipped = false;
+  renderCards();
+}
+
+var swipeAt = 0;
+$('fcCard').addEventListener('click', function(){
+  if (Date.now() - swipeAt < 450) return;
+  cs.flipped = !cs.flipped;
+  renderCards();
+});
+(function(){
+  var tx = 0, ty = 0, down = false;
+  var card = $('fcCard');
+  card.addEventListener('touchstart', function(e){
+    var t = e.changedTouches[0]; tx = t.clientX; ty = t.clientY; down = true;
+  }, {passive:true});
+  card.addEventListener('touchend', function(e){
+    if (!down) return;
+    down = false;
+    var t = e.changedTouches[0];
+    var dx = t.clientX - tx, dy = t.clientY - ty;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.6){
+      swipeAt = Date.now();
+      goCard(dx < 0 ? 1 : -1);
+    }
+  }, {passive:true});
+})();
+
+$('btnFlip').addEventListener('click', function(){ cs.flipped = !cs.flipped; renderCards(); });
+$('btnPrev').addEventListener('click', function(){ goCard(-1); });
+$('btnNext').addEventListener('click', function(){ goCard(1); });
+$('btnMaster').addEventListener('click', function(){
+  if (!cs.deck.length) return;
+  var c = cs.deck[cs.idx];
+  if (mastered[c.i]) delete mastered[c.i];
+  else mastered[c.i] = true;
+  sSet(KEYS.m, mastered);
+  if (cs.onlyUnmastered) rebuildDeck(false);
+  renderCards();
+});
+$('btnShuffle').addEventListener('click', function(){
+  cs.shuffle = !cs.shuffle;
+  rebuildDeck(true);
+  renderCards();
+});
+$('btnOnlyUnmastered').addEventListener('click', function(){
+  cs.onlyUnmastered = !cs.onlyUnmastered;
+  rebuildDeck(true);
+  renderCards();
+});
+$('btnShowAll').addEventListener('click', function(){
+  cs.onlyUnmastered = false;
+  cs.filter = 0;
+  setChips('fcChips', 0);
+  rebuildDeck(true);
+  renderCards();
+});
+function setChips(containerId, f){
+  var chips = $(containerId).querySelectorAll('.chip');
+  for (var i = 0; i < chips.length; i++){
+    var v = parseInt(chips[i].getAttribute('data-f'), 10);
+    chips[i].className = 'chip' + (v === f ? ' active' : '');
+  }
+}
+$('fcChips').addEventListener('click', function(e){
+  var chip = closestEl(e.target, '.chip');
+  if (!chip) return;
+  cs.filter = parseInt(chip.getAttribute('data-f'), 10);
+  setChips('fcChips', cs.filter);
+  rebuildDeck(true);
+  renderCards();
+});
+
+document.addEventListener('keydown', function(e){
+  if (state.tab !== 'cards') return;
+  if (e.key === 'ArrowRight'){ e.preventDefault(); goCard(1); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); goCard(-1); }
+  else if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); cs.flipped = !cs.flipped; renderCards(); }
+});
+
+/* ---------- quiz ---------- */
+var qz = {active:false, list:[], idx:0, answered:false, chosen:-1, correct:0, wrongIds:[], size:10, filter:0};
+
+function quizPool(){
+  var out = [];
+  for (var i = 0; i < QUIZ.length; i++){
+    if (!qz.filter || QUIZ[i].s === qz.filter) out.push(QUIZ[i]);
+  }
+  return out;
+}
+function wrongCount(pool){
+  var n = 0;
+  for (var i = 0; i < pool.length; i++) if (wrongSet[pool[i].i]) n++;
+  return n;
+}
+function renderQuizSetup(){
+  var pool = quizPool();
+  $('stTotal').textContent = pool.length;
+  $('stDone').textContent = stats.answered;
+  $('stBest').textContent = stats.best ? stats.best + '점' : '-';
+  var w = wrongCount(pool);
+  var wb = $('btnWrongOnly');
+  wb.disabled = (w === 0);
+  wb.textContent = w ? '틀린 문제만 다시 풀기 (' + w + ')' : '틀린 문제만 다시 풀기';
+  var sb = document.querySelectorAll('[data-size]');
+  for (var i = 0; i < sb.length; i++){
+    var v = parseInt(sb[i].getAttribute('data-size'), 10);
+    sb[i].className = 'btn small' + (v === qz.size ? ' on' : '');
+  }
+}
+function showQuizPane(name){
+  $('quizSetup').style.display = (name === 'setup') ? 'block' : 'none';
+  $('quizPlay').style.display = (name === 'play') ? 'block' : 'none';
+  $('quizResult').style.display = (name === 'result') ? 'block' : 'none';
+}
+function beginSession(list){
+  qz.list = list;
+  qz.idx = 0; qz.answered = false; qz.chosen = -1; qz.correct = 0; qz.wrongIds = [];
+  qz.active = true;
+  showQuizPane('play');
+  renderQuestion();
+  window.scrollTo(0, 0);
+}
+function startQuiz(scope){
+  var pool = quizPool();
+  if (scope === 'wrong') pool = pool.filter(function(q){ return !!wrongSet[q.i]; });
+  if (!pool.length) return;
+  pool = shuffleArr(pool.slice(0));
+  if (qz.size > 0 && pool.length > qz.size) pool = pool.slice(0, qz.size);
+  beginSession(pool);
+}
+function renderQuestion(){
+  var q = qz.list[qz.idx];
+  var total = qz.list.length;
+  $('qpLabel').textContent = (qz.idx + 1) + ' / ' + total;
+  $('qpScore').textContent = '정답 ' + qz.correct;
+  $('qpProgress').style.width = Math.round(qz.idx / total * 100) + '%';
+  var s = SUBJECTS[q.s - 1];
+  $('qpSubj').textContent = s.short + ' · ' + s.tag;
+  $('qpDot').style.background = 'var(--s' + q.s + ')';
+  $('qpType').textContent = (q.t === 'ox') ? 'O / X' : '4지선다';
+  $('qpQ').textContent = q.q;
+  var h = '';
+  for (var i = 0; i < q.o.length; i++){
+    var cls = 'opt' + (q.t === 'ox' ? ' ox' : '');
+    var mark = (q.t === 'ox') ? q.o[i] : String(i + 1);
+    var txt = (q.t === 'ox') ? (q.o[i] === 'O' ? '맞다' : '아니다') : q.o[i];
+    h += '<button class="' + cls + '" data-k="' + i + '"><span class="mark">' + mark + '</span><span class="txt">' + txt + '</span></button>';
+  }
+  $('qpOpts').innerHTML = h;
+  $('qpExpl').innerHTML = '';
+  var nb = $('qpNext');
+  nb.disabled = true;
+  nb.textContent = (qz.idx === total - 1) ? '결과 보기' : '다음 문제';
+  qz.answered = false;
+  qz.chosen = -1;
+}
+function answerQuiz(k){
+  if (qz.answered) return;
+  var q = qz.list[qz.idx];
+  qz.answered = true;
+  qz.chosen = k;
+  var ok = (k === q.k);
+  if (ok){ qz.correct++; delete wrongSet[q.i]; }
+  else { qz.wrongIds.push(q.i); wrongSet[q.i] = true; }
+  sSet(KEYS.w, wrongSet);
+  var opts = $('qpOpts').children;
+  for (var i = 0; i < opts.length; i++){
+    var oi = parseInt(opts[i].getAttribute('data-k'), 10);
+    var mark = opts[i].querySelector('.mark');
+    if (oi === q.k){ opts[i].className += ' correct'; if (mark) mark.textContent = '\u2713'; }
+    else if (oi === k){ opts[i].className += ' wrong'; if (mark) mark.textContent = '\u2715'; }
+  }
+  $('qpScore').textContent = '정답 ' + qz.correct;
+  var ansTxt = (q.t === 'ox') ? (q.o[q.k] === 'O' ? 'O(맞다)' : 'X(아니다)') : (q.k + 1) + '번 ' + q.o[q.k];
+  var head = ok ? '정답입니다' : '오답 \u00B7 정답은 ' + ansTxt;
+  $('qpExpl').innerHTML = '<div class="expl ' + (ok ? 'ok' : 'no') + '"><b>' + head + '</b>' + q.e + '</div>';
+  $('qpNext').disabled = false;
+}
+function finishQuiz(){
+  var total = qz.list.length;
+  var pct = total ? Math.round(qz.correct / total * 100) : 0;
+  $('qrRing').style.setProperty('--p', pct);
+  $('qrScore').textContent = pct + '점';
+  $('qrSub').textContent = '정답 ' + qz.correct + ' / ' + total;
+  var msg;
+  if (pct >= 80) msg = '아주 좋습니다. 이 페이스면 합격권입니다.';
+  else if (pct >= 60) msg = '합격선 근처입니다. 틀린 문제만 한 번 더 풀어보세요.';
+  else msg = '지금은 오답을 남기는 단계입니다. 해설을 한 번 더 읽어보세요.';
+  $('qrMsg').textContent = msg;
+  var h = '';
+  if (qz.wrongIds.length){
+    h = '<div style="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin-bottom:6px">틀린 문제 ' + qz.wrongIds.length + '개</div>';
+    for (var i = 0; i < qz.wrongIds.length; i++){
+      var q = findQuiz(qz.wrongIds[i]);
+      if (!q) continue;
+      var a = (q.t === 'ox') ? (q.o[q.k] === 'O' ? '정답 O (맞다)' : '정답 X (아니다)') : '정답 ' + (q.k + 1) + '번 \u00B7 ' + q.o[q.k];
+      h += '<div class="ri"><b>' + escapeHtml(q.q) + '</b>' + escapeHtml(a) + '</div>';
+    }
+  } else {
+    h = '<div class="ri">틀린 문제가 없습니다. 완벽합니다!</div>';
+  }
+  $('qrList').innerHTML = h;
+  $('btnRetryWrong').disabled = (qz.wrongIds.length === 0);
+  stats.sessions++;
+  stats.answered += total;
+  stats.correct += qz.correct;
+  if (pct > stats.best) stats.best = pct;
+  sSet(KEYS.s, stats);
+  qz.active = false;
+  showQuizPane('result');
+  window.scrollTo(0, 0);
+}
+
+$('qpOpts').addEventListener('click', function(e){
+  var b = closestEl(e.target, '.opt');
+  if (!b) return;
+  answerQuiz(parseInt(b.getAttribute('data-k'), 10));
+});
+$('qpNext').addEventListener('click', function(){
+  if (qz.idx < qz.list.length - 1){ qz.idx++; renderQuestion(); window.scrollTo(0, 0); }
+  else finishQuiz();
+});
+$('qpQuit').addEventListener('click', function(){
+  qz.active = false;
+  showQuizPane('setup');
+  renderQuizSetup();
+  window.scrollTo(0, 0);
+});
+$('btnStartQuiz').addEventListener('click', function(){ startQuiz('all'); });
+$('btnWrongOnly').addEventListener('click', function(){ startQuiz('wrong'); });
+$('btnNewQuiz').addEventListener('click', function(){
+  showQuizPane('setup');
+  renderQuizSetup();
+  window.scrollTo(0, 0);
+});
+$('btnRetryWrong').addEventListener('click', function(){
+  var pool = [];
+  for (var i = 0; i < qz.wrongIds.length; i++){
+    var q = findQuiz(qz.wrongIds[i]);
+    if (q) pool.push(q);
+  }
+  if (!pool.length) return;
+  beginSession(shuffleArr(pool));
+});
+$('quizChips').addEventListener('click', function(e){
+  var chip = closestEl(e.target, '.chip');
+  if (!chip) return;
+  qz.filter = parseInt(chip.getAttribute('data-f'), 10);
+  setChips('quizChips', qz.filter);
+  renderQuizSetup();
+});
+var sizeBtns = document.querySelectorAll('[data-size]');
+for (var si = 0; si < sizeBtns.length; si++){
+  sizeBtns[si].addEventListener('click', function(){
+    qz.size = parseInt(this.getAttribute('data-size'), 10);
+    renderQuizSetup();
+  });
+}
+
+/* ---------- init ---------- */
+applyTheme(theme);
+$('fcChips').innerHTML = chipsHtml();
+$('quizChips').innerHTML = chipsHtml();
+rebuildDeck(true);
+renderCards();
+renderQuizSetup();
+</script>
+</body>
+</html>
