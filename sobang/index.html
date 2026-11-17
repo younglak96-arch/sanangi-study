@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
-<title>소방설비기사(전기) 출퇴근 학습 · 7개년 560문항 CBT</title>
+<title>소방설비기사(전기) 학습 · 7개년 560문항 CBT</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -416,10 +416,9 @@ html,body{touch-action:manipulation}
   opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;max-width:88%;text-align:center;line-height:1.4}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ================= 플래시카드 인라인 도해 ================= */
-.scene.wide .fcard{height:clamp(464px,66vh,640px)}
-.diag{margin-top:10px;display:flex;justify-content:center;align-items:center;width:100%}
-.diag svg{width:100%;height:auto;max-height:178px;display:block;overflow:visible}
+/* ================= 플래시카드 인라인 도해 (카드 높이는 도해 유무와 무관하게 동일) ================= */
+.diag{flex:0 0 auto;margin-top:10px;display:flex;justify-content:center;align-items:center;width:100%}
+.diag svg{width:auto;height:auto;max-width:100%;max-height:130px;display:block;margin:0 auto;overflow:visible}
 .diag text{font-family:inherit;font-size:10px;font-weight:700;fill:var(--text);letter-spacing:-.1px}
 .diag .tm{font-size:8.8px;font-weight:600;fill:var(--muted)}
 .diag .dimt{font-size:8.2px;font-weight:700;fill:var(--muted)}
@@ -439,16 +438,40 @@ html,body{touch-action:manipulation}
 .diag .ahd{fill:var(--muted)}
 
 </style>
+<style>
+/* ---------- v4: 글자 크기 3단계 ---------- */
+.hdract{display:flex;align-items:center;gap:8px}
+.iconbtn.fbtn{position:relative;width:42px;height:40px}
+.fbtn b{font-size:15px;font-weight:800;line-height:1}
+.fbtn i{position:absolute;right:5px;bottom:2px;font-style:normal;font-size:8.5px;font-weight:800;color:var(--accent);line-height:1}
+html{--fs:1}
+body.fs-1{--fs:1}
+body.fs-2{--fs:1.14}
+body.fs-3{--fs:1.3}
+.qtext,.atext{font-size:calc(19.5px * var(--fs))}
+.note{font-size:calc(13.5px * var(--fs))}
+.qtext2{font-size:calc(18px * var(--fs))}
+.opt{font-size:calc(15px * var(--fs))}
+.opt.ox{font-size:calc(17px * var(--fs))}
+.expl{font-size:calc(14px * var(--fs))}
+.pq{font-size:calc(17px * var(--fs))}
+.popt{font-size:calc(16px * var(--fs))}
+.popt .pmk{font-size:calc(16px * var(--fs))}
+.pexpl,.pans{font-size:calc(13.5px * var(--fs))}
+</style>
 </head>
 <body>
 <div class="app">
   <header>
     <div class="hdr">
       <div class="brand">
-        <b>소방설비기사(전기) 출퇴근 학습</b>
+        <b>소방설비기사(전기) 학습</b>
         <span>7개년 560문항 CBT · 필기 4과목</span>
       </div>
-      <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
+      <div class="hdract">
+        <button class="iconbtn fbtn" id="fontBtn" aria-label="글자 크기 조절"><b>가</b><i id="fontBtnNum">1</i></button>
+        <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
+      </div>
     </div>
   </header>
 
@@ -470,7 +493,7 @@ html,body{touch-action:manipulation}
               <span class="kicker">문제</span>
             </div>
             <div class="face-body"><div class="face-inner"><p class="qtext" id="fcQ"></p></div></div>
-            <div class="face-bottom">카드를 탭하면 정답이 보입니다</div>
+            <div class="face-bottom">탭하면 정답 · 좌우로 밀어 넘기기</div>
           </div>
           <div class="face back">
             <div class="face-top">
@@ -482,7 +505,7 @@ html,body{touch-action:manipulation}
                 <div class="note" id="fcNote"></div>
                 <div class="diag" id="fcDiag"></div>
               </div></div>
-            <div class="face-bottom">다시 탭하면 문제로 돌아갑니다</div>
+            <div class="face-bottom">다시 탭하면 문제로 · 좌우로 밀어 넘기기</div>
           </div>
         </div>
       </div>
@@ -493,11 +516,6 @@ html,body{touch-action:manipulation}
         <div class="row"><button class="btn primary" id="btnShowAll">전체 카드 보기</button></div>
       </div>
 
-      <div class="row" id="fcNav">
-        <button class="btn" id="btnPrev" aria-label="이전 카드">← 이전</button>
-        <button class="btn" id="btnFlip">뒤집기</button>
-        <button class="btn" id="btnNext" aria-label="다음 카드">다음 →</button>
-      </div>
       <div class="row tight">
         <button class="btn" id="btnMaster">외웠음 표시</button>
       </div>
@@ -508,11 +526,11 @@ html,body{touch-action:manipulation}
       <footer class="foot" id="fcFoot"></footer>
     </section>
 
-    <!-- ============ 출퇴근 퀴즈 ============ -->
+    <!-- ============ 핵심 퀴즈 ============ -->
     <section class="view" id="viewCommute">
       <div id="quizSetup">
         <div class="panel">
-          <h3>출퇴근 퀴즈</h3>
+          <h3>핵심 퀴즈</h3>
           <p>필기와 같은 4지선다·O/X 문제입니다. 답을 고르면 바로 채점하고 해설을 보여줘요. 계산 문제도 섞여 있습니다.</p>
           <div class="label">과목</div>
           <div class="chips" id="quizChips"></div>
@@ -534,7 +552,7 @@ html,body{touch-action:manipulation}
             <div class="stat"><b id="stBest">-</b><span>최고 점수</span></div>
           </div>
         </div>
-        <div class="banner">💡 <b>오는 길 20분 루틴</b> — 10문항 풀고, 틀린 문제만 한 번 더. 정답률이 80%를 넘으면 20문항으로 늘려 과목당 30분을 맞춰보세요.</div>
+        <div class="banner">💡 <b>2회차 20분 루틴</b> — 10문항 풀고, 틀린 문제만 한 번 더. 정답률이 80%를 넘으면 20문항으로 늘려 과목당 30분을 맞춰보세요.</div>
       </div>
 
       <div id="quizPlay" style="display:none">
@@ -605,7 +623,7 @@ html,body{touch-action:manipulation}
 
     <!-- ============ 로드맵 ============ -->
     <section class="view" id="viewRoadmap">
-      <div class="banner"><b>소방설비기사(전기분야) 필기는 4과목 · 80문항 · 120분.</b><br>과목당 20문항 30분, 과목당 40점이 과락선입니다. 왕복 2시간 출퇴근으로 8주면 1회독이 끝납니다.</div>
+      <div class="banner"><b>소방설비기사(전기분야) 필기는 4과목 · 80문항 · 120분.</b><br>과목당 20문항 30분, 과목당 40점이 과락선입니다. 하루 2시간이면 8주에 1회독이 끝납니다.</div>
 
       <div class="sect">
         <h2>시험 구조 한눈에</h2>
@@ -683,62 +701,62 @@ html,body{touch-action:manipulation}
       </div>
 
       <div class="sect">
-        <h2>8주 출퇴근 플랜 (왕복 2시간)</h2>
+        <h2>8주 학습 플랜 (하루 2시간)</h2>
         <div class="panel" style="padding:13px">
           <details open>
             <summary><span class="wk">1주</span>소방원론 ① 연소와 소화</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>연소 3요소·4요소, 소화 4원리, 연소 형태 5가지 카드를 소리 내어 2회독.</div></div>
-              <div class="ln"><em>오는 길</em><div>소방원론 퀴즈 10문항 → 틀린 문제 해설을 다음 역에서 다시 읽기.</div></div>
+              <div class="ln"><em>1회차</em><div>연소 3요소·4요소, 소화 4원리, 연소 형태 5가지 카드를 소리 내어 2회독.</div></div>
+              <div class="ln"><em>2회차</em><div>소방원론 퀴즈 10문항 → 틀린 문제 해설을 다음 역에서 다시 읽기.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">2주</span>소방원론 ② 화재와 방화</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>플래시오버·백드래프트, 화재의 종류 A·B·C·D, 인화점·연소점·발화점, 화재하중 계산.</div></div>
-              <div class="ln"><em>오는 길</em><div>원론 퀴즈 10문항. LPG는 바닥, LNG는 천장을 입으로 설명해보기.</div></div>
+              <div class="ln"><em>1회차</em><div>플래시오버·백드래프트, 화재의 종류 A·B·C·D, 인화점·연소점·발화점, 화재하중 계산.</div></div>
+              <div class="ln"><em>2회차</em><div>원론 퀴즈 10문항. LPG는 바닥, LNG는 천장을 입으로 설명해보기.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">3주</span>소방전기일반 ① 회로</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>옴의 법칙, 저항·콘덴서 직병렬, 전력·전력량, 줄의 법칙, 키르히호프. 계산은 손으로 한 번씩.</div></div>
-              <div class="ln"><em>오는 길</em><div>전기 퀴즈 10문항. 계산 문제는 식을 먼저 쓰고 답을 확인.</div></div>
+              <div class="ln"><em>1회차</em><div>옴의 법칙, 저항·콘덴서 직병렬, 전력·전력량, 줄의 법칙, 키르히호프. 계산은 손으로 한 번씩.</div></div>
+              <div class="ln"><em>2회차</em><div>전기 퀴즈 10문항. 계산 문제는 식을 먼저 쓰고 답을 확인.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">4주</span>소방전기일반 ② 교류와 기기</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>리액턴스·임피던스·공진, 역률, 3상 결선, 변압기 권수비와 손실, 유도전동기 슬립.</div></div>
-              <div class="ln"><em>오는 길</em><div>전기 퀴즈 10문항. 슬립·권수비는 숫자를 바꿔 다시 계산.</div></div>
+              <div class="ln"><em>1회차</em><div>리액턴스·임피던스·공진, 역률, 3상 결선, 변압기 권수비와 손실, 유도전동기 슬립.</div></div>
+              <div class="ln"><em>2회차</em><div>전기 퀴즈 10문항. 슬립·권수비는 숫자를 바꿔 다시 계산.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">5주</span>소방전기일반 ③ 시퀀스와 논리</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>a·b접점, 자기유지·인터록, 논리 게이트와 불 대수, 플립플롭, 정류회로.</div></div>
-              <div class="ln"><em>오는 길</em><div>시퀀스 문제 10문항. 회로를 말로 설명할 수 있으면 실기 서술도 됩니다.</div></div>
+              <div class="ln"><em>1회차</em><div>a·b접점, 자기유지·인터록, 논리 게이트와 불 대수, 플립플롭, 정류회로.</div></div>
+              <div class="ln"><em>2회차</em><div>시퀀스 문제 10문항. 회로를 말로 설명할 수 있으면 실기 서술도 됩니다.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">6주</span>소방관계법규</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>2022.12.1 분법(화재예방법·소방시설법), 5대 설비 분류, 자체점검 주기(연 1회·반기 1회·60일), 소방안전관리자 30일과 등급.</div></div>
-              <div class="ln"><em>오는 길</em><div>법규 퀴즈 10문항. 숫자는 카드에 적어 지하철에서 다시 확인.</div></div>
+              <div class="ln"><em>1회차</em><div>2022.12.1 분법(화재예방법·소방시설법), 5대 설비 분류, 자체점검 주기(연 1회·반기 1회·60일), 소방안전관리자 30일과 등급.</div></div>
+              <div class="ln"><em>2회차</em><div>법규 퀴즈 10문항. 숫자는 카드에 적어 지하철에서 다시 확인.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">7주</span>소방전기시설 ① 자동화재탐지설비</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>경계구역 600㎡·50m, 감지기 면적표와 부착높이, 발신기 25m·0.8~1.5m, 종단저항, 배선·절연저항.</div></div>
-              <div class="ln"><em>오는 길</em><div>4과목 퀴즈 10문항 + 감지기 개수 계산 3문제.</div></div>
+              <div class="ln"><em>1회차</em><div>경계구역 600㎡·50m, 감지기 면적표와 부착높이, 발신기 25m·0.8~1.5m, 종단저항, 배선·절연저항.</div></div>
+              <div class="ln"><em>2회차</em><div>4과목 퀴즈 10문항 + 감지기 개수 계산 3문제.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">8주</span>소방전기시설 ② 경보·피난 + 실전</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>경종 90dB, 비상방송 3W·10초, 누전경보기 60A, 유도등 1.5m·1m·20m와 20분·60분, 비상콘센트 1.5kVA·50m, 무선통신보조 50Ω·30분.</div></div>
-              <div class="ln"><em>오는 길</em><div>4과목 퀴즈 10문항 → 틀린 문제만 다시 풀기로 전체 오답 한 바퀴.</div></div>
+              <div class="ln"><em>1회차</em><div>경종 90dB, 비상방송 3W·10초, 누전경보기 60A, 유도등 1.5m·1m·20m와 20분·60분, 비상콘센트 1.5kVA·50m, 무선통신보조 50Ω·30분.</div></div>
+              <div class="ln"><em>2회차</em><div>4과목 퀴즈 10문항 → 틀린 문제만 다시 풀기로 전체 오답 한 바퀴.</div></div>
             </div>
           </details>
           <p class="fine">주말에는 그 주 카드를 전부 다시 넘기고, 20문항을 시간 재고 풀어보세요. 실제 시험은 과목당 30분입니다.</p>
@@ -750,7 +768,7 @@ html,body{touch-action:manipulation}
         <div class="panel">
           <div class="duo">
             <div>
-              <b style="color:var(--accent)">가는 길 60분 · 입력</b>
+              <b style="color:var(--accent)">1회차 60분 · 입력</b>
               <ul>
                 <li>암기카드 25장 (25분)</li>
                 <li>같은 카드 한 번 더 (15분)</li>
@@ -758,7 +776,7 @@ html,body{touch-action:manipulation}
               </ul>
             </div>
             <div>
-              <b style="color:var(--green)">오는 길 60분 · 출력</b>
+              <b style="color:var(--green)">2회차 60분 · 출력</b>
               <ul>
                 <li>오늘 과목 퀴즈 10문항 (15분)</li>
                 <li>해설 정독 (20분)</li>
@@ -881,7 +899,7 @@ html,body{touch-action:manipulation}
   <nav class="tabs">
     <div class="tabs-inner">
       <button class="tab" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
-      <button class="tab" data-tab="commute"><span class="ic">✅</span>출퇴근 퀴즈</button>
+      <button class="tab" data-tab="commute"><span class="ic">✅</span>핵심 퀴즈</button>
       <button class="tab active" data-tab="quiz"><span class="ic">📝</span>모의고사</button>
       <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
     </div>
@@ -1124,6 +1142,27 @@ $('themeBtn').addEventListener('click', function(){
   applyTheme(theme);
 });
 
+/* ---------- 글자 크기 3단계 ---------- */
+var FONT_KEY = 'sobang_font_v1';
+var FONT_NAMES = ['보통', '크게', '아주 크게'];
+function applyFont(k){
+  k = ((k % 3) + 3) % 3;
+  document.body.classList.remove('fs-1', 'fs-2', 'fs-3');
+  document.body.classList.add('fs-' + (k + 1));
+  var num = $('fontBtnNum');
+  if (num) num.textContent = String(k + 1);
+  var b = $('fontBtn');
+  if (b) b.setAttribute('aria-label', '글자 크기: ' + FONT_NAMES[k] + ' (탭하면 다음 크기)');
+  sSet(FONT_KEY, k + 1);
+}
+var fontStep = sGet(FONT_KEY, 1);
+if (typeof fontStep !== 'number' || fontStep < 1 || fontStep > 3) fontStep = 1;
+applyFont(fontStep - 1);
+$('fontBtn').addEventListener('click', function(){
+  fontStep = fontStep >= 3 ? 1 : fontStep + 1;
+  applyFont(fontStep - 1);
+});
+
 /* ---------- tabs ---------- */
 var state = {tab:'quiz'};
 function switchTab(name){
@@ -1192,7 +1231,6 @@ function renderCards(){
   $('fcProgress').style.width = Math.round(mc / CARDS.length * 100) + '%';
   $('fcPos').textContent = n ? (cs.idx + 1) + ' / ' + n : '0 / 0';
   $('fcScene').style.display = n ? '' : 'none';
-  $('fcNav').style.display = n ? '' : 'none';
   $('fcEmpty').style.display = n ? 'none' : 'block';
   $('btnShuffle').className = 'btn small' + (cs.shuffle ? ' on' : '');
   $('btnOnlyUnmastered').className = 'btn small' + (cs.onlyUnmastered ? ' on' : '');
@@ -1205,7 +1243,6 @@ function renderCards(){
   $('fcNote').textContent = c.n;
   $('fcDiag').innerHTML = c.g || '';
   $('fcDiag').style.display = c.g ? '' : 'none';
-  $('fcScene').className = 'scene' + (c.g ? ' wide' : '');
   $('fcDot').style.background = 'var(--s' + c.s + ')';
   $('fcDot2').style.background = 'var(--s' + c.s + ')';
   $('fcSubj').textContent = label;
@@ -1250,9 +1287,6 @@ $('fcCard').addEventListener('click', function(){
   }, {passive:true});
 })();
 
-$('btnFlip').addEventListener('click', function(){ cs.flipped = !cs.flipped; renderCards(); });
-$('btnPrev').addEventListener('click', function(){ goCard(-1); });
-$('btnNext').addEventListener('click', function(){ goCard(1); });
 $('btnMaster').addEventListener('click', function(){
   if (!cs.deck.length) return;
   var c = cs.deck[cs.idx];
@@ -1302,7 +1336,7 @@ document.addEventListener('keydown', function(e){
   else if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); cs.flipped = !cs.flipped; renderCards(); }
 });
 
-/* ---------- 출퇴근 퀴즈 ---------- */
+/* ---------- 핵심 퀴즈 ---------- */
 var qz = {active:false, list:[], idx:0, answered:false, chosen:-1, correct:0, wrongIds:[], size:10, filter:0};
 var quizStats = sGet('sobang_quizstats_v1', {sessions:0, answered:0, correct:0, best:0});
 
@@ -2309,6 +2343,9 @@ function tickTimer(){
   if (cbt.sec % 5 === 0) putTime();
 }
 setInterval(tickTimer, 1000);
+/* 앱을 닫거나 다른 앱으로 옮겨도 타이머 기록이 남도록 */
+window.addEventListener('pagehide', function(){ if (cbt.open) putTime(); });
+document.addEventListener('visibilitychange', function(){ if (document.hidden && cbt.open) putTime(); });
 
 /* ---------- 문항 렌더 ---------- */
 function renderQ(){

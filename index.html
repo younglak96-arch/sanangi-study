@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
-<title>산안기 출퇴근 학습 · 2027 산업안전기사</title>
+<title>산업안전기사 학습 · 2027 필기 대비</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -256,39 +256,62 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
 
 .cbt-player{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;
   padding-top:env(safe-area-inset-top)}
-.cbt-top{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface);border-bottom:1px solid var(--line)}
+.cbt-top{display:flex;align-items:center;gap:0;padding:5px 6px;border-bottom:1px solid var(--line);background:var(--surface)}
 .cbt-top .sp{flex:1}
-.cbt-icbtn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--text);
-  font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.cbt-timer{min-width:88px;text-align:center;font-weight:800;font-size:16.5px;letter-spacing:.02em;
-  font-variant-numeric:tabular-nums;color:var(--text);padding:8px 10px;border-radius:12px;border:1px solid transparent;cursor:pointer}
-.cbt-timer.paused{color:var(--amber);border-color:var(--line)}
-.cbt-grade{border:0;background:var(--accent);color:#fff;font-weight:800;font-size:15.5px;padding:10px 18px;border-radius:999px;cursor:pointer}
+.cbt-icbtn{width:42px;height:42px;border:0;border-radius:12px;background:transparent;color:var(--text);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.cbt-icbtn:active{background:var(--surface2)}
+.cbt-icbtn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.cbt-timer{margin-left:auto;display:flex;align-items:center;gap:5px;border:0;background:transparent;color:var(--muted);
+  font-size:14.5px;font-weight:700;font-variant-numeric:tabular-nums;padding:8px 2px;letter-spacing:.4px;cursor:pointer}
+.cbt-timer svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round}
+.cbt-timer.paused{color:var(--amber)}
+.cbt-grade{margin-left:8px;border:0;border-radius:999px;background:var(--text);color:var(--bg);
+  font-size:14px;font-weight:800;padding:9px 17px;letter-spacing:-.2px;cursor:pointer}
 .cbt-grade:active{transform:scale(.96)}
-.cbt-sub{display:flex;align-items:center;gap:13px;padding:8px 14px;border-bottom:1px solid var(--line);font-size:14px;color:var(--muted)}
-.cbt-sub .num{color:var(--text);font-weight:800;font-size:15px;white-space:nowrap}
-.cbt-sub .tbtn{border:0;background:none;color:var(--muted);font-size:14px;padding:4px 2px;cursor:pointer;font-weight:600}
+.cbt-sub{display:flex;align-items:center;gap:8px;padding:6px 12px 7px;border-bottom:1px solid var(--line);background:var(--surface)}
+.cbt-sub .num{font-size:12.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.cbt-sub .num b{font-size:17px;color:var(--text);font-weight:800;letter-spacing:-.4px;margin-right:1px}
+.cbt-sub .tbtn{border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:700;padding:5px 3px;letter-spacing:-.2px;cursor:pointer}
 .cbt-sub .tbtn.on{color:var(--accent)}
-.cbt-sub .ti{flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
-.cbt-bm{border:0;background:none;font-size:19px;cursor:pointer;color:var(--muted);padding:0 2px}
-.cbt-bm.on{color:var(--amber)}
-.cbt-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 18px 30px}
-.cbt-q{font-size:19px;font-weight:700;line-height:1.52;letter-spacing:-.3px;margin:0 0 14px}
-.cbt-opts{border-top:1px solid var(--line)}
-.cbt-opt{display:flex;align-items:flex-start;gap:12px;padding:13px 6px;border-bottom:1px solid var(--line);cursor:pointer;font-size:16.5px;line-height:1.5}
-.cbt-opt .circ{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);color:var(--muted);
-  display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;margin-top:1px}
-.cbt-opt.sel .circ{background:var(--accent);border-color:var(--accent);color:#fff}
-.cbt-opt.right .circ{background:var(--green);border-color:var(--green);color:#fff}
-.cbt-opt.miss .circ{background:var(--red);border-color:var(--red);color:#fff}
-.cbt-expl{margin-top:15px;padding:13px 14px;border-radius:13px;background:var(--accent-soft);font-size:14.5px;line-height:1.6}
-.cbt-expl b{display:block;margin-bottom:3px;color:var(--accent)}
-.cbt-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;
-  padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--header);
-  -webkit-backdrop-filter:saturate(170%) blur(16px);backdrop-filter:saturate(170%) blur(16px)}
-.cbt-nav{flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--surface);
-  color:var(--text);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.cbt-hint{flex:1;text-align:center;font-size:12px;color:var(--muted);letter-spacing:-.2px;user-select:none}
+.cbt-sub .ti{flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;color:var(--muted)}
+.cbt-bm{border:0;background:transparent;color:var(--muted);width:34px;height:34px;margin-right:-4px;padding:0;
+  display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cbt-bm svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.cbt-bm.on{color:var(--accent)}
+.cbt-bm.on svg{fill:var(--accent);fill-opacity:.16}
+.cbt-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 18px 30px;touch-action:pan-y}
+.cbt-subj{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;letter-spacing:.05em;color:var(--muted);margin-bottom:9px}
+.cbt-subj i{width:6px;height:6px;border-radius:50%;display:inline-block;background:var(--s1)}
+.cbt-q{font-size:19px;font-weight:700;line-height:1.52;letter-spacing:-.3px;margin:0 0 12px;word-break:keep-all}
+.cbt-opts{display:flex;flex-direction:column;gap:1px}
+.cbt-opt{display:flex;align-items:flex-start;gap:8px;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--text);font-size:16.5px;line-height:1.5;padding:11px 6px;border-radius:10px;font-weight:500;
+  word-break:keep-all;letter-spacing:-.2px;cursor:pointer;transition:background .12s}
+.cbt-opt:active{background:var(--surface2)}
+.cbt-opt .circ{flex:0 0 22px;color:var(--muted);font-weight:500;font-size:15.5px;margin-top:1px}
+.cbt-opt .tx{flex:1}
+.cbt-opt.sel{background:var(--accent-soft)}
+.cbt-opt.sel .circ{color:var(--accent);font-weight:800}
+.cbt-opt.sel .tx{font-weight:700;color:var(--accent)}
+.cbt-opt.right{background:rgba(52,211,153,.10)}
+.cbt-opt.right .circ,.cbt-opt.right .tx{color:var(--green);font-weight:700}
+.cbt-opt.miss{background:rgba(248,113,113,.10)}
+.cbt-opt.miss .circ,.cbt-opt.miss .tx{color:var(--red)}
+.cbt-expl{margin-top:14px;padding:13px 14px;border-radius:13px;background:var(--surface);border-left:3px solid var(--accent);
+  font-size:14.5px;line-height:1.62;word-break:keep-all}
+.cbt-expl b{display:block;font-size:12.5px;font-weight:800;letter-spacing:-.1px;color:var(--accent);margin-bottom:5px}
+.cbt-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;
+  padding-bottom:calc(6px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface)}
+.cbt-nav{flex:0 0 auto;width:56px;height:48px;border:0;border-radius:14px;background:transparent;color:var(--text);
+  font-size:30px;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:300;cursor:pointer}
+.cbt-nav:active{background:var(--surface2)}
+.cbt-nav:disabled{opacity:.22}
+.cbt-center{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.cbt-center span{font-size:12px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.cbt-bar{display:block;width:100%;max-width:200px;height:4px;border-radius:99px;background:var(--surface2);
+  border:1px solid var(--line);overflow:hidden}
+.cbt-bar b{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .2s ease;min-width:2px}
 
 .cbt-modal{position:fixed;inset:0;z-index:80;background:rgba(4,8,16,.55);display:flex;align-items:flex-end;justify-content:center}
 .cbt-modal .sheet{width:100%;max-width:480px;background:var(--surface);border-radius:20px 20px 0 0;
@@ -309,13 +332,11 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
 .rlist2 .ri2 .sc.ok{color:var(--green)}
 .rlist2 .ri2 .sc.no{color:var(--red)}
 
-/* ---------- v3: 암기카드 도해 ---------- */
-.fcard.dia{height:clamp(440px,70vh,640px)}
-@media (max-height:720px){.fcard.dia{height:clamp(360px,56vh,410px)}}
-.diagram{display:none;margin:9px 0 4px;padding:8px 8px 6px;border-radius:13px;
-  background:var(--surface);border:1px solid var(--line)}
-.diagram.on{display:block}
-.diagram svg{display:block;width:100%;height:auto;max-width:100%;overflow:visible}
+/* ---------- v3: 암기카드 도해 (카드 높이는 도해 유무와 무관하게 동일) ---------- */
+.diagram{display:none;margin:9px 0 4px;padding:7px 8px 5px;border-radius:13px;
+  background:var(--surface);border:1px solid var(--line);flex:0 0 auto}
+.diagram.on{display:flex;justify-content:center;align-items:center}
+.diagram svg{display:block;width:auto;height:auto;max-width:100%;max-height:130px;overflow:visible}
 
 /* ---------- v3: iOS 확대 방지 · 스와이프 ---------- */
 html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
@@ -327,16 +348,39 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #cbtBody.slideR{animation:cbtSlideR .19s ease-out}
 .cbt-hint{flex:1;text-align:center;font-size:12px;color:var(--muted);letter-spacing:-.2px;user-select:none}
 </style>
+<style>
+/* ---------- v4: 글자 크기 3단계 ---------- */
+.hdract{display:flex;align-items:center;gap:8px}
+.iconbtn.fbtn{position:relative;width:42px;height:40px}
+.fbtn b{font-size:15px;font-weight:800;line-height:1}
+.fbtn i{position:absolute;right:5px;bottom:2px;font-style:normal;font-size:8.5px;font-weight:800;color:var(--accent);line-height:1}
+html{--fs:1}
+body.fs-1{--fs:1}
+body.fs-2{--fs:1.14}
+body.fs-3{--fs:1.3}
+.qtext,.atext{font-size:calc(19.5px * var(--fs))}
+.note{font-size:calc(13.5px * var(--fs))}
+.qtext2{font-size:calc(18px * var(--fs))}
+.opt{font-size:calc(15px * var(--fs))}
+.opt.ox{font-size:calc(17px * var(--fs))}
+.expl{font-size:calc(14px * var(--fs))}
+.cbt-q{font-size:calc(19px * var(--fs))}
+.cbt-opt{font-size:calc(16.5px * var(--fs))}
+.cbt-expl{font-size:calc(14.5px * var(--fs))}
+</style>
 </head>
 <body>
 <div class="app">
   <header>
     <div class="hdr">
       <div class="brand">
-        <b>산안기 출퇴근 학습</b>
+        <b>산업안전기사 학습</b>
         <span>2027 산업안전기사 · 필기 5과목</span>
       </div>
-      <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
+      <div class="hdract">
+        <button class="iconbtn fbtn" id="fontBtn" aria-label="글자 크기 조절"><b>가</b><i id="fontBtnNum">1</i></button>
+        <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
+      </div>
     </div>
   </header>
 
@@ -358,7 +402,7 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
               <span class="kicker">문제</span>
             </div>
             <div class="face-body"><div class="face-inner"><p class="qtext" id="fcQ"></p></div></div>
-            <div class="face-bottom">카드를 탭하면 정답이 보입니다</div>
+            <div class="face-bottom">탭하면 정답 · 좌우로 밀어 넘기기</div>
           </div>
           <div class="face back">
             <div class="face-top">
@@ -370,7 +414,7 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
                 <div class="diagram" id="fcDiagram"></div>
                 <div class="note" id="fcNote"></div>
               </div></div>
-            <div class="face-bottom">다시 탭하면 문제로 돌아갑니다</div>
+            <div class="face-bottom">다시 탭하면 문제로 · 좌우로 밀어 넘기기</div>
           </div>
         </div>
       </div>
@@ -381,11 +425,6 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <div class="row"><button class="btn primary" id="btnShowAll">전체 카드 보기</button></div>
       </div>
 
-      <div class="row" id="fcNav">
-        <button class="btn" id="btnPrev" aria-label="이전 카드">← 이전</button>
-        <button class="btn" id="btnFlip">뒤집기</button>
-        <button class="btn" id="btnNext" aria-label="다음 카드">다음 →</button>
-      </div>
       <div class="row tight">
         <button class="btn" id="btnMaster">외웠음 표시</button>
       </div>
@@ -396,11 +435,11 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <footer class="foot" id="fcFoot"></footer>
     </section>
 
-    <!-- ============ 출퇴근 퀴즈 ============ -->
+    <!-- ============ 핵심 퀴즈 ============ -->
     <section class="view" id="viewQuiz">
       <div id="quizSetup">
         <div class="panel">
-          <h3>출퇴근 퀴즈</h3>
+          <h3>핵심 퀴즈</h3>
           <p>실제 필기와 같은 4지선다·O/X 문제입니다. 답을 고르면 바로 채점하고 해설을 보여줘요.</p>
           <div class="label">과목</div>
           <div class="chips" id="quizChips"></div>
@@ -465,7 +504,7 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
     <!-- ============ 로드맵 ============ -->
     <section class="view" id="viewRoadmap">
-      <div class="banner"><b>2027년 1월 1일부터 필기는 5과목·100문항·150분.</b><br>전기설비와 화학설비가 한 과목으로 합쳐집니다. 지금부터 8주면 출퇴근 시간만으로 1회독이 끝납니다.</div>
+      <div class="banner"><b>2027년 1월 1일부터 필기는 5과목·100문항·150분.</b><br>전기설비와 화학설비가 한 과목으로 합쳐집니다. 지금부터 8주면 이동 시간만으로 1회독이 끝납니다.</div>
 
       <div class="sect">
         <h2>무엇이 바뀌나</h2>
@@ -513,62 +552,62 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       </div>
 
       <div class="sect">
-        <h2>8주 출퇴근 플랜 (왕복 2시간)</h2>
+        <h2>8주 학습 플랜 (하루 2시간)</h2>
         <div class="panel" style="padding:13px">
           <details open>
             <summary><span class="wk">1주</span>1과목 · 안전관리론 기초</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>하인리히 1:29:300, 버드 1:10:30:600, 재해 통계 3형제(도수율·강도율·연천인율) 카드를 소리 내어 2회독.</div></div>
-              <div class="ln"><em>오는 길</em><div>1과목 퀴즈 10문항 → 틀린 문제 해설을 다음 역에서 다시 읽기.</div></div>
+              <div class="ln"><em>1회차</em><div>하인리히 1:29:300, 버드 1:10:30:600, 재해 통계 3형제(도수율·강도율·연천인율) 카드를 소리 내어 2회독.</div></div>
+              <div class="ln"><em>2회차</em><div>1과목 퀴즈 10문항 → 틀린 문제 해설을 다음 역에서 다시 읽기.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">2주</span>1과목 · 산업안전보건법 체계</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>안전보건관리책임자·관리감독자·안전관리자 선임 기준(50·500·300·20)과 교육시간(분기 3시간 / 매월 2시간 / 연 16시간)을 손으로 써보기.</div></div>
-              <div class="ln"><em>오는 길</em><div>법규 퀴즈 10문항. 숫자는 카드에 적어 지하철에서 다시 확인.</div></div>
+              <div class="ln"><em>1회차</em><div>안전보건관리책임자·관리감독자·안전관리자 선임 기준(50·500·300·20)과 교육시간(분기 3시간 / 매월 2시간 / 연 16시간)을 손으로 써보기.</div></div>
+              <div class="ln"><em>2회차</em><div>법규 퀴즈 10문항. 숫자는 카드에 적어 지하철에서 다시 확인.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">3주</span>2과목 · 인간공학</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>인체 측정 5~95백분위, 소음 90dB(A)/115dB(A)/충격 140dB(A), 근골격계 부담작업, NIOSH 들기지수.</div></div>
-              <div class="ln"><em>오는 길</em><div>2과목 퀴즈 10문항. '정량적 기법 / 정성적 기법' 구분을 입으로 설명해보기.</div></div>
+              <div class="ln"><em>1회차</em><div>인체 측정 5~95백분위, 소음 90dB(A)/115dB(A)/충격 140dB(A), 근골격계 부담작업, NIOSH 들기지수.</div></div>
+              <div class="ln"><em>2회차</em><div>2과목 퀴즈 10문항. '정량적 기법 / 정성적 기법' 구분을 입으로 설명해보기.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">4주</span>2과목 · 위험성평가 기법</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>위험성평가 6단계, FTA(연역) · ETA(귀납) · FMEA · HAZOP · PHA 카드.</div></div>
-              <div class="ln"><em>오는 길</em><div>2과목 오답만 다시 풀고, 3과목 첫 5문항 예습.</div></div>
+              <div class="ln"><em>1회차</em><div>위험성평가 6단계, FTA(연역) · ETA(귀납) · FMEA · HAZOP · PHA 카드.</div></div>
+              <div class="ln"><em>2회차</em><div>2과목 오답만 다시 풀고, 3과목 첫 5문항 예습.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">5주</span>3과목 · 기계·기구 및 설비</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>프레스 3종(양수조작·손쳐내기·게이트가드), 전단기·연삭기(3분 시운전), 크레인 방호장치 4종, 컨베이어·보일러.</div></div>
-              <div class="ln"><em>오는 길</em><div>3과목 퀴즈 10문항. '어느 기계에 붙는 장치인지' 짝 맞추기.</div></div>
+              <div class="ln"><em>1회차</em><div>프레스 3종(양수조작·손쳐내기·게이트가드), 전단기·연삭기(3분 시운전), 크레인 방호장치 4종, 컨베이어·보일러.</div></div>
+              <div class="ln"><em>2회차</em><div>3과목 퀴즈 10문항. '어느 기계에 붙는 장치인지' 짝 맞추기.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">6주</span>4과목 · 전기</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>접지 4종 저항값(10·4·100·10), 누전차단기 30mA·0.03초, 방폭구조 기호, 방폭지역 0·1·2종.</div></div>
-              <div class="ln"><em>오는 길</em><div>전기 파트 퀴즈 10문항. 2027년 신설 '열축적'까지 확인.</div></div>
+              <div class="ln"><em>1회차</em><div>접지 4종 저항값(10·4·100·10), 누전차단기 30mA·0.03초, 방폭구조 기호, 방폭지역 0·1·2종.</div></div>
+              <div class="ln"><em>2회차</em><div>전기 파트 퀴즈 10문항. 2027년 신설 '열축적'까지 확인.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">7주</span>4과목 · 화학</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>폭발범위·위험도, 인화점·연소점·발화점, MSDS 16항목, 밀폐공간 산소 18~23.5%, 분진폭발 5요소, PSM.</div></div>
-              <div class="ln"><em>오는 길</em><div>화학 파트 퀴즈 10문항 + 6·7주 오답 합쳐 풀기.</div></div>
+              <div class="ln"><em>1회차</em><div>폭발범위·위험도, 인화점·연소점·발화점, MSDS 16항목, 밀폐공간 산소 18~23.5%, 분진폭발 5요소, PSM.</div></div>
+              <div class="ln"><em>2회차</em><div>화학 파트 퀴즈 10문항 + 6·7주 오답 합쳐 풀기.</div></div>
             </div>
           </details>
           <details>
             <summary><span class="wk">8주</span>5과목 · 건설 + 실전 정리</summary>
             <div class="dbody">
-              <div class="ln"><em>가는 길</em><div>추락 방호 4종, 안전난간 90cm·발끝막이판 10cm, 비계·거푸집 동바리·굴착, 달기구 안전계수(10·5·3·4).</div></div>
-              <div class="ln"><em>오는 길</em><div>5과목 퀴즈 10문항 → '틀린 문제만 다시 풀기'로 전체 오답 한 바퀴.</div></div>
+              <div class="ln"><em>1회차</em><div>추락 방호 4종, 안전난간 90cm·발끝막이판 10cm, 비계·거푸집 동바리·굴착, 달기구 안전계수(10·5·3·4).</div></div>
+              <div class="ln"><em>2회차</em><div>5과목 퀴즈 10문항 → '틀린 문제만 다시 풀기'로 전체 오답 한 바퀴.</div></div>
             </div>
           </details>
           <p class="fine">주말에는 그 주 카드를 전부 다시 넘기고, 20문항을 시간 재고 풀어보세요. 실제 시험은 과목당 30분(20문항)입니다.</p>
@@ -580,7 +619,7 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <div class="panel">
           <div class="duo">
             <div>
-              <b style="color:var(--accent)">가는 길 60분 · 입력</b>
+              <b style="color:var(--accent)">1회차 60분 · 입력</b>
               <ul>
                 <li>암기카드 25장 (25분)</li>
                 <li>같은 카드 한 번 더 (15분)</li>
@@ -588,7 +627,7 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
               </ul>
             </div>
             <div>
-              <b style="color:var(--green)">오는 길 60분 · 출력</b>
+              <b style="color:var(--green)">2회차 60분 · 출력</b>
               <ul>
                 <li>오늘 과목 퀴즈 10문항 (15분)</li>
                 <li>해설 정독 (20분)</li>
@@ -651,7 +690,7 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   <nav class="tabs">
     <div class="tabs-inner">
       <button class="tab active" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
-      <button class="tab" data-tab="quiz"><span class="ic">✅</span>출퇴근 퀴즈</button>
+      <button class="tab" data-tab="quiz"><span class="ic">✅</span>핵심 퀴즈</button>
       <button class="tab" data-tab="cbt"><span class="ic">📝</span>모의고사</button>
       <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
     </div>
@@ -660,28 +699,41 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- CBT 플레이어 (전체화면) -->
 <div class="cbt-player" id="cbtPlayer" style="display:none">
   <div class="cbt-top">
-    <button class="cbt-icbtn" id="cbtClose" aria-label="닫기">✕</button>
-    <button class="cbt-icbtn" id="cbtGridBtn" aria-label="문제 일람">⊞</button>
+    <button class="cbt-icbtn" id="cbtClose" aria-label="닫기">
+      <svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+    </button>
+    <button class="cbt-icbtn" id="cbtGridBtn" aria-label="문제 일람">
+      <svg viewBox="0 0 24 24"><rect x="3.8" y="3.8" width="6.6" height="6.6" rx="1.5"/><rect x="13.6" y="3.8" width="6.6" height="6.6" rx="1.5"/><rect x="3.8" y="13.6" width="6.6" height="6.6" rx="1.5"/><rect x="13.6" y="13.6" width="6.6" height="6.6" rx="1.5"/></svg>
+    </button>
     <span class="sp"></span>
-    <span class="cbt-timer" id="cbtTimer" role="button" aria-label="타이머 일시정지">0:00:00</span>
+    <button class="cbt-timer" id="cbtTimer" aria-label="타이머 일시정지">
+      <span id="cbtTime">00:00</span>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.6"/><path d="M12 10v3.6l2.4 1.8M9.3 2.4h5.4"/></svg>
+    </button>
     <button class="cbt-grade" id="cbtGradeBtn">채점</button>
   </div>
   <div class="cbt-sub">
-    <span class="num" id="cbtNum">1번/50</span>
+    <span class="num"><b id="cbtNo">1</b>번 <span id="cbtTotal">/ 100</span></span>
     <button class="tbtn" id="cbtExplBtn">해설</button>
     <button class="tbtn" id="cbtPeekBtn">정답</button>
     <span class="ti" id="cbtTitle"></span>
-    <button class="cbt-bm" id="cbtBmBtn" aria-label="북마크">🔖</button>
+    <button class="cbt-bm" id="cbtBmBtn" aria-label="북마크">
+      <svg viewBox="0 0 24 24"><path d="M7 4.2h10a1 1 0 011 1V20l-6-4.1L6 20V5.2a1 1 0 011-1z"/></svg>
+    </button>
   </div>
   <div class="cbt-body" id="cbtBody">
+    <div class="cbt-subj"><i id="cbtSubjDot"></i><span id="cbtSubjTxt"></span></div>
     <p class="cbt-q" id="cbtQ"></p>
     <div class="cbt-opts" id="cbtOpts"></div>
     <div class="cbt-expl" id="cbtExpl" style="display:none"></div>
   </div>
   <div class="cbt-bottom">
-    <button class="cbt-nav" id="cbtPrev" aria-label="이전 문제">&lt;</button>
-    <span class="cbt-hint" id="cbtHint">좌우로 밀어 넘기기</span>
-    <button class="cbt-nav" id="cbtNext" aria-label="다음 문제">&gt;</button>
+    <button class="cbt-nav" id="cbtPrev" aria-label="이전 문제">‹</button>
+    <div class="cbt-center">
+      <span id="cbtPos">1 / 100</span>
+      <i class="cbt-bar"><b id="cbtBar"></b></i>
+    </div>
+    <button class="cbt-nav" id="cbtNext" aria-label="다음 문제">›</button>
   </div>
 </div>
 
@@ -936,6 +988,27 @@ $('themeBtn').addEventListener('click', function(){
   applyTheme(theme);
 });
 
+/* ---------- 글자 크기 3단계 ---------- */
+var FONT_KEY = 'sanangi_font_v1';
+var FONT_NAMES = ['보통', '크게', '아주 크게'];
+function applyFont(k){
+  k = ((k % 3) + 3) % 3;
+  document.body.classList.remove('fs-1', 'fs-2', 'fs-3');
+  document.body.classList.add('fs-' + (k + 1));
+  var num = $('fontBtnNum');
+  if (num) num.textContent = String(k + 1);
+  var b = $('fontBtn');
+  if (b) b.setAttribute('aria-label', '글자 크기: ' + FONT_NAMES[k] + ' (탭하면 다음 크기)');
+  sSet(FONT_KEY, k + 1);
+}
+var fontStep = sGet(FONT_KEY, 1);
+if (typeof fontStep !== 'number' || fontStep < 1 || fontStep > 3) fontStep = 1;
+applyFont(fontStep - 1);
+$('fontBtn').addEventListener('click', function(){
+  fontStep = fontStep >= 3 ? 1 : fontStep + 1;
+  applyFont(fontStep - 1);
+});
+
 /* ---------- tabs ---------- */
 var state = {tab:'cards'};
 function switchTab(name){
@@ -1004,7 +1077,6 @@ function renderCards(){
   $('fcProgress').style.width = Math.round(mc / CARDS.length * 100) + '%';
   $('fcPos').textContent = n ? (cs.idx + 1) + ' / ' + n : '0 / 0';
   $('fcScene').style.display = n ? '' : 'none';
-  $('fcNav').style.display = n ? '' : 'none';
   $('fcEmpty').style.display = n ? 'none' : 'block';
   $('btnShuffle').className = 'btn small' + (cs.shuffle ? ' on' : '');
   $('btnOnlyUnmastered').className = 'btn small' + (cs.onlyUnmastered ? ' on' : '');
@@ -1065,9 +1137,6 @@ $('fcCard').addEventListener('click', function(){
   }, {passive:true});
 })();
 
-$('btnFlip').addEventListener('click', function(){ cs.flipped = !cs.flipped; renderCards(); });
-$('btnPrev').addEventListener('click', function(){ goCard(-1); });
-$('btnNext').addEventListener('click', function(){ goCard(1); });
 $('btnMaster').addEventListener('click', function(){
   if (!cs.deck.length) return;
   var c = cs.deck[cs.idx];
@@ -1365,6 +1434,7 @@ function cbtSetup(){
     var meta = n + '문항 · 5과목 × 20';
     if (r) meta += ' · 최근 ' + r.avg + '점 ' + (r.pass ? '합격' : '불합격');
     else if (ac) meta += ' · ' + ac + '문항 진행 중';
+    else if (cbtData.p[y] && cbtData.p[y].e) meta += ' · ' + fmtTime(cbtData.p[y].e) + ' 기록';
     h += '<button class="exrow" data-y="' + y + '"><span class="yr">' + y.slice(2) + '년</span>' +
          '<span class="ti"><b>' + EXAMS[y].title + '</b><span>' + meta + '</span></span><span class="go">›</span></button>';
   }
@@ -1399,25 +1469,48 @@ function cbtClosePlayer(){
 function startTick(){
   if (cbt.tick) clearInterval(cbt.tick);
   cbt.tick = setInterval(function(){
-    if (cbt.running && !document.hidden && cbt.open){ cbt.elapsed++; renderTimer(); }
+    if (cbt.running && !document.hidden && cbt.open){ cbt.elapsed++; renderTimer(); if (cbt.elapsed % 5 === 0) saveProgressNow(); }
   }, 1000);
+  /* 앱이 백그라운드로 가거나 닫혀도 타이머가 초기화되지 않도록 */
+  window.removeEventListener('pagehide', cbtHideSave);
+  window.removeEventListener('beforeunload', cbtHideSave);
+  document.removeEventListener('visibilitychange', cbtVisSave);
+  window.addEventListener('pagehide', cbtHideSave);
+  window.addEventListener('beforeunload', cbtHideSave);
+  document.addEventListener('visibilitychange', cbtVisSave);
 }
+function cbtHideSave(){ if (cbt.open) saveProgressNow(); }
+function cbtVisSave(){ if (cbt.open && document.hidden) saveProgressNow(); }
 function fmtTime(s){
-  var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+  var m = Math.floor(s / 60), ss = s % 60;
   function p(n){ return (n < 10 ? '0' : '') + n; }
-  return h + ':' + p(m) + ':' + p(ss);
+  return p(m) + ':' + p(ss);
 }
 function renderTimer(){
-  var t = $('cbtTimer');
-  t.textContent = fmtTime(cbt.elapsed);
-  t.className = 'cbt-timer' + (cbt.running ? '' : ' paused');
+  var t = $('cbtTime');
+  if (t) t.textContent = fmtTime(cbt.elapsed);
+  var box = $('cbtTimer');
+  if (box) box.className = 'cbt-timer' + (cbt.running ? '' : ' paused');
+}
+function saveProgressNow(){
+  if (!cbt.open || !cbt.setKey || cbt.mode !== 'exam') return;
+  cbtData.p[cbt.setKey] = {i:cbt.idx, e:cbt.elapsed};
+  cbtSave();
 }
 
 function cbtRender(){
   var q = cbt.list[cbt.idx];
   var store = activeStore();
   var rec = store[q.id];
-  $('cbtNum').textContent = (cbt.idx + 1) + '번/' + cbt.list.length;
+  $('cbtNo').textContent = String(cbt.idx + 1);
+  $('cbtTotal').textContent = '/ ' + cbt.list.length;
+  $('cbtPos').textContent = (cbt.idx + 1) + ' / ' + cbt.list.length;
+  $('cbtBar').style.width = Math.round((cbt.idx + 1) / cbt.list.length * 100) + '%';
+  $('cbtPrev').disabled = (cbt.idx === 0);
+  $('cbtNext').disabled = (cbt.idx === cbt.list.length - 1);
+  var sj = SUBJECTS[q.s - 1] || {short:'', tag:''};
+  $('cbtSubjTxt').textContent = sj.short + (sj.tag ? ' · ' + sj.tag : '');
+  $('cbtSubjDot').style.background = 'var(--s' + q.s + ')';
   $('cbtTitle').textContent = (cbt.mode === 'exam' && EXAMS[cbt.setKey]) ? EXAMS[cbt.setKey].title.replace(' 기출유형', '') : '북마크 · 오답 복습';
   $('cbtQ').textContent = q.q;
   var chosen = rec ? rec.v : -1;
@@ -1429,12 +1522,11 @@ function cbtRender(){
     if (chosen === i) cls += ' sel';
     if (reveal && i === q.k) cls += ' right';
     else if (reveal && chosen === i) cls += ' miss';
-    h += '<div class="' + cls + '" data-k="' + i + '"><span class="circ">' + mark + '</span><span>' + escapeHtml(q.o[i]) + '</span></div>';
+    h += '<div class="' + cls + '" data-k="' + i + '"><span class="circ">' + mark + '</span><span class="tx">' + escapeHtml(q.o[i]) + '</span></div>';
   }
   $('cbtOpts').innerHTML = h;
   var bm = $('cbtBmBtn');
   bm.className = 'cbt-bm' + (cbtData.m[q.id] ? ' on' : '');
-  bm.textContent = cbtData.m[q.id] ? '★' : '🔖';
   var eb = $('cbtExplBtn'), pb = $('cbtPeekBtn');
   eb.className = 'tbtn' + (cbt.showExpl ? ' on' : '');
   pb.className = 'tbtn' + (cbt.showAns ? ' on' : '');
@@ -1463,10 +1555,13 @@ function cbtSelect(k){
 
 function cbtGo(d){
   if (!cbt.list.length) return;
-  cbt.idx = (cbt.idx + d + cbt.list.length) % cbt.list.length;
+  var next = cbt.idx + d;
+  if (next < 0 || next >= cbt.list.length) return;
+  cbt.idx = next;
   cbt.showExpl = false; cbt.showAns = false;
   cbtRender();
   cbtSlide(d > 0 ? 'L' : 'R');
+  if (cbt.mode === 'exam') saveProgressNow();
 }
 function cbtJump(i){
   cbt.idx = i;
@@ -1503,7 +1598,7 @@ function cbtGrade(){
     if (rec.v === q.k){ per[q.s].c++; correct++; rec.ok = 1; }
     else { rec.ok = 0; if (cbt.wrongIds.indexOf(q.id) < 0) cbt.wrongIds.push(q.id); }
   }
-  /* 오답장 갱신 (출퇴근 퀴즈와 오답 저장소를 공유) */
+  /* 오답장 갱신 (핵심 퀴즈와 오답 저장소를 공유) */
   for (var i2 = 0; i2 < cbt.list.length; i2++){
     var q2 = cbt.list[i2], rec2 = store[q2.id];
     if (rec2 && rec2.ok === 0) wrongSet[q2.id] = true;
@@ -1557,21 +1652,24 @@ $('cbtExamList').addEventListener('click', function(e){
   var y = row.getAttribute('data-y');
   var prog = cbtData.p[y];
   var ac = answeredCount(y);
-  if (prog && ac){
-    var q = prog.i + 1;
+  if (prog && (prog.e > 0 || ac)){
+    var q = Math.min((prog.i || 0) + 1, EXAMS[y].qs.length);
     $('cbtResumeTitle').textContent = EXAMS[y].title;
-    $('cbtResumeInfo').textContent = q + '번까지 풀고 ' + fmtTime(prog.e) + '썼어요. 어디서부터 시작할까요?';
+    $('cbtResumeInfo').textContent = (ac ? q + '번까지 풀고 ' : '아직 푼 문항은 없지만 ') + fmtTime(prog.e || 0) + ' 기록이 있어요. 이어서 풀까요?';
     showModal('cbtResumeModal');
     $('cbtResumeYes').onclick = function(){
       hideModal('cbtResumeModal');
       cbtStart(y, null, 'exam');
-      cbt.idx = Math.min(prog.i, cbt.list.length - 1);
+      cbt.idx = Math.min(prog.i || 0, cbt.list.length - 1);
       cbt.elapsed = prog.e || 0;
       renderTimer();
       cbtRender();
     };
     $('cbtResumeNo').onclick = function(){
       hideModal('cbtResumeModal');
+      /* 처음부터 다시 풀기: 저장한 타이머와 진행 위치만 초기화 */
+      delete cbtData.p[y];
+      cbtSave();
       cbtStart(y, null, 'exam');
     };
   } else {
