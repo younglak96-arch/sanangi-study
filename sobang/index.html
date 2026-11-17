@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
-<title>소방설비기사(전기) 출퇴근 학습 · 2027</title>
+<title>소방설비기사(전기) CBT 모의고사 · 2020~2026</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -15,6 +15,7 @@ html,body{margin:0;padding:0}
   --header:rgba(11,18,32,.84);
   --shadow:0 18px 40px -26px rgba(0,0,0,.95);
   --s1:#fb923c;--s2:#60a5fa;--s3:#c084fc;--s4:#34d399;--s5:#f472b6;
+  --pbg:#0d1626;--psurf:#131e30;--pline:rgba(255,255,255,.10);--pchip:#1b2739;
 }
 body.light{
   --bg:#eef2f7;--surface:#ffffff;--surface2:#f2f5fa;--line:rgba(16,32,56,.13);
@@ -23,6 +24,7 @@ body.light{
   --header:rgba(247,249,252,.88);
   --shadow:0 14px 32px -24px rgba(16,32,56,.45);
   --s1:#c2410c;--s2:#2563eb;--s3:#7c3aed;--s4:#047857;--s5:#db2777;
+  --pbg:#ffffff;--psurf:#ffffff;--pline:rgba(16,32,56,.12);--pchip:#f3f6fa;
 }
 body{
   background:var(--bg);color:var(--text);
@@ -239,6 +241,203 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
   .qtext,.atext{font-size:18px}
   .chip{font-size:11.5px;padding:5px 7px}
 }
+/* ================= CBT v2 : 모의고사 선택 화면 ================= */
+.hero{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--surface),var(--surface2));padding:16px;box-shadow:var(--shadow)}
+.hero .kick{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--accent);margin-bottom:6px}
+.hero h2{margin:0 0 5px;font-size:19px;letter-spacing:-.5px}
+.hero p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.6;word-break:keep-all}
+.hstats{display:flex;gap:7px;margin-top:14px}
+.hstat{flex:1;text-align:center;border:1px solid var(--line);border-radius:13px;background:var(--surface);padding:8px 3px}
+.hstat b{display:block;font-size:16px;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.hstat span{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.01em}
+
+.setlist{display:flex;flex-direction:column;gap:8px;margin-top:11px}
+.setcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:16px;background:var(--surface);padding:12px 14px;color:var(--text);transition:transform .12s ease,border-color .15s}
+.setcard:active{transform:scale(.99)}
+.setcard .yr{flex:0 0 auto;min-width:54px;font-size:19px;font-weight:800;letter-spacing:-.7px;color:var(--accent);font-variant-numeric:tabular-nums}
+.setcard .mid{flex:1;min-width:0}
+.setcard .mid b{display:block;font-size:14px;font-weight:700;letter-spacing:-.25px}
+.setcard .mid em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:2px}
+.setcard .best{flex:0 0 auto;text-align:right;font-size:10.5px;color:var(--muted);font-weight:700;line-height:1.35}
+.setcard .best b{display:block;font-size:15px;color:var(--text);letter-spacing:-.4px}
+.setcard .best b.ok{color:var(--green)}
+.setcard .best b.no{color:var(--red)}
+.setcard.mode .yr{font-size:15px;color:var(--text);letter-spacing:-.3px}
+.setcard.mode .yr span{display:block;font-size:17px;line-height:1.1}
+.setcard .arrow{flex:0 0 auto;color:var(--muted);font-size:15px;opacity:.6}
+.sgroup{margin-top:18px}
+.sgroup h2{font-size:14px;margin:0 0 8px;letter-spacing:-.2px;color:var(--text)}
+.sgroup .hint{font-size:11.5px;color:var(--muted);margin:-3px 0 8px;line-height:1.5}
+
+/* ================= CBT 플레이어 (Orzo 스타일) ================= */
+html,body{touch-action:manipulation}
+.player,.res,.sheet{touch-action:manipulation}
+.pbody{touch-action:pan-y;overscroll-behavior:contain}
+.player{position:fixed;inset:0;z-index:120;display:none;justify-content:center;background:var(--pbg)}
+.player.on{display:flex}
+.pshell{width:100%;max-width:480px;height:100%;display:flex;flex-direction:column;background:var(--pbg);position:relative;overflow:hidden}
+
+.ptop{display:flex;align-items:center;gap:0;padding:5px 6px;border-bottom:1px solid var(--pline);background:var(--psurf);flex:0 0 auto}
+.picon{width:42px;height:42px;border:0;border-radius:12px;background:transparent;color:var(--text);
+  display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .12s}
+.picon:active{background:var(--pchip)}
+.picon svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.picon.on{color:var(--amber)}
+.picon.on svg{fill:var(--amber);fill-opacity:.18}
+.ptimer{margin-left:auto;display:flex;align-items:center;gap:5px;border:0;background:transparent;color:var(--muted);
+  font-size:14.5px;font-weight:700;font-variant-numeric:tabular-nums;padding:8px 2px;letter-spacing:.4px}
+.ptimer svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round}
+.ptimer.paused{color:var(--amber)}
+.pbtn-score{margin-left:8px;border:0;border-radius:999px;background:var(--text);color:var(--pbg);
+  font-size:14px;font-weight:800;padding:9px 17px;letter-spacing:-.2px;transition:transform .12s}
+.pbtn-score:active{transform:scale(.96)}
+
+.psub{display:flex;align-items:center;gap:8px;padding:6px 12px 7px;border-bottom:1px solid var(--pline);background:var(--psurf);flex:0 0 auto}
+.pnum{font-size:12.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.pnum b{font-size:17px;color:var(--text);font-weight:800;letter-spacing:-.4px;margin-right:1px}
+.ptoggle{border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:700;padding:5px 3px;letter-spacing:-.2px}
+.ptoggle.on{color:var(--accent)}
+.psubtitle{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42%;text-align:right}
+.psub .picon{width:36px;height:36px;margin-right:-6px}
+
+.pbody{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 18px 26px;background:var(--pbg)}
+.pqsubj{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;letter-spacing:.05em;color:var(--muted);margin-bottom:9px}
+.pqsubj i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.pq{font-size:17px;font-weight:700;line-height:1.55;letter-spacing:-.4px;margin:0 0 14px;color:var(--text);word-break:keep-all}
+.popts{display:flex;flex-direction:column;gap:1px}
+.popt{display:flex;align-items:flex-start;gap:7px;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--text);font-size:16px;line-height:1.5;padding:9px 6px;border-radius:10px;font-weight:500;
+  word-break:keep-all;letter-spacing:-.2px;transition:background .12s}
+.popt:active{background:var(--pchip)}
+.popt .pmk{flex:0 0 22px;color:var(--muted);font-weight:500;font-size:16px}
+.popt.sel{background:var(--accent-soft)}
+.popt.sel .pmk{color:var(--accent);font-weight:800}
+.popt.sel .ptx{font-weight:700;color:var(--accent)}
+.popt.ok{background:rgba(52,211,153,.10)}
+.popt.ok .pmk,.popt.ok .ptx{color:var(--green);font-weight:700}
+.popt.no{background:rgba(248,113,113,.10)}
+.popt.no .pmk,.popt.no .ptx{color:var(--red)}
+
+.pans{margin-top:14px;padding:11px 13px;border-radius:11px;background:rgba(52,211,153,.12);
+  border:1px solid rgba(52,211,153,.32);color:var(--green);font-size:13.5px;font-weight:700;line-height:1.55;word-break:keep-all}
+.pexpl{margin-top:12px;padding:13px 14px;border-radius:12px;background:var(--pchip);
+  border-left:3px solid var(--accent);font-size:13.5px;line-height:1.72;color:var(--text);
+  word-break:keep-all;animation:fade .18s ease both}
+.pexpl b{display:block;font-size:10px;letter-spacing:.12em;color:var(--accent);margin-bottom:5px;font-weight:800}
+
+.pbot{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:6px 10px calc(6px + env(safe-area-inset-bottom));border-top:1px solid var(--pline);background:var(--psurf)}
+.pnav{border:0;background:transparent;color:var(--text);font-size:30px;line-height:1;width:56px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-weight:300;touch-action:manipulation}
+.pnav:active{background:var(--pchip)}
+.pnav:disabled{opacity:.22}
+.pcenter{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.pcenter span{font-size:12px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.pbar{display:block;width:100%;max-width:200px;height:4px;border-radius:99px;background:var(--surface2);
+  border:1px solid var(--pline);overflow:hidden}
+.pbar b{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .2s ease;min-width:2px}
+
+/* 스와이프 전환 */
+@keyframes slideNext{from{opacity:.3;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes slidePrev{from{opacity:.3;transform:translateX(-18px)}to{opacity:1;transform:none}}
+.pbody.anim-next{animation:slideNext .22s ease both}
+.pbody.anim-prev{animation:slidePrev .22s ease both}
+@media (prefers-reduced-motion:reduce){.pbody.anim-next,.pbody.anim-prev{animation:none}}
+
+/* ================= 답안 확인 시트 ================= */
+.sheet{position:fixed;inset:0;z-index:130;display:none;align-items:flex-end;justify-content:center;
+  background:rgba(4,9,17,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.sheet.on{display:flex}
+.sheetin{width:100%;max-width:480px;max-height:84%;overflow-y:auto;background:var(--pbg);
+  border-radius:20px 20px 0 0;padding:14px 16px calc(18px + env(safe-area-inset-bottom));
+  animation:sheetup .22s ease both;border-top:1px solid var(--pline)}
+@keyframes sheetup{from{transform:translateY(22px);opacity:.5}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheetin{animation:none}}
+.sheethead{display:flex;align-items:center;gap:8px}
+.sheethead b{font-size:15.5px;letter-spacing:-.3px}
+.sheethead em{font-style:normal;font-size:11.5px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.sheethead button{border:0;background:var(--pchip);color:var(--text);font-size:12.5px;font-weight:700;
+  padding:7px 12px;border-radius:9px;margin-left:8px}
+.slegend{display:flex;flex-wrap:wrap;gap:9px;font-size:10.5px;color:var(--muted);margin:10px 0 12px;font-weight:600}
+.slegend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:0;border:1px solid var(--pline)}
+.ggrid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.gcell{aspect-ratio:1/1;border-radius:9px;border:1px solid var(--pline);background:var(--pchip);
+  color:var(--muted);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  font-variant-numeric:tabular-nums;transition:transform .1s}
+.gcell:active{transform:scale(.94)}
+.gcell.done{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.gcell.mk{box-shadow:inset 0 0 0 2px var(--amber)}
+.gcell.right{background:rgba(52,211,153,.16);border-color:transparent;color:var(--green)}
+.gcell.wrong{background:rgba(248,113,113,.18);border-color:transparent;color:var(--red)}
+.gcell.cur{outline:2px solid var(--text);outline-offset:1px}
+
+/* ================= 채점 결과 ================= */
+.res{position:fixed;inset:0;z-index:125;display:none;justify-content:center;background:var(--pbg);overflow-y:auto}
+.res.on{display:flex}
+.resshell{width:100%;max-width:480px;min-height:100%;background:var(--pbg);padding-bottom:calc(26px + env(safe-area-inset-bottom))}
+.res .ptop{position:sticky;top:0;z-index:3}
+.resbody{padding:16px 18px 0}
+.rbig{text-align:center;padding:8px 0 2px}
+.rbig .num{font-size:50px;font-weight:800;letter-spacing:-2.5px;line-height:1;font-variant-numeric:tabular-nums}
+.rbig .num small{font-size:18px;font-weight:700;letter-spacing:-.5px;margin-left:2px;color:var(--muted)}
+.rbig .lb{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:7px;letter-spacing:.02em}
+.verdict{display:inline-flex;align-items:center;gap:6px;margin-top:11px;padding:7px 15px;border-radius:999px;
+  font-size:13.5px;font-weight:800;letter-spacing:-.2px}
+.verdict.pass{background:rgba(52,211,153,.16);color:var(--green)}
+.verdict.fail{background:rgba(248,113,113,.16);color:var(--red)}
+.rcounts{display:flex;justify-content:center;gap:14px;margin-top:13px;font-size:11.5px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+.rcounts b{color:var(--text)}
+.srows{margin-top:18px;display:flex;flex-direction:column;gap:11px}
+.srow{display:flex;align-items:center;gap:9px;font-size:12.5px}
+.srow .nm{flex:0 0 41%;font-weight:700;letter-spacing:-.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srow .bar{flex:1;height:6px;border-radius:99px;background:var(--pchip);overflow:hidden}
+.srow .bar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.srow .bar i.cut{background:var(--amber)}
+.srow .sc{flex:0 0 58px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.srow .sc em{font-style:normal;font-size:10px;color:var(--muted);font-weight:700;display:block;letter-spacing:0}
+.srow.flunk .sc{color:var(--red)}
+.rcut{margin-top:12px;font-size:10.5px;color:var(--muted);line-height:1.6;border-top:1px dashed var(--pline);padding-top:10px}
+.rhead{margin:20px 0 8px;font-size:12.5px;font-weight:800;letter-spacing:-.2px;color:var(--text)}
+.rlist2{display:flex;flex-direction:column;gap:6px}
+.rq{display:flex;gap:9px;width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;
+  background:var(--surface);padding:10px 12px;color:var(--text);font-size:12.5px;line-height:1.5;
+  word-break:keep-all;align-items:flex-start}
+.rq .no{flex:0 0 26px;font-weight:800;color:var(--red);font-variant-numeric:tabular-nums;font-size:12px;letter-spacing:-.3px}
+.rq .tx{flex:1;min-width:0}
+.rq .tx i{display:block;font-style:normal;color:var(--muted);font-size:11px;margin-top:3px}
+.ractions{margin-top:18px;display:flex;gap:8px}
+.ractions .btn{flex:1}
+.rempty{padding:14px;border:1px dashed var(--line);border-radius:12px;text-align:center;font-size:12.5px;color:var(--muted)}
+
+/* 조각 상태용 */
+.toast{position:fixed;left:50%;bottom:calc(78px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(8px);
+  z-index:200;background:rgba(20,30,46,.94);color:#fff;font-size:12.5px;font-weight:700;padding:10px 16px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;max-width:88%;text-align:center;line-height:1.4}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ================= 플래시카드 인라인 도해 ================= */
+.scene.wide .fcard{height:clamp(464px,66vh,640px)}
+.diag{margin-top:10px;display:flex;justify-content:center;align-items:center;width:100%}
+.diag svg{width:100%;height:auto;max-height:178px;display:block;overflow:visible}
+.diag text{font-family:inherit;font-size:10px;font-weight:700;fill:var(--text);letter-spacing:-.1px}
+.diag .tm{font-size:8.8px;font-weight:600;fill:var(--muted)}
+.diag .dimt{font-size:8.2px;font-weight:700;fill:var(--muted)}
+.diag .ln{stroke:var(--text);stroke-width:1.6;fill:none;stroke-linecap:round}
+.diag .ln2{stroke:var(--muted);stroke-width:1.8;fill:none;stroke-linecap:round;opacity:.75}
+.diag .bx{fill:rgba(128,140,165,.13);stroke:var(--text);stroke-width:1.3}
+.diag .bx2{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.4}
+.diag .bxz{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.4;stroke-dasharray:5 3}
+.diag .acc{stroke:var(--accent);stroke-width:2.1;fill:none;stroke-linecap:round}
+.diag .acc-t{font-size:9.4px;font-weight:800;fill:var(--accent)}
+.diag .cdet{fill:var(--surface);stroke:var(--accent);stroke-width:1.8}
+.diag .cdot{fill:var(--accent);stroke:none}
+.diag .csoft{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.3}
+.diag .dash{stroke:var(--muted);stroke-width:1.1;fill:none;stroke-dasharray:4 3}
+.diag .dim{stroke:var(--muted);stroke-width:1;fill:none}
+.diag .danger{stroke:var(--muted);stroke-width:1.2;fill:none}
+.diag .ahd{fill:var(--muted)}
+
 </style>
 </head>
 <body>
@@ -246,8 +445,8 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
   <header>
     <div class="hdr">
       <div class="brand">
-        <b>소방설비기사(전기) 출퇴근 학습</b>
-        <span>2027 소방설비기사(전기분야) · 필기 4과목</span>
+        <b>소방설비기사(전기) CBT</b>
+        <span>7개년 기출유형 모의고사 · 필기 4과목</span>
       </div>
       <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
     </div>
@@ -255,7 +454,7 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
 
   <main>
     <!-- ============ 암기카드 ============ -->
-    <section class="view active" id="viewCards">
+    <section class="view" id="viewCards">
       <div class="metaline">
         <span id="fcMasteredCount">0 / 0 외웠음</span>
         <span id="fcPos">0 / 0</span>
@@ -281,6 +480,7 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
             <div class="face-body"><div class="face-inner">
                 <p class="atext" id="fcA"></p>
                 <div class="note" id="fcNote"></div>
+                <div class="diag" id="fcDiag"></div>
               </div></div>
             <div class="face-bottom">다시 탭하면 문제로 돌아갑니다</div>
           </div>
@@ -308,71 +508,32 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
       <footer class="foot" id="fcFoot"></footer>
     </section>
 
-    <!-- ============ 출퇴근 퀴즈 ============ -->
-    <section class="view" id="viewQuiz">
-      <div id="quizSetup">
-        <div class="panel">
-          <h3>출퇴근 퀴즈</h3>
-          <p>필기와 같은 4지선다·O/X 문제입니다. 답을 고르면 바로 채점하고 해설을 보여줘요. 계산 문제도 섞여 있습니다.</p>
-          <div class="label">과목</div>
-          <div class="chips" id="quizChips"></div>
-          <div class="label">문제 수</div>
-          <div class="row tight" style="margin-top:0">
-            <button class="btn small on" data-size="10">10문항</button>
-            <button class="btn small" data-size="20">20문항</button>
-            <button class="btn small" data-size="0">전체</button>
-          </div>
-          <div class="row" style="margin-top:16px">
-            <button class="btn primary" id="btnStartQuiz">퀴즈 시작</button>
-          </div>
-          <div class="row tight">
-            <button class="btn" id="btnWrongOnly" disabled>틀린 문제만 다시 풀기</button>
-          </div>
-          <div class="statgrid">
-            <div class="stat"><b id="stTotal">0</b><span>전체 문제</span></div>
-            <div class="stat"><b id="stDone">0</b><span>지금까지 푼 문제</span></div>
-            <div class="stat"><b id="stBest">-</b><span>최고 점수</span></div>
-          </div>
-        </div>
-        <div class="banner">💡 <b>오는 길 20분 루틴</b> — 10문항 풀고, 틀린 문제만 한 번 더. 정답률이 80%를 넘으면 20문항으로 늘려 과목당 30분을 맞춰보세요.</div>
-      </div>
-
-      <div id="quizPlay" style="display:none">
-        <div class="metaline">
-          <span id="qpLabel">1 / 10</span>
-          <span id="qpScore">정답 0</span>
-        </div>
-        <div class="meter"><i id="qpProgress"></i></div>
-        <div class="qcard" style="margin-top:12px">
-          <div class="qmeta">
-            <span class="badge"><i class="dot" id="qpDot"></i><span id="qpSubj">1과목</span></span>
-            <span class="qtype" id="qpType">4지선다</span>
-          </div>
-          <p class="qtext2" id="qpQ"></p>
-          <div class="opts" id="qpOpts"></div>
-          <div id="qpExpl"></div>
-        </div>
-        <div class="row">
-          <button class="btn primary" id="qpNext" disabled>다음 문제</button>
-        </div>
-        <div class="row tight">
-          <button class="btn small" id="qpQuit">퀴즈 그만두기</button>
+    <!-- ============ 실전 모의고사 ============ -->
+    <section class="view active" id="viewQuiz">
+      <div class="hero">
+        <div class="kick">CBT 실전 모의고사 · 7개년</div>
+        <h2>7개년 기출유형 · 80문항</h2>
+        <p>실제 필기와 같은 4지선다 CBT 화면입니다. 과목당 20문항씩 80문항을 풀고 <b>채점</b>을 누르면 과목별 점수와 과락 여부가 바로 나옵니다.</p>
+        <div class="hstats">
+          <div class="hstat"><b id="hBank">560</b><span>전체 문항</span></div>
+          <div class="hstat"><b id="hDone">0</b><span>푼 문항</span></div>
+          <div class="hstat"><b id="hBest">-</b><span>최고 평균</span></div>
+          <div class="hstat"><b id="hWrong">0</b><span>오답 노트</span></div>
         </div>
       </div>
 
-      <div id="quizResult" style="display:none">
-        <div class="panel">
-          <div class="ring" id="qrRing" style="--p:0"><div><b id="qrScore">0점</b><span id="qrSub">정답 0 / 0</span></div></div>
-          <p id="qrMsg" style="text-align:center;font-size:14px"></p>
-          <div class="rlist" id="qrList"></div>
-        </div>
-        <div class="row">
-          <button class="btn primary" id="btnRetryWrong">틀린 문제만 다시</button>
-        </div>
-        <div class="row tight">
-          <button class="btn" id="btnNewQuiz">새 퀴즈</button>
-        </div>
+      <div class="sgroup">
+        <h2>연도별 모의고사</h2>
+        <div class="setlist" id="setList"></div>
       </div>
+
+      <div class="sgroup">
+        <h2>복습 · 빠른 풀이</h2>
+        <p class="hint">북마크한 문제와 틀린 문제만 모아 다시 풉니다. 화면을 좌우로 밀어 다음 문제로 넘길 수 있습니다.</p>
+        <div class="setlist" id="modeList"></div>
+      </div>
+
+      <div class="banner">💡 <b>과락 계산</b> — 과목당 20문항이므로 7문항 이하를 맞히면 40점 미만(과락)입니다. 8문항(40점)을 넘기고 평균 60점을 넘겨야 합격권입니다.</div>
     </section>
 
     <!-- ============ 로드맵 ============ -->
@@ -579,10 +740,81 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
     </section>
   </main>
 
+  <!-- ============ CBT 플레이어 ============ -->
+  <div class="player" id="player" role="dialog" aria-modal="true" aria-label="모의고사 풀이">
+    <div class="pshell">
+      <div class="ptop">
+        <button class="picon" id="cbtClose" aria-label="닫기">
+          <svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+        </button>
+        <button class="picon" id="cbtGridBtn" aria-label="답안 확인">
+          <svg viewBox="0 0 24 24"><rect x="3.8" y="3.8" width="6.6" height="6.6" rx="1.5"/><rect x="13.6" y="3.8" width="6.6" height="6.6" rx="1.5"/><rect x="3.8" y="13.6" width="6.6" height="6.6" rx="1.5"/><rect x="13.6" y="13.6" width="6.6" height="6.6" rx="1.5"/></svg>
+        </button>
+        <button class="ptimer" id="cbtTimer" aria-label="타이머 일시정지">
+          <span id="cbtTime">00:00</span>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.6"/><path d="M12 10v3.6l2.4 1.8M9.3 2.4h5.4"/></svg>
+        </button>
+        <button class="pbtn-score" id="cbtScoreBtn">채점</button>
+      </div>
+      <div class="psub">
+        <span class="pnum"><b id="cbtNo">1</b>번 <span id="cbtTotal">/ 48</span></span>
+        <button class="ptoggle" id="cbtExp">해설</button>
+        <button class="ptoggle" id="cbtAns">정답</button>
+        <span class="psubtitle" id="cbtTitle"></span>
+        <button class="picon" id="cbtMark" aria-label="북마크">
+          <svg viewBox="0 0 24 24"><path d="M7 4.2h10a1 1 0 011 1V20l-6-4.1L6 20V5.2a1 1 0 011-1z"/></svg>
+        </button>
+      </div>
+      <div class="pbody" id="cbtBody"></div>
+      <div class="pbot">
+        <button class="pnav" id="cbtPrev" aria-label="이전 문제">‹</button>
+        <div class="pcenter">
+          <span id="cbtPos">1 / 80</span>
+          <i class="pbar"><b id="cbtBar"></b></i>
+        </div>
+        <button class="pnav" id="cbtNext" aria-label="다음 문제">›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 답안 확인 시트 ============ -->
+  <div class="sheet" id="sheet">
+    <div class="sheetin">
+      <div class="sheethead">
+        <b>답안 확인</b>
+        <em id="sheetMeta">0 / 0</em>
+        <button id="sheetClose">닫기</button>
+      </div>
+      <div class="slegend">
+        <span><i style="background:var(--accent-soft);border-color:transparent"></i>응답</span>
+        <span><i style="box-shadow:inset 0 0 0 2px var(--amber);border-color:transparent"></i>북마크</span>
+        <span><i style="background:rgba(52,211,153,.22);border-color:transparent"></i>정답</span>
+        <span><i style="background:rgba(248,113,113,.24);border-color:transparent"></i>오답</span>
+      </div>
+      <div class="ggrid" id="ggrid"></div>
+    </div>
+  </div>
+
+  <!-- ============ 채점 결과 ============ -->
+  <div class="res" id="res">
+    <div class="resshell">
+      <div class="ptop">
+        <button class="picon" id="resClose" aria-label="닫기">
+          <svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+        </button>
+        <div style="font-size:15px;font-weight:800;letter-spacing:-.35px;padding-left:2px">채점 결과</div>
+        <button class="pbtn-score" id="resGridBtn" style="margin-left:auto">답안 확인</button>
+      </div>
+      <div class="resbody" id="resBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
   <nav class="tabs">
     <div class="tabs-inner">
-      <button class="tab active" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
-      <button class="tab" data-tab="quiz"><span class="ic">✅</span>출퇴근 퀴즈</button>
+      <button class="tab" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
+      <button class="tab active" data-tab="quiz"><span class="ic">📝</span>모의고사</button>
       <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
     </div>
   </nav>
@@ -590,7 +822,7 @@ footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;
 
 <script>
 var CARDS = [
-{i:'a1',s:1,q:'연소의 3요소는?',a:'가연물 · 산소공급원 · 점화원',n:'불꽃을 내며 타는 연소는 여기에 연쇄반응을 더해 4요소라고 합니다. 소화는 이 중 하나를 없애는 일입니다.'},
+{i:'a1',s:1,q:'연소의 3요소는?',a:'가연물 · 산소공급원 · 점화원',n:'불꽃을 내며 타는 연소는 여기에 연쇄반응을 더해 4요소라고 합니다. 소화는 이 중 하나를 없애는 일입니다.',g:'<svg viewBox="0 0 320 180" role="img" aria-label="연소의 3요소와 4요소" xmlns="http://www.w3.org/2000/svg"><line class="ln" x1="160" y1="36" x2="84" y2="126"/><line class="ln" x1="84" y1="126" x2="236" y2="126"/><line class="ln" x1="236" y1="126" x2="160" y2="36"/><circle class="csoft" cx="160" cy="94" r="23"/><text class="t" x="160" y="98" text-anchor="middle">연소</text><text class="t" x="160" y="26" text-anchor="middle">가연물</text><text class="t" x="84" y="144" text-anchor="middle">산소공급원</text><text class="t" x="236" y="144" text-anchor="middle">점화원</text><text class="tm" x="160" y="158" text-anchor="middle">+ 연쇄반응 = 불꽃연소의 4요소</text><text class="tm" x="160" y="172" text-anchor="middle">3요소 중 하나만 없애도 소화</text></svg>'},
 {i:'a2',s:1,q:'소화의 4원리와 각각의 예는?',a:'제거소화 · 냉각소화 · 질식소화 · 억제소화',n:'제거는 가연물을 치우는 것, 냉각은 물, 질식은 이산화탄소·포, 억제는 할론·분말처럼 연쇄반응을 끊는 화학적 소화입니다.'},
 {i:'a3',s:1,q:'연소의 형태 5가지를 들면?',a:'확산연소 · 예혼합연소 · 증발연소 · 분해연소 · 표면연소(자기연소)',n:'가스는 확산·예혼합, 액체는 증발, 고체는 분해·표면연소입니다. 셀룰로이드·니트로셀룰로오스는 산소 없이도 타는 자기연소를 합니다.'},
 {i:'a4',s:1,q:'인화점 · 연소점 · 발화점의 차이는?',a:'인화점은 불꽃으로 불이 붙는 최저온도, 연소점은 불꽃 없이도 연소가 계속되는 최저온도, 발화점은 점화원 없이 스스로 타오르는 온도',n:'보통 인화점 < 연소점 < 발화점 순서입니다. 인화점은 위험물 분류와 소방 위험성 판단의 기준이 됩니다.'},
@@ -622,9 +854,9 @@ var CARDS = [
 {i:'b7',s:2,q:'패러데이의 전자기유도 법칙은?',a:'e = −N (dΦ ÷ dt)',n:'코일을 지나는 자속의 변화가 기전력을 만듭니다. 마이너스 부호는 렌츠의 법칙입니다.'},
 {i:'b8',s:2,q:'렌츠의 법칙이란?',a:'유도 전류는 자속의 변화를 방해하는 방향으로 흐른다',n:'자석을 코일에 가까이하면 밀어내는 방향, 멀리하면 끌어당기는 방향으로 유도 전류가 흐릅니다.'},
 {i:'b9',s:2,q:'유도 리액턴스와 용량 리액턴스의 식은?',a:'X_L = 2πfL, X_C = 1 ÷ (2πfC)',n:'주파수가 높아지면 코일은 전류를 더 막고, 콘덴서는 더 잘 통과시킵니다.'},
-{i:'b10',s:2,q:'RLC 직렬회로의 임피던스와 공진주파수는?',a:'Z = √(R² + (X_L − X_C)²), 공진주파수 f0 = 1 ÷ (2π√(LC))',n:'공진하면 X_L = X_C 가 되어 Z = R로 최소가 되고 전류가 최대가 됩니다.'},
+{i:'b10',s:2,q:'RLC 직렬회로의 임피던스와 공진주파수는?',a:'Z = √(R² + (X_L − X_C)²), 공진주파수 f0 = 1 ÷ (2π√(LC))',n:'공진하면 X_L = X_C 가 되어 Z = R로 최소가 되고 전류가 최대가 됩니다.',g:'<svg viewBox="0 0 320 158" role="img" aria-label="RLC 임피던스 삼각형" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah7" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs><line class="acc" x1="54" y1="116" x2="270" y2="116"/><line class="acc" x1="270" y1="116" x2="270" y2="44"/><line class="ln" x1="54" y1="116" x2="270" y2="44"/><path class="danger" d="M86,116 A32,32 0 0 0 82,102"/><text class="tm" x="92" y="112" text-anchor="middle">θ</text><text class="t" x="162" y="132" text-anchor="middle">R</text><text class="t" x="264" y="82" text-anchor="end">X_L − X_C</text><text class="t" x="146" y="74" text-anchor="middle">Z</text><text class="tm" x="160" y="150" text-anchor="middle">Z = √(R² + (X_L − X_C)²)</text></svg>'},
 {i:'b11',s:2,q:'역률을 나타내는 식과 개선 방법은?',a:'cosθ = P ÷ (VI) / 콘덴서(진상용)를 병렬로 설치',n:'역률이 낮으면 같은 전력에 전류가 커져 선로 손실과 전압강하가 늘어납니다.'},
-{i:'b12',s:2,q:'3상 교류의 전력과 결선별 전압·전류 관계는?',a:'P = √3 V I cosθ / Y결선은 선전압 = √3 × 상전압, Δ결선은 선전류 = √3 × 상전류',n:'Y결선은 상전압이 낮아 절연에 유리하고, Δ결선은 큰 전류를 흘릴 수 있습니다.'},
+{i:'b12',s:2,q:'3상 교류의 전력과 결선별 전압·전류 관계는?',a:'P = √3 V I cosθ / Y결선은 선전압 = √3 × 상전압, Δ결선은 선전류 = √3 × 상전류',n:'Y결선은 상전압이 낮아 절연에 유리하고, Δ결선은 큰 전류를 흘릴 수 있습니다.',g:'<svg viewBox="0 0 320 170" role="img" aria-label="3상 Y결선과 델타결선" xmlns="http://www.w3.org/2000/svg"><line class="dash" x1="160" y1="16" x2="160" y2="140"/><text class="t" x="80" y="22" text-anchor="middle">Y결선</text><line class="acc" x1="80" y1="84" x2="80" y2="52"/><line class="acc" x1="80" y1="84" x2="56" y2="114"/><line class="acc" x1="80" y1="84" x2="104" y2="114"/><circle class="cdet" cx="80" cy="48" r="3.4"/><text class="t" x="86" y="46">a</text><circle class="cdet" cx="52" cy="118" r="3.4"/><text class="t" x="42" y="126">b</text><circle class="cdet" cx="108" cy="118" r="3.4"/><text class="t" x="116" y="126">c</text><circle class="cdot" cx="80" cy="84" r="3"/><text class="tm" x="72" y="96" text-anchor="end">N</text><text class="tm" x="80" y="150" text-anchor="middle">선간전압 = √3 × 상전압</text><text class="tm" x="80" y="163" text-anchor="middle">선전류 = 상전류</text><text class="tm" x="242" y="22" text-anchor="middle">Δ결선</text><line class="acc" x1="242" y1="50" x2="198" y2="116"/><line class="acc" x1="242" y1="50" x2="286" y2="116"/><line class="acc" x1="198" y1="116" x2="286" y2="116"/><circle class="cdet" cx="242" cy="46" r="3.4"/><text class="t" x="248" y="40">a</text><circle class="cdet" cx="194" cy="120" r="3.4"/><text class="t" x="184" y="132">b</text><circle class="cdet" cx="290" cy="120" r="3.4"/><text class="t" x="296" y="132">c</text><text class="tm" x="242" y="150" text-anchor="middle">선전류 = √3 × 상전류</text><text class="tm" x="242" y="163" text-anchor="middle">선전압 = 상전압</text></svg>'},
 {i:'b13',s:2,q:'변압기의 권수비로 전압과 전류의 관계는?',a:'a = N1 ÷ N2 = V1 ÷ V2 = I2 ÷ I1',n:'권수가 많은 쪽이 고전압이며 전류는 반대로 작아집니다. 이상변압기에서 1차와 2차의 전력은 같습니다.'},
 {i:'b14',s:2,q:'변압기의 유도기전력 식은?',a:'E = 4.44 f N Φ [V]',n:'주파수·권수·최대자속에 비례합니다. 4.44는 사인파의 실효값 계수입니다.'},
 {i:'b15',s:2,q:'변압기 손실의 종류와 최대 효율 조건은?',a:'철손(히스테리시스손·와전류손) + 동손(권선 저항손) / 철손 = 동손일 때 효율이 최대',n:'철손은 부하와 관계없이 일정하고, 동손은 전류의 제곱에 비례해 부하에 따라 달라집니다.'},
@@ -633,7 +865,7 @@ var CARDS = [
 {i:'b18',s:2,q:'자기유지 회로는 어떻게 만드나?',a:'누름버튼과 릴레이의 보조 a접점을 병렬로 연결',n:'버튼에서 손을 떼도 코일 전류가 계속 흘러 동작이 유지됩니다.'},
 {i:'b19',s:2,q:'인터록 회로는 무엇으로 만드나?',a:'상대 회로 코일 앞에 상대 동작의 b접점을 직렬로 넣는다',n:'두 기기가 동시에 동작하면 안 될 때 씁니다. 정회전·역회전 회로가 대표적입니다.'},
 {i:'b20',s:2,q:'a접점과 b접점의 동작은?',a:'a접점은 상시 열려 있다가 동작하면 닫히고, b접점은 상시 닫혀 있다가 동작하면 열린다',n:'시퀀스 도면에서 접점 기호를 읽는 기본입니다. b접점은 논리 NOT에 해당합니다.'},
-{i:'b21',s:2,q:'AND · OR · NOT 게이트의 출력은?',a:'AND는 모두 1일 때 1, OR는 하나라도 1이면 1, NOT은 입력을 반전',n:'a접점 직렬은 AND, 병렬은 OR, b접점은 NOT으로 시퀀스 회로와 그대로 대응합니다.'},
+{i:'b21',s:2,q:'AND · OR · NOT 게이트의 출력은?',a:'AND는 모두 1일 때 1, OR는 하나라도 1이면 1, NOT은 입력을 반전',n:'a접점 직렬은 AND, 병렬은 OR, b접점은 NOT으로 시퀀스 회로와 그대로 대응합니다.',g:'<svg viewBox="0 0 320 132" role="img" aria-label="논리게이트 AND OR NOT" xmlns="http://www.w3.org/2000/svg"><path class="bx" d="M32,44 h20 a19,19 0 0 1 0,38 h-20 z"/><line class="ln" x1="16" y1="54" x2="32" y2="54"/><line class="ln" x1="16" y1="72" x2="32" y2="72"/><line class="ln" x1="71" y1="63" x2="86" y2="63"/><text class="t" x="50" y="104" text-anchor="middle">AND</text><text class="tm" x="50" y="118" text-anchor="middle">직렬</text><path class="bx" d="M130,44 q26,0 40,19 q-14,19 -40,19 q11,-19 0,-38 z"/><line class="ln" x1="114" y1="54" x2="130" y2="54"/><line class="ln" x1="114" y1="72" x2="130" y2="72"/><line class="ln" x1="169" y1="63" x2="184" y2="63"/><text class="t" x="150" y="104" text-anchor="middle">OR</text><text class="tm" x="150" y="118" text-anchor="middle">병렬</text><path class="bx" d="M236,44 L236,82 L266,63 z"/><circle class="bx" cx="271" cy="63" r="4.4"/><line class="ln" x1="220" y1="63" x2="236" y2="63"/><line class="ln" x1="276" y1="63" x2="292" y2="63"/><text class="t" x="252" y="104" text-anchor="middle">NOT</text><text class="tm" x="252" y="118" text-anchor="middle">b접점</text></svg>'},
 {i:'b22',s:2,q:'NAND 게이트와 NOR 게이트란?',a:'NAND는 AND의 반전, NOR는 OR의 반전',n:'NAND는 모든 논리회로를 만들 수 있어 범용 게이트라고 합니다.'},
 {i:'b23',s:2,q:'불 대수의 기본 정리와 드모르간의 정리는?',a:'A + A = A, A · A = A, A + A′ = 1, A · A′ = 0 / (A + B)′ = A′ · B′, (A · B)′ = A′ + B′',n:'드모르간은 AND와 OR를 서로 바꾸고 각 항을 반전시키는 법칙입니다.'},
 {i:'b24',s:2,q:'플립플롭의 종류 4가지는?',a:'RS · JK · D · T 플립플롭',n:'1비트를 기억하는 순서논리회로입니다. JK는 RS의 금지 입력 문제를 해결한 것입니다.'},
@@ -665,16 +897,16 @@ var CARDS = [
 {i:'c20',s:3,q:'화재예방법이 주로 정하는 내용은?',a:'소방안전관리자·보조자 선임, 소방안전교육, 화재위험평가, 화재예방강화지구 등 화재의 예방',n:'시설의 설치·점검은 소방시설법, 사람과 예방 활동은 화재예방법으로 나눠 기억합니다.'},
 {i:'c21',s:3,q:'소화설비에 해당하는 것을 들면?',a:'소화기, 옥내소화전설비, 스프링클러설비, 물분무·포·이산화탄소·분말소화설비 등',n:'불을 끄는 설비가 소화설비, 알리는 설비가 경보설비입니다.'},
 
-{i:'d1',s:4,q:'하나의 경계구역은 어떻게 정하나?',a:'면적 600㎡ 이하, 한 변의 길이 50m 이하. 주된 출입구에서 내부 전체가 보이면 1,000㎡까지 가능',n:'500㎡ 이하 범위에서는 2개 층을 하나의 경계구역으로 할 수 있습니다.'},
+{i:'d1',s:4,q:'하나의 경계구역은 어떻게 정하나?',a:'면적 600㎡ 이하, 한 변의 길이 50m 이하. 주된 출입구에서 내부 전체가 보이면 1,000㎡까지 가능',n:'500㎡ 이하 범위에서는 2개 층을 하나의 경계구역으로 할 수 있습니다.',g:'<svg viewBox="0 0 320 148" role="img" aria-label="경계구역 600제곱미터 50미터" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah4" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs><rect class="bxz" x="24" y="26" width="182" height="94" rx="4"/><text class="t" x="115" y="64" text-anchor="middle">하나의 경계구역</text><text class="tm" x="115" y="82" text-anchor="middle">600㎡ 이하</text><text class="tm" x="115" y="98" text-anchor="middle">한 변 50m 이하</text><line class="dim" x1="24" y1="134" x2="206" y2="134" marker-start="url(#ah4)" marker-end="url(#ah4)"/><text class="dimt" x="115" y="128" text-anchor="middle">50m 이하</text><text class="t" x="222" y="52">출입구에서</text><text class="t" x="222" y="66">전체가 보이면</text><text class="acc-t" x="222" y="84">1,000㎡까지</text><text class="tm" x="222" y="102">계단·경사로는</text><text class="tm" x="222" y="116">45m마다 별도</text></svg>'},
 {i:'d2',s:4,q:'계단·경사로의 경계구역은?',a:'높이 45m 이하마다 별도 경계구역으로 설정',n:'지하층의 계단과 경사로는 별도 경계구역으로 해야 합니다(지하 1개 층 제외).'},
 {i:'d3',s:4,q:'부착높이 8m 이상 15m 미만에 쓸 수 있는 감지기는?',a:'차동식 분포형, 이온화식 1·2종, 광전식 1·2종, 연기복합형, 불꽃감지기',n:'스포트형 열감지기는 8m 미만까지만 쓸 수 있습니다. 15~20m는 연기감지기 1종 등으로 좁혀집니다.'},
 {i:'d4',s:4,q:'연기감지기 1·2종의 감지면적은?',a:'부착높이 4m 미만은 150㎡마다, 4m 이상 20m 미만은 75㎡마다 1개 이상',n:'3종은 4m 미만에서만 50㎡마다 설치합니다. 실(감지구역)마다 따로 계산해 올림합니다.'},
 {i:'d5',s:4,q:'연기감지기의 복도·계단 설치 간격은?',a:'복도·통로는 보행거리 30m마다(3종 20m), 계단·경사로는 수직거리 15m마다(3종 10m)',n:'구부러진 모퉁이에도 추가로 설치합니다.'},
-{i:'d6',s:4,q:'감지기의 이격거리 기준은?',a:'벽 또는 보로부터 0.6m 이상, 실내 공기유입구로부터 1.5m 이상 떨어뜨린다',n:'스포트형 감지기는 45도 이상 경사되지 않게 부착합니다.'},
+{i:'d6',s:4,q:'감지기의 이격거리 기준은?',a:'벽 또는 보로부터 0.6m 이상, 실내 공기유입구로부터 1.5m 이상 떨어뜨린다',n:'스포트형 감지기는 45도 이상 경사되지 않게 부착합니다.',g:'<svg viewBox="0 0 320 174" role="img" aria-label="감지기 이격거리" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah3" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs><line class="ln2" x1="16" y1="30" x2="304" y2="30"/><line class="ln2" x1="16" y1="30" x2="16" y2="152"/><line class="ln2" x1="304" y1="30" x2="304" y2="152"/><line class="ln2" x1="16" y1="152" x2="304" y2="152"/><rect class="bx" x="152" y="30" width="14" height="38"/><text class="tm" x="172" y="58">보</text><line class="ln" x1="100" y1="30" x2="100" y2="37"/><circle class="cdet" cx="100" cy="45" r="8"/><text class="tm" x="86" y="66" text-anchor="middle">감지기</text><line class="dim" x1="16" y1="80" x2="92" y2="80" marker-start="url(#ah3)" marker-end="url(#ah3)"/><text class="dimt" x="54" y="74" text-anchor="middle">0.6m 이상</text><line class="dim" x1="108" y1="96" x2="152" y2="96" marker-start="url(#ah3)" marker-end="url(#ah3)"/><text class="dimt" x="130" y="90" text-anchor="middle">0.6m</text><rect class="bx2" x="282" y="34" width="14" height="12"/><text class="tm" x="289" y="26" text-anchor="middle">급기구</text><line class="dim" x1="108" y1="122" x2="282" y2="122" marker-start="url(#ah3)" marker-end="url(#ah3)"/><text class="dimt" x="195" y="138" text-anchor="middle">1.5m 이상</text><text class="tm" x="160" y="166" text-anchor="middle">벽·보에서 0.6m, 급기구에서 1.5m 이상</text></svg>'},
 {i:'d7',s:4,q:'감지기 회로의 절연저항과 전로저항 기준은?',a:'절연저항 0.1MΩ 이상(직류 250V 절연저항계), 전로저항 50Ω 이하',n:'회로 끝 감지기에 걸리는 전압은 감지기 정격전압의 80% 이상이어야 합니다.'},
-{i:'d8',s:4,q:'종단저항은 어디에, 왜 설치하나?',a:'감지기 회로의 끝부분에 설치해 회로의 도통을 감시한다',n:'전용함을 두면 바닥에서 1.5m 이내에 설치하고, 종단감지기에 달면 별도 표시를 합니다.'},
+{i:'d8',s:4,q:'종단저항은 어디에, 왜 설치하나?',a:'감지기 회로의 끝부분에 설치해 회로의 도통을 감시한다',n:'전용함을 두면 바닥에서 1.5m 이내에 설치하고, 종단감지기에 달면 별도 표시를 합니다.',g:'<svg viewBox="0 0 320 152" role="img" aria-label="종단저항과 감지기 회로 도통 감시" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah2" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs><rect class="bx" x="6" y="46" width="56" height="48" rx="7"/><text class="t" x="34" y="75" text-anchor="middle">수신기</text><line class="ln" x1="62" y1="64" x2="286" y2="64"/><circle class="cdet" cx="110" cy="64" r="9"/><circle class="cdet" cx="170" cy="64" r="9"/><circle class="cdet" cx="230" cy="64" r="9"/><text class="tm" x="110" y="42" text-anchor="middle">감지기</text><rect class="bx2" x="286" y="54" width="24" height="20" rx="3"/><text class="t" x="318" y="44" text-anchor="end">종단저항</text><line class="dash" x1="298" y1="74" x2="298" y2="96"/><text class="tm" x="318" y="110" text-anchor="end">회로 끝 · 도통 감시</text><text class="tm" x="160" y="142" text-anchor="middle">전용함에 설치하면 바닥에서 1.5m 이내</text></svg>'},
 {i:'d9',s:4,q:'P형 수신기의 한 공통선에 접속할 수 있는 경계구역 수는?',a:'7개 이하',n:'8개부터는 공통선을 1가닥 추가합니다. 실기 가닥수 산정의 핵심 숫자입니다.'},
-{i:'d10',s:4,q:'발신기의 설치 기준은?',a:'층마다 설치하고 각 부분에서 발신기까지 수평거리 25m 이하, 조작스위치 높이 0.8m 이상 1.5m 이하',n:'복도나 구획된 실의 보행거리가 40m 이상이면 발신기를 추가합니다.'},
+{i:'d10',s:4,q:'발신기의 설치 기준은?',a:'층마다 설치하고 각 부분에서 발신기까지 수평거리 25m 이하, 조작스위치 높이 0.8m 이상 1.5m 이하',n:'복도나 구획된 실의 보행거리가 40m 이상이면 발신기를 추가합니다.',g:'<svg viewBox="0 0 320 176" role="img" aria-label="비상콘센트 발신기 유도등 설치 높이" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah5" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs><line class="ln2" x1="14" y1="150" x2="306" y2="150"/><line class="ln2" x1="14" y1="150" x2="14" y2="26"/><line class="ln2" x1="306" y1="150" x2="306" y2="26"/><line class="dim" x1="38" y1="150" x2="38" y2="60" marker-start="url(#ah5)" marker-end="url(#ah5)"/><line class="dim" x1="32" y1="102" x2="44" y2="102"/><line class="dim" x1="32" y1="60" x2="44" y2="60"/><text class="dimt" x="48" y="106">0.8m</text><text class="dimt" x="48" y="64">1.5m</text><rect class="bx2" x="96" y="84" width="46" height="20" rx="3"/><text class="tm" x="119" y="78" text-anchor="middle">비상콘센트</text><rect class="bx" x="166" y="80" width="24" height="24" rx="3"/><text class="tm" x="178" y="74" text-anchor="middle">발신기</text><rect class="bx" x="228" y="42" width="56" height="18" rx="3"/><text class="tm" x="300" y="34" text-anchor="end">피난구유도등 1.5m 이상</text><text class="tm" x="160" y="168" text-anchor="middle">비상콘센트·발신기 0.8m 이상 1.5m 이하</text></svg>'},
 {i:'d11',s:4,q:'비상경보설비 음향장치의 음압 기준은?',a:'음향장치 중심에서 1m 떨어진 곳의 음압이 90dB 이상',n:'정격전압의 80%에서도 경보할 수 있어야 하고, 층마다 수평거리 25m 이하로 설치합니다.'},
 {i:'d12',s:4,q:'비상방송설비 확성기의 기준은?',a:'음성입력 3W 이상(실내 설치 1W 이상), 층마다 수평거리 25m 이하, 조작부 스위치 높이 0.8~1.5m',n:'기동장치 신호를 받은 뒤 10초 이내에 자동으로 방송이 시작되어야 하고, 음량조정기 배선은 3선식입니다.'},
 {i:'d13',s:4,q:'11층 이상 건물에서 우선경보를 해야 하는 범위는?',a:'2층 이상에서 발화하면 발화층과 직상 4개층, 1층에서 발화하면 발화층·직상 4개층·지하층',n:'지하층에서 발화하면 발화층·직상층·그 밖의 지하층에 경보합니다. 공동주택은 16층 이상에 적용합니다.'},
@@ -684,10 +916,10 @@ var CARDS = [
 {i:'d17',s:4,q:'통로유도등의 높이와 간격은?',a:'복도통로유도등은 1m 이하, 계단통로유도등은 1m 이하(계단참마다), 거실통로유도등은 1.5m 이상',n:'복도와 거실은 보행거리 20m마다 설치합니다. 계단은 1개 층에 계단참이 2개 이상이면 2개 계단참마다 설치합니다.'},
 {i:'d18',s:4,q:'유도등의 조도 기준은?',a:'통로유도등 1lx 이상, 계단통로유도등 0.5lx 이상, 객석유도등 0.2lx 이상',n:'유도등 형식승인 및 제품검사 기술기준의 값입니다. 비상조명등은 바닥에서 1lx 이상입니다.'},
 {i:'d19',s:4,q:'유도등 비상전원의 용량 기준은?',a:'20분 이상 유효하게 작동. 지하층을 제외한 층수가 11층 이상인 층, 지하상가 등은 60분 이상',n:'비상조명등도 같은 20분·60분 기준을 씁니다.'},
-{i:'d20',s:4,q:'유도등의 3선식 배선은 세 가닥이 무엇인가?',a:'공통선 · 충전선 · 점등선',n:'평상시에는 충전선으로 비상전원을 충전하고, 화재신호를 받으면 점등선으로 자동 점등합니다.'},
+{i:'d20',s:4,q:'유도등의 3선식 배선은 세 가닥이 무엇인가?',a:'공통선 · 충전선 · 점등선',n:'평상시에는 충전선으로 비상전원을 충전하고, 화재신호를 받으면 점등선으로 자동 점등합니다.',g:'<svg viewBox="0 0 320 144" role="img" aria-label="유도등 3선식 배선" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah10" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs><rect class="bx" x="12" y="44" width="76" height="56" rx="6"/><text class="t" x="50" y="76" text-anchor="middle">전원 · 수신기</text><rect class="bx2" x="214" y="38" width="86" height="66" rx="6"/><text class="t" x="257" y="76" text-anchor="middle">유도등</text><line class="ln" x1="88" y1="52" x2="214" y2="52" /><text class="tm" x="94" y="48">공통선</text><line class="ln" x1="88" y1="72" x2="214" y2="72" marker-end="url(#ah10)"/><text class="tm" x="94" y="68">충전선</text><line class="ln" x1="88" y1="92" x2="214" y2="92" marker-end="url(#ah10)"/><text class="tm" x="94" y="88">점등선</text><text class="tm" x="160" y="132" text-anchor="middle">평상시 충전 · 화재 신호를 받으면 점등</text></svg>'},
 {i:'d21',s:4,q:'비상조명등의 조도와 예비전원 기준은?',a:'설치 장소 각 부분의 바닥에서 1lx 이상, 20분 이상 작동(11층 이상 등은 60분 이상)',n:'휴대용 비상조명등의 배터리도 20분 이상 사용할 수 있어야 합니다.'},
 {i:'d22',s:4,q:'비상콘센트설비의 전원회로 기준은?',a:'단상교류 220V, 공급용량 1.5kVA 이상, 각 층에 2회로 이상, 전용회로 하나에 비상콘센트 10개 이하',n:'전원회로는 주배전반에서 전용회로로 끌어옵니다.'},
-{i:'d23',s:4,q:'비상콘센트의 설치 위치 기준은?',a:'바닥에서 0.8m 이상 1.5m 이하, 계단 출입구에서 5m 이내, 각 부분까지 수평거리 50m 이하(지하상가·지하 3,000㎡ 이상은 25m)',n:'보호함 상부에는 적색 표시등을 답니다.'},
+{i:'d23',s:4,q:'비상콘센트의 설치 위치 기준은?',a:'바닥에서 0.8m 이상 1.5m 이하, 계단 출입구에서 5m 이내, 각 부분까지 수평거리 50m 이하(지하상가·지하 3,000㎡ 이상은 25m)',n:'보호함 상부에는 적색 표시등을 답니다.',g:'<svg viewBox="0 0 320 176" role="img" aria-label="비상콘센트 발신기 유도등 설치 높이" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah5" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs><line class="ln2" x1="14" y1="150" x2="306" y2="150"/><line class="ln2" x1="14" y1="150" x2="14" y2="26"/><line class="ln2" x1="306" y1="150" x2="306" y2="26"/><line class="dim" x1="38" y1="150" x2="38" y2="60" marker-start="url(#ah5)" marker-end="url(#ah5)"/><line class="dim" x1="32" y1="102" x2="44" y2="102"/><line class="dim" x1="32" y1="60" x2="44" y2="60"/><text class="dimt" x="48" y="106">0.8m</text><text class="dimt" x="48" y="64">1.5m</text><rect class="bx2" x="96" y="84" width="46" height="20" rx="3"/><text class="tm" x="119" y="78" text-anchor="middle">비상콘센트</text><rect class="bx" x="166" y="80" width="24" height="24" rx="3"/><text class="tm" x="178" y="74" text-anchor="middle">발신기</text><rect class="bx" x="228" y="42" width="56" height="18" rx="3"/><text class="tm" x="300" y="34" text-anchor="end">피난구유도등 1.5m 이상</text><text class="tm" x="160" y="168" text-anchor="middle">비상콘센트·발신기 0.8m 이상 1.5m 이하</text></svg>'},
 {i:'d24',s:4,q:'비상콘센트설비의 절연저항 기준은?',a:'전원부와 외함 사이를 500V 절연저항계로 측정해 20MΩ 이상',n:'감지기 회로의 0.1MΩ과 헷갈리지 않게 구분합니다.'},
 {i:'d25',s:4,q:'무선통신보조설비를 구성하는 것은?',a:'누설동축케이블 · 안테나 · 분배기 · 증폭기 · 무선중계기 · 옥외안테나',n:'임피던스는 50Ω, 케이블은 4m 이내마다 고정하고 고압 전로에서 1.5m 이상 떨어뜨립니다.'},
 {i:'d26',s:4,q:'무선통신보조설비 증폭기의 비상전원 용량은?',a:'30분 이상 유효하게 작동할 수 있는 용량',n:'유도등·비상콘센트는 20분, 무선통신보조설비는 30분으로 구분해 외웁니다.'},
@@ -696,7 +928,7 @@ var CARDS = [
 {i:'d29',s:4,q:'자동화재탐지설비의 배선 기준은?',a:'전원회로는 내화배선, 감지기 회로는 내화배선 또는 내열배선. 다른 전선과 별도의 관·덕트에 설치',n:'60V 미만 약전류회로로서 전압이 같으면 예외로 함께 넣을 수 있습니다.'},
 {i:'d30',s:4,q:'단독경보형감지기는 어떻게 설치하나?',a:'각 실마다 설치하되, 바닥면적이 150㎡를 초과하면 150㎡마다 1개 이상',n:'계단실은 최상층 계단실 천장에 설치합니다. 건전지형은 주기적으로 교환합니다.'},
 {i:'d31',s:4,q:'감지기를 설치하지 않을 수 있는 장소는?',a:'천장·반자 높이 20m 이상, 부식성 가스 체류, 목욕실·샤워실, 먼지·수증기가 많은 장소 등',n:'주방처럼 평소 연기가 나는 곳에는 연기감지기를 피하고 적응성 있는 감지기를 씁니다.'},
-{i:'d32',s:4,q:'실기에서 쓰는 P형 발신기 기본 가닥수는?',a:'지구선 + 지구공통선 + 응답선 + 전화선 + 경종선 + 표시등선 + 경종·표시등 공통선 = 7가닥(전화선 제외 6가닥)',n:'경계구역이 늘면 지구선이 1가닥씩 늘고, 지구선 7개마다 공통선이 1가닥 추가됩니다.'}
+{i:'d32',s:4,q:'실기에서 쓰는 P형 발신기 기본 가닥수는?',a:'지구선 + 지구공통선 + 응답선 + 전화선 + 경종선 + 표시등선 + 경종·표시등 공통선 = 7가닥(전화선 제외 6가닥)',n:'경계구역이 늘면 지구선이 1가닥씩 늘고, 지구선 7개마다 공통선이 1가닥 추가됩니다.',g:'<svg viewBox="0 0 320 180" role="img" aria-label="P형 발신기 기본 7가닥 배선" xmlns="http://www.w3.org/2000/svg"><rect class="bx" x="6" y="20" width="52" height="140" rx="7"/><text class="t" x="32" y="94" text-anchor="middle">수신기</text><rect class="bx" x="258" y="20" width="56" height="140" rx="7"/><text class="t" x="286" y="82" text-anchor="middle">발신기</text><text class="tm" x="286" y="98" text-anchor="middle">· 감지기</text><line class="acc" x1="58" y1="36" x2="258" y2="36"/><text class="t" x="64" y="31">지구선</text><text class="tm" x="252" y="31" text-anchor="end">1</text><line class="ln" x1="58" y1="56" x2="258" y2="56"/><text class="tm" x="64" y="51">지구공통선</text><text class="tm" x="252" y="51" text-anchor="end">1</text><line class="ln" x1="58" y1="76" x2="258" y2="76"/><text class="tm" x="64" y="71">응답선</text><text class="tm" x="252" y="71" text-anchor="end">1</text><line class="ln" x1="58" y1="96" x2="258" y2="96"/><text class="tm" x="64" y="91">전화선</text><text class="tm" x="252" y="91" text-anchor="end">1</text><line class="ln" x1="58" y1="116" x2="258" y2="116"/><text class="tm" x="64" y="111">경종선</text><text class="tm" x="252" y="111" text-anchor="end">1</text><line class="ln" x1="58" y1="136" x2="258" y2="136"/><text class="tm" x="64" y="131">표시등선</text><text class="tm" x="252" y="131" text-anchor="end">1</text><line class="ln" x1="58" y1="156" x2="258" y2="156"/><text class="tm" x="64" y="151">경종·표시등공통선</text><text class="tm" x="252" y="151" text-anchor="end">1</text><text class="tm" x="160" y="172" text-anchor="middle">합계 7가닥 · 전화선을 빼면 6가닥</text></svg>'}
 ];
 var QUIZ = [
 {i:'q1',s:1,t:'mc',q:'연소의 3요소에 해당하지 않는 것은?',o:['가연물','산소공급원','점화원','연쇄반응'],k:3,e:'연쇄반응은 불꽃연소의 4번째 요소입니다. 3요소는 가연물·산소공급원·점화원입니다.'},
@@ -825,7 +1057,7 @@ $('themeBtn').addEventListener('click', function(){
 });
 
 /* ---------- tabs ---------- */
-var state = {tab:'cards'};
+var state = {tab:'quiz'};
 function switchTab(name){
   state.tab = name;
   var views = {cards:'viewCards', quiz:'viewQuiz', roadmap:'viewRoadmap'};
@@ -838,7 +1070,7 @@ function switchTab(name){
     var on = tabs[i].getAttribute('data-tab') === name;
     tabs[i].className = 'tab' + (on ? ' active' : '');
   }
-  if (name === 'quiz') renderQuizSetup();
+  if (name === 'quiz') renderSets();
   window.scrollTo(0, 0);
 }
 var tabBtns = document.querySelectorAll('.tab');
@@ -902,6 +1134,9 @@ function renderCards(){
   $('fcQ').textContent = c.q;
   $('fcA').textContent = c.a;
   $('fcNote').textContent = c.n;
+  $('fcDiag').innerHTML = c.g || '';
+  $('fcDiag').style.display = c.g ? '' : 'none';
+  $('fcScene').className = 'scene' + (c.g ? ' wide' : '');
   $('fcDot').style.background = 'var(--s' + c.s + ')';
   $('fcDot2').style.background = 'var(--s' + c.s + ')';
   $('fcSubj').textContent = label;
@@ -998,193 +1233,1170 @@ document.addEventListener('keydown', function(e){
   else if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); cs.flipped = !cs.flipped; renderCards(); }
 });
 
-/* ---------- quiz ---------- */
-var qz = {active:false, list:[], idx:0, answered:false, chosen:-1, correct:0, wrongIds:[], size:10, filter:0};
+var BANK_S1 = [
+{i:'26-1-01',y:2026,s:1,q:'불꽃연소에서 연쇄반응을 계속 이어가게 하는 매개체는?',o:['수증기','활성 라디칼(유리기)','이산화탄소','질소'],k:1,e:'연소의 4요소는 가연물·산소공급원·점화원·연쇄반응이며, 연쇄반응은 활성 라디칼(유리기)이 매개합니다. 할론·분말소화약제의 억제소화는 이 라디칼을 잡는 원리입니다.'},
+{i:'26-1-02',y:2026,s:1,q:'질식소화의 예로 가장 적절한 것은?',o:['이산화탄소를 방사해 산소 농도를 낮춘다','물을 뿌려 온도를 낮춘다','주변의 가연물을 다른 곳으로 옮긴다','할론으로 연쇄반응을 끊는다'],k:0,e:'질식소화는 산소 공급을 차단하는 방법으로, 이산화탄소·포·불활성가스가 대표적입니다. 물은 냉각, 가연물 제거는 제거, 할론은 억제소화입니다.'},
+{i:'26-1-03',y:2026,s:1,q:'나무·종이처럼 고체 가연물이 열분해로 가연성 가스를 내보내며 타는 연소 형태는?',o:['증발연소','표면연소','확산연소','분해연소'],k:3,e:'고체는 대부분 열을 받아 분해되면서 가연성 가스를 발생시키고, 이 가스가 공기와 섞여 타는 분해연소를 합니다. 숯·코크스는 표면연소입니다.'},
+{i:'26-1-04',y:2026,s:1,q:'인화점에 대한 설명으로 옳은 것은?',o:['불꽃 없이도 연소가 계속되는 최저온도','점화원 없이 스스로 타기 시작하는 온도','불꽃을 가까이했을 때 불이 붙는 최저온도','액체가 모두 연소해 없어지는 온도'],k:2,e:'인화점은 액체 표면의 증기가 불꽃에 의해 처음 불이 붙는 최저온도입니다. 스스로 타기 시작하는 온도는 발화점, 불꽃 없이 연소가 이어지는 온도는 연소점입니다.'},
+{i:'26-1-05',y:2026,s:1,q:'전기기기에서 발생한 화재의 급수와 그에 적합한 소화약제를 바르게 짝지은 것은?',o:['A급 - 물','C급 - 이산화탄소','B급 - 이산화탄소','D급 - 물'],k:1,e:'C급은 전기화재로, 절연성이 좋고 잔류물이 없는 이산화탄소·분말·할론을 씁니다. A급은 물이 효과적이고, B급 유류에는 포·분말, D급 금속에는 전용 약제를 씁니다.'},
+{i:'26-1-06',y:2026,s:1,q:'실내의 가연물이 일시에 착화되어 화재가 급격히 확대되는 현상은?',o:['플래시오버','백드래프트','롤오버','브리딩'],k:0,e:'플래시오버는 성장기 실내에 열이 축적되어 가연물이 일시에 착화하는 현상입니다. 백드래프트는 산소가 부족한 밀폐공간에 공기가 유입될 때 미연소가스가 폭발하는 현상입니다.'},
+{i:'26-1-07',y:2026,s:1,q:'건물 화재의 진행 단계 중 실내 온도가 가장 높고 소방활동이 가장 어려운 시기는?',o:['발화기','성장기','감퇴기','최성기'],k:3,e:'최성기는 화재가 실내 전체로 확대되어 온도가 최고에 이르고 연기가 가장 많은 시기입니다. 이 시기를 지나 가연물이 소모되면 감퇴기(실화)가 됩니다.'},
+{i:'26-1-08',y:2026,s:1,q:'연기의 위험성으로 보기 어려운 것은?',o:['가시거리를 줄여 피난을 어렵게 한다','일산화탄소 등 유독가스로 질식시킨다','산소 농도를 높여 연소를 돕는다','고온의 연기로 화상을 입힌다'],k:2,e:'연기는 산소를 소모해 농도를 낮추고, 유독가스·고온·가시거리 감소로 피난과 소화를 방해합니다. 산소 농도를 높이는 것은 연기의 위험성이 아닙니다.'},
+{i:'26-1-09',y:2026,s:1,q:'이산화탄소 소화약제가 전기실·정밀기기에 적합한 이유는?',o:['냉각효과가 가장 크다','잔류물이 없고 절연성이 좋다','산소를 공급해 연소를 억제한다','값이 싸서 대량으로 쓸 수 있다'],k:1,e:'이산화탄소는 기화 후 잔류물을 남기지 않고 전기 절연성이 좋아 전기·정밀기기 화재에 적합합니다. 다만 밀폐공간에서는 질식 위험이 있어 퇴피 확인이 필요합니다.'},
+{i:'26-1-10',y:2026,s:1,q:'분말소화약제 중 주성분이 제1인산암모늄인 것은?',o:['제3종','제2종','제1종','제4종'],k:0,e:'제3종의 주성분이 제1인산암모늄으로 A·B·C급에 모두 사용합니다. 제1종은 중탄산나트륨, 제2종은 중탄산칼륨, 제4종은 중탄산칼륨과 요소의 혼합물입니다.'},
+{i:'26-1-11',y:2026,s:1,q:'바닥면적 200㎡인 실에 연소열 총량 450만 kcal의 가연물이 있다. 화재하중은?',o:['2.5 kg/㎡','22.5 kg/㎡','10 kg/㎡','5 kg/㎡'],k:3,e:'화재하중 = 4,500,000 ÷ (200 × 4,500) = 5 kg/㎡입니다. 목재 1kg의 연소열 4,500kcal로 환산한 값으로, 클수록 소화가 어렵습니다.'},
+{i:'26-1-12',y:2026,s:1,q:'폭발하한계 5%, 폭발상한계 15%인 가스의 위험도는?',o:['0.5','1','2','3'],k:2,e:'위험도 = (폭발상한계 − 폭발하한계) ÷ 폭발하한계 = (15 − 5) ÷ 5 = 2입니다. 값이 클수록 폭발범위가 넓고 위험합니다.'},
+{i:'25-1-01',y:2025,s:1,q:'기름 묻은 걸레를 쌓아 두었을 때 열이 축적되어 저절로 발화하는 원인이 되는 열은?',o:['마찰열','산화열','압축열','유도열'],k:1,e:'건성유가 묻은 걸레·헝겊은 공기 중 산소와 느리게 산화하면서 생긴 산화열이 축적되어 자연발화합니다. 짚단·퇴비는 미생물 발효열이 원인입니다.'},
+{i:'25-1-02',y:2025,s:1,q:'물의 소화작용 중 가장 주된 것은?',o:['냉각작용','질식작용','억제작용','제거작용'],k:0,e:'물은 비열과 증발잠열이 커서 가연물의 온도를 발화점 아래로 낮추는 냉각작용이 주된 소화 원리입니다. 증발한 수증기에 의한 질식작용도 일부 있습니다.'},
+{i:'25-1-03',y:2025,s:1,q:'수성막포를 유류화재에 사용하는 주된 이유는?',o:['기름보다 무거워 바닥에 가라앉는다','기름의 온도를 급격히 낮춘다','기름을 화학적으로 분해한다','기름 표면에 수막을 만들어 재점화를 막는다'],k:3,e:'수성막포는 유류 표면에 얇은 수막을 형성해 증기 발생과 재점화를 막습니다. 알코올류에는 내알코올형 포를 사용합니다.'},
+{i:'25-1-04',y:2025,s:1,q:'할로겐화합물 소화약제의 주된 소화작용은?',o:['냉각','질식','연쇄반응 억제','제거'],k:2,e:'할로겐화합물은 연소의 연쇄반응을 이끄는 활성 라디칼을 잡아 화학적으로 억제합니다. 할론은 오존층 파괴와 온실가스 문제로 사용이 제한되어 있습니다.'},
+{i:'25-1-05',y:2025,s:1,q:'방화구획의 목적으로 가장 적절한 것은?',o:['건물의 미관을 유지한다','화재와 연기의 확산을 늦춰 피난과 소화 시간을 확보한다','화재를 완전히 막아 소화설비를 줄인다','연기의 독성을 없앤다'],k:1,e:'방화구획은 내화구조의 바닥·벽·천장과 방화문으로 공간을 나눠 화재·연기의 확산을 지연시키고, 피난과 소화에 필요한 시간을 벌어 줍니다.'},
+{i:'25-1-06',y:2025,s:1,q:'건축물을 내화구조로 하는 주된 이유는?',o:['화재 시 구조가 쉽게 무너지지 않아 피난·소화 시간을 확보한다','화재를 스스로 진압한다','건물의 단열성을 높인다','연기가 외부로 빠져나가게 한다'],k:0,e:'내화구조는 일정 시간 화재에 견디도록 재료와 두께를 정한 구조로, 구조부 붕괴를 지연시켜 인명 피해를 줄입니다.'},
+{i:'25-1-07',y:2025,s:1,q:'특별피난계단이 일반 피난계단과 다른 점은?',o:['비상조명등을 설치하지 않는다','계단 폭을 절반으로 줄인다','옥상으로만 통하게 한다','부속실(전실)을 두어 연기가 계단실로 들어오지 않게 한다'],k:3,e:'특별피난계단은 계단실 앞에 부속실(전실)을 두고 제연설비를 설치해 연기 유입을 막습니다. 피난 시에는 부속실의 문을 닫아야 제연 효과가 유지됩니다.'},
+{i:'25-1-08',y:2025,s:1,q:'고층 건물에서 계단실·승강로를 통해 연기가 빠르게 상승하는 현상은?',o:['플래시오버','백드래프트','연돌효과(굴뚝효과)','롤오버'],k:2,e:'건물 안팎의 온도차로 생긴 압력차가 수직 공간에 작용해 연기가 빠르게 오르는 현상을 연돌효과라고 합니다. 계단실 방연과 제연설비가 중요한 이유입니다.'},
+{i:'25-1-09',y:2025,s:1,q:'LPG가 누출될 때의 체류 위치와 환기 방법으로 옳은 것은?',o:['공기보다 가벼워 천장에 체류하므로 높은 곳을 환기한다','공기보다 무거워 바닥에 체류하므로 낮은 곳을 환기한다','물에 녹아 배관을 따라 흐르므로 배수구를 환기한다','공기와 같은 무게라 환기가 필요 없다'],k:1,e:'LPG(프로판·부탄)는 공기보다 무거워 낮은 곳에 고이므로 바닥 부근을 환기해야 합니다. 도시가스(LNG·메탄)는 가벼워 천장 쪽에 체류합니다.'},
+{i:'25-1-10',y:2025,s:1,q:'인화점이 낮은 액체일수록 위험한 이유로 가장 적절한 것은?',o:['상온에서도 증기가 발생해 점화원에 쉽게 착화한다','점도가 높아 잘 흐르지 않는다','연소열이 작아 불꽃이 약하다','물에 잘 녹아 확산되지 않는다'],k:0,e:'인화점이 낮으면 상온에서도 가연성 증기가 충분히 발생해 작은 점화원에도 불이 붙습니다. 위험물 분류와 소방 위험성 판단의 기준이 됩니다.'},
+{i:'25-1-11',y:2025,s:1,q:'분진폭발이 일어나기 위한 조건으로 보기 어려운 것은?',o:['가연성 분진이 있을 것','분진이 공기 중에 떠 있을 것','점화원이 있을 것','산소 농도가 0%일 것'],k:3,e:'분진폭발은 가연성 분진이 공기 중에 부유하고 점화원이 있을 때 일어납니다. 산소가 없으면 연소 자체가 불가능합니다.'},
+{i:'25-1-12',y:2025,s:1,q:'벽을 사이에 두고 열이 물체에서 물체로 직접 전달되는 방식은?',o:['복사','대류','전도','유도'],k:2,e:'열전달은 전도·대류·복사로 나뉩니다. 전도는 고체를 통해 직접, 대류는 유체의 이동, 복사는 전자파로 열이 전달되는 방식입니다.'},
+{i:'24-1-01',y:2024,s:1,q:'연소속도에 영향을 주는 요인으로 가장 거리가 먼 것은?',o:['산소 공급량','용기의 색상','주위 온도','가연물의 표면적'],k:1,e:'연소속도는 산소 농도, 가연물의 종류와 표면적, 온도, 압력 등에 영향을 받습니다. 용기의 색상은 연소속도와 직접 관계가 없습니다.'},
+{i:'24-1-02',y:2024,s:1,q:'최소발화에너지에 대한 설명으로 옳은 것은?',o:['가연성 혼합가스를 점화하는 데 필요한 최소한의 전기적 에너지','연소를 멈추는 데 필요한 최소 물의 양','가연물이 완전히 타는 데 걸리는 시간','발화점에 도달하는 최소 가열속도'],k:0,e:'최소발화에너지는 가연성 가스·증기와 공기의 혼합물을 전기 불꽃으로 점화하는 최소 에너지입니다. 값이 작을수록 폭발 위험이 큽니다.'},
+{i:'24-1-03',y:2024,s:1,q:'점화원 없이 스스로 타기 시작하는 최저온도는?',o:['인화점','연소점','비점','발화점'],k:3,e:'발화점은 외부 점화원 없이 물질이 스스로 발화하는 최저온도입니다. 인화점 < 연소점 < 발화점 순서이며, 고체의 위험성을 나타내는 데 주로 씁니다.'},
+{i:'24-1-04',y:2024,s:1,q:'코크스·목탄처럼 산소와 접촉한 표면에서 빛과 열을 내며 타는 연소 형태는?',o:['증발연소','분해연소','표면연소(자기연소)','예혼합연소'],k:2,e:'표면연소는 고체가 분해 없이 표면에서 직접 산소와 반응하는 연소로, 숯·코크스가 대표적입니다. 셀룰로이드는 산소 없이도 타는 자기연소를 합니다.'},
+{i:'24-1-05',y:2024,s:1,q:'화재하중의 단위와 의미로 옳은 것은?',o:['kcal/㎥, 실내 공기 1㎥당 연소열','kg/㎡, 바닥 단위면적당 가연물의 연소열을 목재 무게로 환산한 값','%, 실내 가연물이 차지하는 비율','W/㎡, 단위면적당 발열률'],k:1,e:'화재하중은 가연물의 연소열 총량을 바닥면적과 목재 1kg의 연소열(4,500kcal)로 나눈 값으로 단위는 kg/㎡입니다. 값이 클수록 화재가 크고 오래 갑니다.'},
+{i:'24-1-06',y:2024,s:1,q:'백드래프트를 예방하기 위한 소방활동으로 가장 적절한 것은?',o:['진입 전에 개구부에서 냉각·환기하며 미연소 가스를 배출한다','문을 한 번에 크게 열고 진입한다','실내 온도를 높여 가스를 태운다','창문을 모두 닫아 산소를 차단한다'],k:0,e:'백드래프트는 산소가 부족한 실에 공기가 급히 들어올 때 일어나므로, 개구부 상부에서 냉각수를 뿌려 가스 온도를 낮추고 서서히 환기해야 합니다.'},
+{i:'24-1-07',y:2024,s:1,q:'화재 시 일산화탄소가 위험한 이유는?',o:['폭발성 가스를 만든다','피부에 화학적 화상을 입힌다','눈을 자극해 보이지 않게 한다','헤모글로빈과 결합해 산소 운반을 방해한다'],k:3,e:'일산화탄소는 산소보다 헤모글로빈과 훨씬 강하게 결합해 조직에 산소가 공급되지 않게 합니다. 무색·무취라 느끼기 어렵습니다.'},
+{i:'24-1-08',y:2024,s:1,q:'탄화수소가 완전연소할 때 주로 생기는 물질은?',o:['수소와 산소','일산화탄소와 그을음','이산화탄소와 물','질소화합물'],k:2,e:'완전연소하면 탄소는 이산화탄소, 수소는 물이 됩니다. 산소가 부족한 불완전연소에서는 일산화탄소와 그을음이 생깁니다.'},
+{i:'24-1-09',y:2024,s:1,q:'마그네슘·나트륨 같은 금속화재에 사용할 수 있는 소화약제는?',o:['물','건조모래·팽창질석 등 금속화재 전용 약제','이산화탄소','단백포'],k:1,e:'D급 금속화재에는 건조모래·팽창질석·금속화재 전용 분말을 사용합니다. 물은 금속과 반응해 수소를 발생시키고 이산화탄소도 고온 금속과 반응합니다.'},
+{i:'24-1-10',y:2024,s:1,q:'스프링클러설비의 소화효과에서 가장 큰 비중을 차지하는 것은?',o:['물의 냉각작용','물의 분해에 의한 산소 차단','포에 의한 질식','약제에 의한 연쇄반응 억제'],k:0,e:'스프링클러는 초기에 물을 뿌려 화원의 온도를 낮추는 냉각소화가 주된 효과입니다. 동시에 주변 가연물을 적셔 화재 확산을 막습니다.'},
+{i:'24-1-11',y:2024,s:1,q:'제4류 인화성액체의 일반적인 성질로 옳은 것은?',o:['불에 타지 않는다','물보다 무거워 바닥에 가라앉는다','물에 잘 녹아 물과 섞인다','대부분 물보다 가볍고 물에 잘 녹지 않아 물 위에 뜬다'],k:3,e:'휘발유·등유·경유 같은 제4류는 비중이 1보다 작아 물 위에 뜹니다. 메탄올·아세톤처럼 물에 녹는 수용성 위험물도 있으므로 포 소화 시 내알코올형을 씁니다.'},
+{i:'24-1-12',y:2024,s:1,q:'주위 온도가 높아지면 가연성 가스의 폭발범위는 어떻게 되는가?',o:['변하지 않는다','좁아진다','넓어진다','온도와 무관하게 사라진다'],k:2,e:'온도가 높아지면 분자의 활성이 커져 폭발하한계는 낮아지고 상한계는 높아져 폭발범위가 넓어집니다. 그래서 더 위험해집니다.'},
+{i:'23-1-01',y:2023,s:1,q:'제거소화의 예로 옳은 것은?',o:['물을 뿌려 온도를 낮춘다','화재 주변의 가연물을 안전한 곳으로 옮긴다','이산화탄소로 산소를 차단한다','할론으로 연쇄반응을 끊는다'],k:1,e:'제거소화는 연소에 필요한 가연물 자체를 없애는 방법입니다. 가스 화재에서 밸브를 잠가 가스를 차단하는 것도 제거소화입니다.'},
+{i:'23-1-02',y:2023,s:1,q:'물의 냉각효과가 큰 이유는?',o:['비열과 증발잠열이 크다','점도가 낮다','산소를 발생시킨다','전기 전도성이 없다'],k:0,e:'물은 비열이 1kcal/kg·℃로 크고 증발잠열도 커서 많은 열을 흡수합니다. 1kg의 물이 모두 증발하면 약 539kcal를 빼앗습니다.'},
+{i:'23-1-03',y:2023,s:1,q:'유류화재에 물을 뿌릴 때 위험한 이유는?',o:['물이 기름보다 무거워 가라앉는다','기름이 물에 녹아 독가스가 발생한다','물이 기름을 산화시켜 폭발한다','기름이 비등·비산해 화재가 확대된다'],k:3,e:'물은 기름보다 무거워 아래로 가라앉고, 순간적으로 증발하며 기름을 튕겨 올려 화재를 넓힙니다. 유류에는 포·분말을 사용합니다.'},
+{i:'23-1-04',y:2023,s:1,q:'분말소화약제 제1종의 주성분은?',o:['제1인산암모늄','중탄산칼륨','중탄산나트륨','황산암모늄'],k:2,e:'제1종은 중탄산나트륨으로 B·C급에 사용합니다. 제2종은 중탄산칼륨, 제3종은 제1인산암모늄, 제4종은 중탄산칼륨과 요소의 혼합물입니다.'},
+{i:'23-1-05',y:2023,s:1,q:'이산화탄소 소화설비가 설치된 밀폐공간에서 특히 주의할 점은?',o:['방출 후 잔류물이 기기를 오염시킨다','방출 후 산소가 부족해질 수 있어 퇴피를 확인해야 한다','방출 시 화재가 커질 수 있다','방출 후 물이 차올라 침수된다'],k:1,e:'이산화탄소는 질식·냉각 작용을 하지만 밀폐공간에서는 산소를 밀어내 질식 위험이 큽니다. 방출 전 인원 퇴피 확인과 경보가 필수입니다.'},
+{i:'23-1-06',y:2023,s:1,q:'식용유 화재(K급)에 가장 적합한 소화기는?',o:['K급(강화액) 소화기','물 소화기','이산화탄소 소화기','할론 소화기'],k:0,e:'K급 화재는 동물성·식물성 기름 화재로, 기름 표면에 비누화막을 만들어 질식시키는 강화액(K급) 소화기가 적합합니다. 물은 기름을 비산시킵니다.'},
+{i:'23-1-07',y:2023,s:1,q:'연기가 수직으로 빠르게 확산하는 경로로 가장 적절한 것은?',o:['방화문의 손잡이','창문의 유리','콘크리트 바닥','계단실·승강로·덕트'],k:3,e:'연기는 천장을 타고 퍼지다가 계단실·승강로·덕트 같은 수직 공간을 통해 빠르게 상승합니다. 그래서 수직 구획과 제연이 중요합니다.'},
+{i:'23-1-08',y:2023,s:1,q:'화재 진행 단계에서 가연물이 대부분 소모되어 불꽃이 줄어드는 시기는?',o:['최성기','성장기','감퇴기(실화)','발화기'],k:2,e:'감퇴기는 가연물이 대부분 타 없어져 화재가 줄어드는 단계입니다. 다만 잔불이나 불씨가 남아 재발화할 수 있어 주의해야 합니다.'},
+{i:'23-1-09',y:2023,s:1,q:'방화문에 자동폐쇄장치가 필요한 이유는?',o:['출입을 편리하게 하기 위해','평상시 닫힌 상태를 유지해 화재와 연기의 확산을 막는다','문을 자동으로 열어 피난을 돕기 위해','건물의 냉난방 효율을 높이기 위해'],k:1,e:'방화문은 화재 구획의 경계이므로 자동폐쇄장치로 평상시 닫힘 상태를 유지해야 합니다. 문을 고정해 열어 두면 방화구획 기능이 상실됩니다.'},
+{i:'23-1-10',y:2023,s:1,q:'자연발화성 물질로 물속에 보관해야 하는 것은?',o:['황린','황','마그네슘','과산화수소'],k:0,e:'황린은 공기 중에서 30℃ 부근에 자연발화하므로 물속에 저장합니다. 금수성 물질은 반대로 물과 접촉하면 가연성 가스를 발생시킵니다.'},
+{i:'23-1-11',y:2023,s:1,q:'폭발하한계가 낮은 가스가 위험한 이유는?',o:['공기보다 항상 가볍다','폭발 압력이 낮아 널리 퍼진다','연소열이 커서 불꽃이 오래간다','적은 농도에서도 폭발범위에 들어가기 쉽다'],k:3,e:'폭발하한계가 낮으면 미량이 누출되어도 쉽게 폭발범위에 들어갑니다. 위험도는 (상한 − 하한) ÷ 하한으로 비교합니다.'},
+{i:'23-1-12',y:2023,s:1,q:'보일러 파열처럼 압력 상승으로 용기가 파열되는 폭발은?',o:['핵폭발','화학적 폭발','물리적 폭발','분진폭발'],k:2,e:'물리적 폭발은 압력 용기 파열이나 액체의 급격한 상변화처럼 화학반응 없이 일어나는 폭발입니다. 화학적 폭발은 연소·분해 반응에 의한 것입니다.'},
+{i:'22-1-01',y:2022,s:1,q:'연소의 3요소로 옳게 묶은 것은?',o:['가연물 · 질소 · 점화원','가연물 · 산소공급원 · 점화원','산소공급원 · 점화원 · 연쇄반응','가연물 · 연쇄반응 · 질소'],k:1,e:'연소의 3요소는 가연물, 산소공급원, 점화원입니다. 불꽃을 내며 타는 연소는 여기에 연쇄반응을 더해 4요소라고 합니다.'},
+{i:'22-1-02',y:2022,s:1,q:'소화의 4원리에 해당하지 않는 것은?',o:['분해소화','냉각소화','질식소화','제거소화'],k:0,e:'소화의 4원리는 제거·냉각·질식·억제소화입니다. 분해소화라는 원리는 없습니다.'},
+{i:'22-1-03',y:2022,s:1,q:'연소의 형태 5가지에 해당하지 않는 것은?',o:['확산연소','예혼합연소','증발연소','유도연소'],k:3,e:'연소 형태는 확산·예혼합·증발·분해·표면연소의 5가지입니다. 유도연소는 없는 개념입니다.'},
+{i:'22-1-04',y:2022,s:1,q:'인화점·연소점·발화점의 크기를 바르게 나열한 것은?',o:['발화점 < 연소점 < 인화점','연소점 < 인화점 < 발화점','인화점 < 연소점 < 발화점','인화점 < 발화점 < 연소점'],k:2,e:'보통 인화점이 가장 낮고 발화점이 가장 높습니다. 인화점은 불꽃으로 착화하는 온도, 발화점은 점화원 없이 스스로 타는 온도입니다.'},
+{i:'22-1-05',y:2022,s:1,q:'A급 화재에 해당하는 것은?',o:['휘발유·등유','목재·종이·섬유','전기기기','마그네슘·나트륨'],k:1,e:'A급은 목재·종이·섬유 같은 일반화재입니다. B급은 유류, C급은 전기, D급은 금속 화재입니다.'},
+{i:'22-1-06',y:2022,s:1,q:'플래시오버와 백드래프트의 차이로 옳은 것은?',o:['플래시오버는 가연물의 일시 착화, 백드래프트는 공기 유입에 따른 미연소가스의 폭발','플래시오버는 산소 부족, 백드래프트는 산소 과잉','둘 다 물을 뿌리면 발생한다','플래시오버는 냉각, 백드래프트는 질식에 의한 것이다'],k:0,e:'플래시오버는 성장기에 실내 가연물이 한꺼번에 착화해 화재가 급확대되는 현상, 백드래프트는 밀폐된 실에 공기가 들어올 때 미연소가스가 폭발하는 현상입니다.'},
+{i:'22-1-07',y:2022,s:1,q:'건물 화재의 진행 순서로 옳은 것은?',o:['발화 → 최성기 → 성장 → 감퇴','성장 → 발화 → 감퇴 → 최성기','최성기 → 발화 → 성장 → 감퇴','발화 → 성장 → 최성기 → 감퇴'],k:3,e:'화재는 발화 후 성장기를 거쳐 온도가 가장 높은 최성기에 이르고, 가연물이 소모되면 감퇴기(실화)가 됩니다.'},
+{i:'22-1-08',y:2022,s:1,q:'화재로 인한 사망의 가장 큰 원인은?',o:['건물 붕괴','화염에 의한 화상','연기와 유독가스에 의한 질식','감전'],k:2,e:'화재 사망의 대부분은 일산화탄소 중독 등 연기와 유독가스에 의한 질식입니다. 피난 시 자세를 낮추고 젖은 수건으로 코와 입을 막는 이유입니다.'},
+{i:'22-1-09',y:2022,s:1,q:'이산화탄소의 소화작용을 바르게 묶은 것은?',o:['질식작용과 억제작용만','질식작용과 냉각작용','냉각작용과 제거작용','억제작용만'],k:1,e:'이산화탄소는 산소를 밀어내는 질식작용과 기화할 때 열을 빼앗는 냉각작용을 함께 합니다. 잔류물이 없어 전기·정밀기기에 적합합니다.'},
+{i:'22-1-10',y:2022,s:1,q:'포소화약제의 주된 소화작용은?',o:['가연물 표면을 덮는 질식작용','연쇄반응 억제','가연물 제거','산소 농도 상승'],k:0,e:'포는 가연물 표면을 거품으로 덮어 산소 접촉을 막는 질식작용이 주된 원리이며, 일부 냉각작용도 있습니다. 유류화재에 효과적입니다.'},
+{i:'22-1-11',y:2022,s:1,q:'바닥면적 100㎡인 실에 연소열 총량 135만 kcal의 가연물이 있다. 화재하중은?',o:['1.5 kg/㎡','30 kg/㎡','13.5 kg/㎡','3 kg/㎡'],k:3,e:'화재하중 = 1,350,000 ÷ (100 × 4,500) = 3 kg/㎡입니다. 목재 1kg의 연소열 4,500kcal를 기준으로 환산합니다.'},
+{i:'22-1-12',y:2022,s:1,q:'가연성 가스의 폭발범위란?',o:['발화점과 인화점 사이의 온도 범위','항상 폭발하는 특정 농도','폭발하한계와 폭발상한계 사이의 농도 범위','가스의 연소열 범위'],k:2,e:'공기 중 가스 농도가 폭발하한계(LEL)와 폭발상한계(UEL) 사이에 있을 때 점화하면 폭발합니다. 범위가 넓을수록 위험합니다.'},
+];
+var BANK_S1X = [
+{i:'26-1-13',y:2026,s:1,q:'액체의 인화점을 측정하는 기구로 가장 적절한 것은?',o:['오스트발트 점도계','태그 밀폐식 인화점 시험기','봄베 열량계','아베 굴절계'],k:1,e:'인화점은 태그 밀폐식이나 펜스키마르텐스식 시험기로 측정합니다. 점도계는 점도, 열량계는 발열량, 굴절계는 굴절률을 재는 기구입니다.'},
+{i:'26-1-14',y:2026,s:1,q:'연소에 대한 설명으로 옳은 것은?',o:['빛과 열을 내는 격렬한 산화반응','열을 흡수하는 환원반응','산소 없이 일어나는 분해반응','물과 반응하는 중화반응'],k:0,e:'연소는 가연물이 산소와 결합해 빛과 열을 내는 산화반응입니다. 열을 흡수하는 반응은 흡열반응으로 연소와 반대입니다.'},
+{i:'26-1-15',y:2026,s:1,q:'증기비중에 대한 설명으로 옳은 것은?',o:['온도와 관계없이 일정하다','물의 무게를 1로 할 때의 증기 무게비이다','항상 1보다 작다','공기의 무게를 1로 할 때 증기의 무게비이며, 1보다 크면 낮은 곳에 체류한다'],k:3,e:'증기비중은 공기(1)에 대한 증기의 무게비입니다. 1보다 크면 공기보다 무거워 바닥에, 작으면 천장에 체류합니다.'},
+{i:'26-1-16',y:2026,s:1,q:'같은 종류의 액체에서 비점이 높아지면 인화점은 어떻게 되는가?',o:['변하지 않는다','낮아진다','높아진다','비점과 무관하다'],k:2,e:'비점이 높은 액체는 증발이 어려워 인화점도 높아집니다. 반대로 비점이 낮은 액체는 인화점이 낮아 위험합니다.'},
+{i:'26-1-17',y:2026,s:1,q:'압력이 높아지면 가연성 가스의 폭발범위는 일반적으로 어떻게 되는가?',o:['좁아진다','넓어진다','변하지 않는다','상한계만 낮아진다'],k:1,e:'압력이 높아지면 폭발하한계는 낮아지고 상한계는 높아져 폭발범위가 넓어집니다. 감압하면 좁아집니다.'},
+{i:'26-1-18',y:2026,s:1,q:'가연성 혼합가스에 질소나 이산화탄소 같은 불활성가스를 넣으면?',o:['폭발범위가 좁아지고 결국 연소하지 않는다','폭발범위가 넓어진다','폭발하한계만 낮아진다','연소속도가 빨라진다'],k:0,e:'불활성가스는 산소 농도를 낮추고 열을 흡수해 폭발범위를 좁힙니다. 충분히 넣으면 연소 범위를 벗어나 질식소화됩니다.'},
+{i:'26-1-19',y:2026,s:1,q:'액화가스 탱크가 외부 화재로 가열되어 용기가 파열되고 액체가 급격히 비등하며 폭발하는 현상은?',o:['롤오버','UVCE','플래시오버','BLEVE(비등액체팽창증기폭발)'],k:3,e:'BLEVE는 액화가스 용기가 외부 열로 가열되어 내압이 상승하고 파열되면서 액체가 순간적으로 비등·팽창해 폭발하는 현상입니다.'},
+{i:'26-1-20',y:2026,s:1,q:'누출된 가연성 가스가 넓은 지역에 확산된 뒤 점화원을 만나 폭발하는 현상은?',o:['BLEVE','분진폭발','증기운폭발(UVCE)','자기연소'],k:2,e:'UVCE는 가연성 가스가 대기 중에 넓게 확산되어 구름을 이룬 뒤 점화되어 폭발하는 현상으로, 넓은 범위에 피해를 줍니다.'},
+{i:'25-1-13',y:2025,s:1,q:'유류를 파이프로 이송할 때 정전기에 의한 폭발을 막는 방법으로 가장 적절한 것은?',o:['유속을 최대한 높인다','배관과 탱크를 접지하고 유속을 제한한다','탱크를 플라스틱으로 만든다','공기를 불어넣는다'],k:1,e:'정전기는 마찰·유동으로 발생하므로 접지로 전하를 대지에 흘리고, 유속을 낮춰 발생량을 줄여야 합니다. 습도를 높이는 방법도 도움이 됩니다.'},
+{i:'25-1-14',y:2025,s:1,q:'분진폭발에서 1차 폭발의 충격으로 쌓여 있던 분진이 다시 비산해 일어나는 폭발은?',o:['2차 폭발','전이 폭발','순간 폭발','표면 폭발'],k:0,e:'2차 폭발은 1차 폭발의 압력으로 퇴적 분진이 비산해 공기와 혼합되면서 일어나며, 피해가 훨씬 큽니다. 퇴적 분진 청소가 중요한 이유입니다.'},
+{i:'25-1-15',y:2025,s:1,q:'실내 화재에서 실내외 압력이 같아지는 높이를 무엇이라 하는가?',o:['감광대','연돌대','화염대','중성대'],k:3,e:'중성대는 실내외 압력차가 0이 되는 높이입니다. 중성대 위로는 고온의 연기가 유출되고 아래로는 외부 공기가 유입됩니다.'},
+{i:'25-1-16',y:2025,s:1,q:'배연설비의 방식으로 옳게 묶은 것은?',o:['전도배연과 복사배연','수막배연과 포배연','자연배연과 기계배연','중력배연과 화학배연'],k:2,e:'배연설비는 연기의 부력을 이용하는 자연배연과 송풍기·배연팬을 쓰는 기계배연으로 나뉩니다. 고층 건물에는 기계배연이 주로 쓰입니다.'},
+{i:'25-1-17',y:2025,s:1,q:'방화문의 성능에 따른 구분으로 옳은 것은?',o:['1종 · 2종 · 3종','갑종 · 을종 · 병종','A급 · B급 · C급','특급 · 1급 · 2급'],k:1,e:'방화문은 차열·차연 성능에 따라 갑종·을종·병종으로 구분합니다. 설치 장소에 따라 요구되는 성능이 다릅니다.'},
+{i:'25-1-18',y:2025,s:1,q:'옥외피난계단을 설치하는 주된 목적은?',o:['연기가 들어오지 않는 외부 통로로 지상까지 직접 피난하기 위해','건물의 미관을 위해','화물 운반을 편리하게 하기 위해','옥상 정원으로 통하게 하기 위해'],k:0,e:'옥외피난계단은 건물 외벽에 설치해 연기 유입 없이 지상으로 직접 피난할 수 있게 합니다. 피난계단이 설치 곤란한 경우 대체 수단이 됩니다.'},
+{i:'25-1-19',y:2025,s:1,q:'화재 시 피난 방법으로 옳지 않은 것은?',o:['비상구 유도등을 따라 이동한다','계단을 이용해 낮은 자세로 이동한다','젖은 수건으로 코와 입을 막는다','엘리베이터를 타고 피난한다'],k:3,e:'화재 시 엘리베이터는 정전이나 연기 유입으로 갇힐 수 있어 사용하지 않습니다. 피난계단과 비상구를 이용해야 합니다.'},
+{i:'25-1-20',y:2025,s:1,q:'연기의 농도를 나타내는 감광계수에 대한 설명으로 옳은 것은?',o:['가시거리에 비례한다','값이 클수록 연기가 옅다','값이 클수록 연기가 짙어 가시거리가 짧아진다','온도만 나타낸다'],k:2,e:'감광계수는 연기가 빛을 감쇠시키는 정도로 단위는 1/m입니다. 값이 클수록 연기가 짙고 가시거리가 짧아 피난이 어렵습니다.'},
+{i:'24-1-13',y:2024,s:1,q:'물 10kg을 20℃에서 60℃로 올리는 데 필요한 열량은?',o:['200kcal','400kcal','600kcal','4,000kcal'],k:1,e:'열량 = 비열 × 질량 × 온도차 = 1 × 10 × 40 = 400kcal입니다. 물의 비열은 1kcal/kg·℃입니다.'},
+{i:'24-1-14',y:2024,s:1,q:'비열이 큰 물질의 특징으로 옳은 것은?',o:['같은 열량을 받아도 온도 상승이 작다','같은 열량에 온도가 크게 오른다','열을 전혀 흡수하지 않는다','연소열이 항상 크다'],k:0,e:'비열이 크면 단위질량을 1℃ 올리는 데 많은 열이 필요하므로 온도가 천천히 오릅니다. 물이 소화약제로 냉각효과가 큰 이유입니다.'},
+{i:'24-1-15',y:2024,s:1,q:'물 1kg이 100℃에서 모두 증발할 때 흡수하는 열량은 약 얼마인가?',o:['80kcal','100kcal','4,500kcal','539kcal'],k:3,e:'물의 증발잠열은 약 539kcal/kg입니다. 적은 양의 물로도 큰 냉각효과를 얻을 수 있는 이유입니다.'},
+{i:'24-1-16',y:2024,s:1,q:'화재하중을 계산할 때 기준으로 쓰는 목재 1kg의 연소열은?',o:['1,000kcal','2,500kcal','4,500kcal','8,000kcal'],k:2,e:'목재 1kg의 연소열은 4,500kcal로 봅니다. 화재하중 = 연소열 총량 ÷ (바닥면적 × 4,500)입니다.'},
+{i:'24-1-17',y:2024,s:1,q:'바닥면적 160㎡인 실에 연소열 총량 288만 kcal의 가연물이 있다. 화재하중은?',o:['2 kg/㎡','4 kg/㎡','8 kg/㎡','18 kg/㎡'],k:1,e:'2,880,000 ÷ (160 × 4,500) = 2,880,000 ÷ 720,000 = 4 kg/㎡입니다.'},
+{i:'24-1-18',y:2024,s:1,q:'폭발하한계 4%, 폭발상한계 44%인 가스의 위험도는?',o:['10','4','11','40'],k:0,e:'위험도 = (44 − 4) ÷ 4 = 10입니다. 위험도가 10이면 폭발범위가 하한의 10배에 이르는 매우 위험한 가스입니다.'},
+{i:'24-1-19',y:2024,s:1,q:'질식소화가 효과를 나타내는 산소 농도의 기준으로 보는 값은?',o:['약 25% 이하','약 18% 이하','약 21% 이하','약 15% 이하'],k:3,e:'공기 중 산소 농도가 약 15% 이하로 떨어지면 연소가 유지되기 어렵습니다. 이산화탄소·포·불활성가스의 질식소화가 이 원리를 이용합니다.'},
+{i:'24-1-20',y:2024,s:1,q:'이산화탄소 농도가 10% 이상인 곳에 사람이 있으면?',o:['눈이 밝아진다','아무 영향이 없다','호흡곤란과 의식 상실이 일어난다','체온이 상승한다'],k:2,e:'이산화탄소가 10%를 넘으면 호흡곤란·현기증·의식 상실이 일어나고 더 높으면 사망에 이릅니다. 이산화탄소 소화설비가 있는 곳의 퇴피가 중요한 이유입니다.'},
+{i:'23-1-13',y:2023,s:1,q:'물분무소화설비의 소화효과로 가장 적절한 것은?',o:['연쇄반응 억제','미세한 물방울의 냉각과 수증기에 의한 질식','가연물 제거','산소 공급'],k:1,e:'물분무는 미세한 물방울로 표면적을 넓혀 냉각효과를 높이고, 발생한 수증기가 산소를 차단하는 질식효과도 냅니다.'},
+{i:'23-1-14',y:2023,s:1,q:'불활성가스 계열 청정소화약제의 주된 소화작용은?',o:['산소 농도를 낮추는 질식작용','연쇄반응 억제','가연물 제거','촉매 작용'],k:0,e:'IG-541 같은 불활성가스 약제는 산소 농도를 연소 한계 이하로 낮춰 질식소화합니다. 잔류물이 없어 전산실에 적합합니다.'},
+{i:'23-1-15',y:2023,s:1,q:'할론 1301의 화학식은?',o:['CH2Cl2','CF2ClBr','C2F4Br2','CF3Br'],k:3,e:'할론 1301은 CF3Br(브로모트리플루오로메탄), 1211은 CF2ClBr, 2402는 C2F4Br2입니다. 숫자는 탄소·불소·염소·브롬의 원자 수를 뜻합니다.'},
+{i:'23-1-16',y:2023,s:1,q:'이산화탄소 소화기의 단점으로 옳은 것은?',o:['전기 절연성이 나쁘다','잔류물이 많아 오염된다','밀폐공간에서 질식 위험이 있고 바람에 약해 재발화할 수 있다','동결되어 방출되지 않는다'],k:2,e:'이산화탄소는 잔류물이 없고 절연성이 좋지만, 밀폐공간에서 질식 위험이 있고 냉각효과가 작아 재발화할 수 있습니다.'},
+{i:'23-1-17',y:2023,s:1,q:'팽창질석을 사용하는 화재는?',o:['주방 식용유 화재','마그네슘 같은 금속화재(D급)','전기화재','종이 화재'],k:1,e:'팽창질석과 건조모래는 금속화재(D급)에 사용합니다. 물이나 이산화탄소는 고온 금속과 반응해 위험합니다.'},
+{i:'23-1-18',y:2023,s:1,q:'강화액 소화약제의 주된 용도는?',o:['주방용 식용유 화재(K급)','금속화재','전기화재','가스화재'],k:0,e:'강화액은 탄산칼륨 등을 주성분으로 해 식용유 표면에 비누화막을 만들어 질식시키므로 K급 화재에 사용합니다.'},
+{i:'23-1-19',y:2023,s:1,q:'포소화약제를 팽창비로 구분할 때 기준으로 옳은 것은?',o:['팽창비로 구분하지 않는다','저팽창포(5배 미만) · 중팽창포(5~10배) · 고팽창포(10배 이상)','모두 10배 기준','저팽창포(20배 미만) · 중팽창포(20~200배) · 고팽창포(200~1,000배)'],k:3,e:'포는 팽창비에 따라 저팽창포(20배 미만)·중팽창포(20~200배)·고팽창포(200~1,000배)로 나뉩니다.'},
+{i:'23-1-20',y:2023,s:1,q:'폐쇄형 스프링클러 헤드가 동작하는 원리는?',o:['압력이 높아지면 자동으로 열린다','연기를 감지해 전기 신호로 밸브를 연다','열에 의해 감열체가 파괴되어 물이 분출한다','사람이 수동으로 개방한다'],k:2,e:'폐쇄형 헤드는 감열체(유리벌브 등)가 일정 온도에서 파괴되면서 물이 분출합니다. 개방형은 감열체 없이 항상 열려 있습니다.'},
+{i:'22-1-13',y:2022,s:1,q:'제3류 위험물의 성질은?',o:['산화성 고체','자연발화성 및 금수성 물질','인화성 액체','자기반응성 물질'],k:1,e:'제3류는 자연발화성 및 금수성 물질로 칼륨·나트륨·황린 등이 있습니다. 물과 접촉하면 가연성 가스를 발생시키거나 발화합니다.'},
+{i:'22-1-14',y:2022,s:1,q:'제5류 위험물의 성질은?',o:['자기반응성 물질','산화성 액체','가연성 고체','인화성 액체'],k:0,e:'제5류는 자기반응성 물질로 유기과산화물·질산에스테르 등이 있습니다. 스스로 분해·폭발할 수 있어 냉암소에 저장합니다.'},
+{i:'22-1-15',y:2022,s:1,q:'제2류 위험물에 해당하는 것은?',o:['염소산칼륨','휘발유 · 등유','질산 · 과산화수소','마그네슘 · 황'],k:3,e:'제2류는 가연성 고체로 마그네슘·황·적린 등이 있습니다. 휘발유는 4류, 질산은 6류, 염소산칼륨은 1류입니다.'},
+{i:'22-1-16',y:2022,s:1,q:'칼륨·나트륨 같은 금수성 물질의 저장 방법으로 옳은 것은?',o:['습한 곳에 보관한다','물속에 보관한다','물을 피하고 석유 등 기름 속에 보관한다','공기 중에 노출해 보관한다'],k:2,e:'금수성 물질은 물과 접촉하면 수소를 발생시키며 발화하므로 석유 같은 기름 속에 밀봉해 보관합니다.'},
+{i:'22-1-17',y:2022,s:1,q:'휘발유의 지정수량은?',o:['100L','200L','400L','1,000L'],k:1,e:'휘발유의 지정수량은 200L입니다. 지정수량 이상을 저장·취급하면 위험물안전관리법에 따른 시설과 안전관리자 선임 의무가 생깁니다.'},
+{i:'22-1-18',y:2022,s:1,q:'산화성 고체와 가연물을 함께 저장할 때의 위험은?',o:['산소를 내놓아 가연물의 연소를 돕거나 폭발을 일으킨다','서로 반응하지 않아 안전하다','가연물이 산화되어 불이 꺼진다','온도가 내려가 안전하다'],k:0,e:'제1류 산화성 고체는 가연물과 섞이면 격렬한 연소·폭발을 일으킬 수 있어 반드시 분리 저장해야 합니다.'},
+{i:'22-1-19',y:2022,s:1,q:'알코올류 화재에 일반 포를 사용하면 어떻게 되는가?',o:['물로 변한다','포가 더 두꺼워진다','폭발한다','알코올이 포를 파괴해 소화 효과가 없다'],k:3,e:'알코올은 친수성이라 일반 포의 거품을 파괴합니다. 알코올류에는 내알코올형 포를 사용해야 합니다.'},
+{i:'22-1-20',y:2022,s:1,q:'가연성 가스가 누출되었을 때 가장 먼저 해야 할 일은?',o:['물을 뿌려 씻어낸다','전기 스위치를 켜서 확인한다','점화원을 제거하고 밸브를 차단한 뒤 환기한다','불을 붙여 태워 없앤다'],k:2,e:'가스 누출 시에는 점화원이 될 수 있는 전기 스위치·담배 등을 피하고, 밸브를 차단해 공급을 끊은 뒤 환기해야 합니다.'},
+{i:'21-1-01',y:2021,s:1,q:'점화원을 제거한 소화의 예로 옳은 것은?',o:['물을 뿌린다','가스레인지의 불을 끈다','이산화탄소를 방사한다','가연물을 치운다'],k:1,e:'점화원 제거는 불꽃·전기 스파크 등 점화원을 없애는 것으로, 가스레인지의 불을 끄거나 전원을 차단하는 것이 예입니다.'},
+{i:'21-1-02',y:2021,s:1,q:'억제소화의 예로 옳은 것은?',o:['할론으로 연쇄반응을 끊는다','물을 뿌려 온도를 낮춘다','산소를 차단한다','가연물을 옮긴다'],k:0,e:'억제소화는 연쇄반응을 화학적으로 차단하는 방법으로, 할론·분말소화약제가 대표적입니다.'},
+{i:'21-1-03',y:2021,s:1,q:'화재를 원인에 따라 분류할 때 옳은 것은?',o:['실내화재와 실외화재','A급과 B급 화재','건물화재와 전기화재','인위적 화재와 자연적 화재'],k:3,e:'화재는 원인에 따라 실화·방화 같은 인위적 화재와 낙뢰·자연발화 같은 자연적 화재로 나눕니다.'},
+{i:'21-1-04',y:2021,s:1,q:'종이·목재로 된 사무실 화재에 가장 적합한 소화기는?',o:['할론 소화기','이산화탄소 소화기','물 또는 ABC 분말소화기','포 소화기'],k:2,e:'A급 일반화재에는 냉각효과가 큰 물이나 ABC 분말소화기가 적합합니다. 이산화탄소는 재발화 위험이 있습니다.'},
+{i:'21-1-05',y:2021,s:1,q:'인화점이 낮은 물질의 위험성으로 옳은 것은?',o:['증기가 잘 생기지 않아 안전하다','상온에서 증기가 발생해 작은 점화원에도 쉽게 착화한다','물에 잘 녹는다','연소열이 작다'],k:1,e:'인화점이 낮으면 상온에서도 가연성 증기가 충분히 발생합니다. 아세톤(인화점 약 -18℃)처럼 낮은 물질은 취급에 주의해야 합니다.'},
+{i:'21-1-06',y:2021,s:1,q:'연소점에 대한 설명으로 옳은 것은?',o:['불꽃 없이도 연소가 계속 유지되는 최저온도','불꽃으로 처음 불이 붙는 온도','점화원 없이 스스로 타는 온도','액체가 끓는 온도'],k:0,e:'연소점은 인화점보다 높은 온도로, 불꽃을 떼어도 연소가 계속되는 최저온도입니다. 인화점 < 연소점 < 발화점 순서입니다.'},
+{i:'21-1-07',y:2021,s:1,q:'가스 농도가 폭발범위를 벗어났을 때의 상태로 옳은 것은?',o:['온도가 낮아진다','반드시 폭발한다','폭발범위와 관계없이 연소한다','점화해도 폭발하지 않는다'],k:3,e:'폭발은 농도가 폭발하한계와 상한계 사이에 있을 때만 일어납니다. 너무 묽거나 너무 진하면 점화해도 폭발하지 않습니다.'},
+{i:'21-1-08',y:2021,s:1,q:'가스 폭발의 피해를 크게 하는 요인은?',o:['가스 농도가 매우 낮을 때','개방된 넓은 야외에서 폭발할 때','밀폐된 공간에서 폭발할 때','온도가 낮을 때'],k:2,e:'밀폐공간에서는 팽창한 가스가 빠져나가지 못해 압력이 급상승하므로 피해가 커집니다.'},
+{i:'21-1-09',y:2021,s:1,q:'복사열에 의한 열전달의 예로 옳은 것은?',o:['냄비 손잡이가 뜨거워진다','맞은편 건물의 창문이 화재 열로 발화한다','온수가 위로 올라간다','연기가 계단으로 오른다'],k:1,e:'복사는 전자파로 열이 전달되는 것으로, 불꽃을 사이에 두고 떨어진 물체가 발화하는 것이 예입니다. 전도는 고체, 대류는 유체의 이동입니다.'},
+{i:'21-1-10',y:2021,s:1,q:'대류에 의한 열전달의 예로 옳은 것은?',o:['고온의 연기가 계단을 따라 위층으로 올라간다','쇠파이프가 뜨거워진다','햇빛이 피부를 데운다','전선에 열이 발생한다'],k:0,e:'대류는 기체·액체의 이동으로 열이 전달되는 것으로, 연기가 계단·승강로를 따라 상승하는 것이 대표적입니다.'},
+{i:'21-1-11',y:2021,s:1,q:'불완전연소가 일어날 때 많이 발생하는 유독가스는?',o:['질소','이산화탄소','수증기','일산화탄소'],k:3,e:'산소가 부족한 불완전연소에서는 일산화탄소와 그을음이 발생합니다. 일산화탄소는 혈액의 산소 운반을 방해합니다.'},
+{i:'21-1-12',y:2021,s:1,q:'분말소화약제 제4종의 주성분은?',o:['제1인산암모늄','중탄산나트륨','중탄산칼륨과 요소의 혼합물','황산암모늄'],k:2,e:'제4종은 중탄산칼륨과 요소를 혼합한 것으로 B·C급에 사용합니다. 요소를 넣어 유동성과 소화능력을 높였습니다.'},
+{i:'21-1-13',y:2021,s:1,q:'분말소화약제의 소화작용으로 옳게 묶은 것은?',o:['질식작용만','질식 · 억제 · 냉각작용','촉매작용','중화작용'],k:1,e:'분말은 가연물 표면을 덮는 질식, 연쇄반응을 끊는 억제, 결정수가 분해되며 열을 빼앗는 냉각작용을 함께 합니다.'},
+{i:'21-1-14',y:2021,s:1,q:'할론 소화약제의 사용이 제한되는 주된 이유는?',o:['오존층을 파괴하고 온실효과가 크다','소화능력이 없다','값이 너무 싸다','전기가 통한다'],k:0,e:'할론은 오존층 파괴지수와 온실효과가 커 국제협약으로 생산·사용이 제한되어 청정소화약제로 대체되고 있습니다.'},
+{i:'21-1-15',y:2021,s:1,q:'포소화약제의 소화작용 두 가지는?',o:['냉각작용과 제거작용','억제작용과 제거작용','질식작용과 억제작용','질식작용과 냉각작용'],k:3,e:'포는 가연물 표면을 덮어 산소를 차단하는 질식작용과, 거품의 물이 열을 빼앗는 냉각작용을 합니다.'},
+{i:'21-1-16',y:2021,s:1,q:'물 소화약제에 젖음제를 첨가하는 목적은?',o:['물의 색을 바꾼다','물의 비등점을 높인다','표면장력을 낮춰 가연물 속으로 물이 잘 스며들게 한다','물의 양을 늘린다'],k:2,e:'젖음제는 표면장력을 낮춰 섬유·짚처럼 물이 스며들기 어려운 가연물의 침투를 돕습니다.'},
+{i:'21-1-17',y:2021,s:1,q:'화재하중을 산정하는 목적은?',o:['건물의 임대료를 정하기 위해','화재의 규모와 소화 난이도, 내화설계의 기준을 정하기 위해','소방관 수를 정하기 위해','보험료를 계산하기 위해'],k:1,e:'화재하중은 단위면적당 가연물의 연소열을 목재량으로 환산한 값으로, 화재 지속시간과 소화 난이도, 내화구조 설계의 기준이 됩니다.'},
+{i:'21-1-18',y:2021,s:1,q:'내화구조에 주로 쓰이는 재료로 옳은 것은?',o:['철근콘크리트 · 벽돌','목재 · 합판','비닐 · 폴리에틸렌','종이 · 섬유'],k:0,e:'내화구조는 철근콘크리트·벽돌·석재 등 불연 재료로 시공해 화재 시 구조가 쉽게 무너지지 않게 합니다.'},
+{i:'21-1-19',y:2021,s:1,q:'방화구획을 관통하는 배관에 필요한 조치는?',o:['배관을 제거한다','그대로 둔다','가연성 폼으로 채운다','관통부를 불연재료로 방화처리한다'],k:3,e:'배관·덕트가 방화구획을 관통하면 틈으로 연기와 불꽃이 지나므로 관통부를 불연재료로 막는 방화처리가 필요합니다.'},
+{i:'21-1-20',y:2021,s:1,q:'피난 시 출입문은 어느 방향으로 열리도록 하는가?',o:['위로 열리게 한다','안쪽으로 열리게 한다','피난하는 방향(바깥쪽)으로 열리게 한다','방향과 무관하다'],k:2,e:'피난에 지장이 없도록 출입문은 피난 방향으로 열리게 설치합니다. 안쪽으로 열리면 인파에 밀려 문이 열리지 않을 수 있습니다.'},
+{i:'20-1-01',y:2020,s:1,q:'연소의 4요소에 해당하지 않는 것은?',o:['가연물','질소','산소공급원','점화원'],k:1,e:'연소의 4요소는 가연물·산소공급원·점화원·연쇄반응입니다. 질소는 연소와 직접 관계가 없는 불활성 기체입니다.'},
+{i:'20-1-02',y:2020,s:1,q:'제거소화의 원리는?',o:['연소에 필요한 가연물을 없애는 것','산소를 차단하는 것','온도를 낮추는 것','연쇄반응을 끊는 것'],k:0,e:'제거소화는 가연물 자체를 제거·차단하는 방법입니다. 산림화재에서 맞불을 놓아 가연물을 미리 태우는 것이 예입니다.'},
+{i:'20-1-03',y:2020,s:1,q:'냉각소화의 대표적인 예는?',o:['분말을 방사한다','모래를 덮는다','가스를 차단한다','물을 뿌려 가연물의 온도를 낮춘다'],k:3,e:'냉각소화는 물처럼 비열과 증발잠열이 큰 물질로 열을 빼앗아 온도를 발화점 아래로 낮추는 방법입니다.'},
+{i:'20-1-04',y:2020,s:1,q:'일반적으로 발화점이 인화점보다 높은 이유는?',o:['인화점은 고체에만 적용되기 때문','발화점은 온도가 아니라 압력이기 때문','인화점은 불꽃에 의한 착화, 발화점은 외부 점화원 없이 스스로 타는 온도이기 때문','두 값은 항상 같기 때문'],k:2,e:'인화점은 불꽃을 가까이했을 때 착화하는 낮은 온도이고, 발화점은 점화원 없이 스스로 발화하는 더 높은 온도입니다.'},
+{i:'20-1-05',y:2020,s:1,q:'액체 가연물의 연소 형태는?',o:['분해연소','증발연소','표면연소','자기연소'],k:1,e:'액체는 표면에서 증발한 증기가 공기와 섞여 타는 증발연소를 합니다. 그래서 인화점이 낮은 액체일수록 위험합니다.'},
+{i:'20-1-06',y:2020,s:1,q:'가스 가연물의 연소 형태로 가장 일반적인 것은?',o:['확산연소','증발연소','표면연소','분해연소'],k:0,e:'가스는 공기 중으로 확산하면서 경계면에서 타는 확산연소를 합니다. 미리 공기와 섞인 경우는 예혼합연소입니다.'},
+{i:'20-1-07',y:2020,s:1,q:'예혼합연소의 예로 옳은 것은?',o:['담뱃불','촛불','숯불','가스버너의 불꽃'],k:3,e:'예혼합연소는 가연성 가스가 미리 공기와 혼합된 상태에서 타는 것으로, 가스버너·분젠버너가 대표적입니다.'},
+{i:'20-1-08',y:2020,s:1,q:'화재의 진행 과정에서 성장기 다음에 오는 시기는?',o:['감퇴기','발화기','최성기','실화기'],k:2,e:'화재는 발화 → 성장기 → 최성기 → 감퇴기 순으로 진행됩니다. 최성기는 온도와 연기가 최고에 이르는 시기입니다.'},
+{i:'20-1-09',y:2020,s:1,q:'플래시오버가 주로 발생하는 시기는?',o:['발화 직전','성장기 후반','감퇴기','완전히 꺼진 뒤'],k:1,e:'플래시오버는 성장기에 열이 축적되어 실내 가연물이 일시에 착화하는 현상으로, 성장기 후반에 주로 일어납니다.'},
+{i:'20-1-10',y:2020,s:1,q:'화재 시 연기가 위험한 이유로 가장 큰 것은?',o:['가시거리를 줄여 피난을 어렵게 한다','소리를 막는다','물을 끓게 한다','불꽃을 키운다'],k:0,e:'연기는 빛을 흡수·산란시켜 가시거리를 줄이고, 유독가스로 질식하게 합니다. 그래서 피난 시 낮은 자세가 필요합니다.'},
+{i:'20-1-11',y:2020,s:1,q:'화재 시 대피 자세로 가장 적절한 것은?',o:['엘리베이터를 기다린다','똑바로 서서 뛴다','계단 난간을 넘어 내려간다','자세를 낮추고 벽을 짚으며 이동한다'],k:3,e:'고온의 연기는 천장 쪽에 모이므로 자세를 낮추고 벽을 짚어 출구를 찾으며 이동해야 합니다.'},
+{i:'20-1-12',y:2020,s:1,q:'소화의 기본 원리는?',o:['온도를 높인다','산소를 공급한다','연소의 3요소 중 하나 이상을 제거한다','가연물을 늘린다'],k:2,e:'연소에 필요한 가연물·산소·점화원 중 하나를 없애면 연소가 멈춥니다. 소화의 4원리는 이를 구체화한 방법입니다.'},
+{i:'20-1-13',y:2020,s:1,q:'분말소화약제 제2종의 주성분은?',o:['중탄산나트륨','중탄산칼륨','제1인산암모늄','제1인산칼륨'],k:1,e:'제2종은 중탄산칼륨으로 B·C급에 사용합니다. 제1종은 중탄산나트륨, 제3종은 제1인산암모늄입니다.'},
+{i:'20-1-14',y:2020,s:1,q:'분말소화약제 제1종을 사용할 수 있는 화재는?',o:['B급 · C급','A급 · B급 · C급','D급','K급'],k:0,e:'제1종(중탄산나트륨)은 B급 유류와 C급 전기화재에 사용합니다. A급까지 소화하는 것은 제3종입니다.'},
+{i:'20-1-15',y:2020,s:1,q:'이산화탄소의 증기비중으로 옳은 것은?',o:['물에 녹지 않는다','공기보다 가벼워 천장에 체류한다','공기와 같다','공기보다 무거워 낮은 곳에 체류한다'],k:3,e:'이산화탄소의 증기비중은 약 1.53으로 공기보다 무거워 바닥 쪽에 체류합니다. 그래서 지하실 방출 시 더 위험합니다.'},
+{i:'20-1-16',y:2020,s:1,q:'포소화약제의 종류에 해당하지 않는 것은?',o:['합성포','단백포','할로겐포','수성막포'],k:2,e:'포소화약제는 단백포·합성포·수성막포·알코올형포로 나뉩니다. 할로겐포는 없는 종류입니다.'},
+{i:'20-1-17',y:2020,s:1,q:'화재하중이 클수록 나타나는 현상으로 옳은 것은?',o:['화재가 금방 꺼진다','화재가 크고 오래 지속되어 소화가 어렵다','연기가 발생하지 않는다','온도가 낮아진다'],k:1,e:'화재하중이 크면 연소열이 많아 화재 규모와 지속시간이 커지고, 건물 구조도 위험해집니다.'},
+{i:'20-1-18',y:2020,s:1,q:'화학적 폭발에 해당하는 것은?',o:['가연성 가스의 폭발','보일러 용기의 파열','액화가스의 상변화 팽창','압축공기 탱크의 파열'],k:0,e:'화학적 폭발은 연소·분해 같은 화학반응으로 가스와 열이 급격히 발생하는 폭발입니다. 용기 파열은 물리적 폭발입니다.'},
+{i:'20-1-19',y:2020,s:1,q:'제4류 위험물의 위험성을 결정하는 가장 중요한 성질은?',o:['색상','비점','점도','인화점'],k:3,e:'제4류 인화성액체는 인화점이 낮을수록 증기가 쉽게 발생해 위험합니다. 위험물 분류와 저장 기준의 기준이 됩니다.'},
+{i:'20-1-20',y:2020,s:1,q:'소화기를 사용할 때의 올바른 방법은?',o:['연기가 많은 곳에서 위로 분사한다','바람을 마주 보고 분사한다','안전핀을 뽑고 바람을 등지고 화원을 향해 분사한다','불꽃 위쪽에 뿌린다'],k:2,e:'소화기는 안전핀을 뽑은 뒤 바람을 등지고 서서 화원의 아래쪽을 향해 분사합니다. 바람을 마주 보면 약제가 밀려 효과가 없습니다.'},
+];
+var BANK_S2 = [
+{i:'26-2-01',y:2026,s:2,q:'저항 4Ω에 12V의 전압을 가했을 때 흐르는 전류는?',o:['0.33A','3A','16A','48A'],k:1,e:'옴의 법칙 I = V ÷ R = 12 ÷ 4 = 3A입니다. 전압이 커지면 전류가 커지고, 저항이 커지면 전류가 작아집니다.'},
+{i:'26-2-02',y:2026,s:2,q:'5Ω과 15Ω의 저항을 직렬로 연결했을 때 합성저항은?',o:['20Ω','10Ω','3.75Ω','75Ω'],k:0,e:'직렬 연결은 R = R1 + R2 = 5 + 15 = 20Ω입니다. 직렬에서는 각 저항에 흐르는 전류가 같고 전압이 나뉩니다.'},
+{i:'26-2-03',y:2026,s:2,q:'12Ω과 6Ω의 저항을 병렬로 연결했을 때 합성저항은?',o:['3Ω','18Ω','6Ω','4Ω'],k:3,e:'병렬 합성저항 = (12 × 6) ÷ (12 + 6) = 72 ÷ 18 = 4Ω입니다. 병렬 합성저항은 가장 작은 저항보다도 작아집니다.'},
+{i:'26-2-04',y:2026,s:2,q:'100V의 전압에 2A의 전류가 흐르는 부하의 소비전력은?',o:['50W','100W','200W','400W'],k:2,e:'P = V × I = 100 × 2 = 200W입니다. 전력은 전압과 전류의 곱이며, 저항을 알면 P = I²R = V²/R로도 구합니다.'},
+{i:'26-2-05',y:2026,s:2,q:'저항 10Ω에 2A의 전류를 60초 동안 흘렸을 때 줄의 법칙으로 구한 열량은?',o:['240 cal','576 cal','2,400 cal','5,760 cal'],k:1,e:'H = 0.24 × I² × R × t = 0.24 × 4 × 10 × 60 = 576 cal입니다. I²Rt는 줄[J] 단위 열량이므로 0.24를 곱해 칼로리로 바꿉니다.'},
+{i:'26-2-06',y:2026,s:2,q:'3µF과 6µF의 콘덴서를 직렬로 연결했을 때 합성용량은?',o:['2µF','4.5µF','9µF','18µF'],k:0,e:'콘덴서 직렬은 1/C = 1/C1 + 1/C2이므로 (3 × 6) ÷ (3 + 6) = 2µF입니다. 저항과 반대로 직렬에서 용량이 작아집니다.'},
+{i:'26-2-07',y:2026,s:2,q:'60Hz 교류에서 인덕턴스 0.1H 코일의 유도 리액턴스는 약 얼마인가?',o:['6Ω','377Ω','60Ω','37.7Ω'],k:3,e:'X_L = 2πfL = 2 × 3.14 × 60 × 0.1 = 약 37.7Ω입니다. 주파수가 높아지면 코일은 전류를 더 막습니다.'},
+{i:'26-2-08',y:2026,s:2,q:'RLC 직렬회로의 공진 조건으로 옳은 것은?',o:['Z = 0','X_L = R','X_L = X_C','역률이 0이 된다'],k:2,e:'공진하면 유도 리액턴스와 용량 리액턴스가 같아져 상쇄되고, 임피던스는 저항 R만 남아 최소가 되며 전류는 최대가 됩니다.'},
+{i:'26-2-09',y:2026,s:2,q:'선간전압 200V, 선전류 10A, 역률 0.8인 3상 부하의 전력은 약 얼마인가?',o:['1.6kW','2.77kW','4.8kW','5.54kW'],k:1,e:'P = √3 × V × I × cosθ = 1.732 × 200 × 10 × 0.8 = 약 2,771W, 즉 2.77kW입니다.'},
+{i:'26-2-10',y:2026,s:2,q:'1차 권수 3,000, 2차 권수 150인 변압기의 1차에 6,600V를 가하면 2차 전압은?',o:['330V','220V','110V','440V'],k:0,e:'권수비 a = 3,000 ÷ 150 = 20이므로 2차 전압 = 6,600 ÷ 20 = 330V입니다. 권수가 적은 쪽이 저전압입니다.'},
+{i:'26-2-11',y:2026,s:2,q:'60Hz, 6극 3상 유도전동기의 동기속도는?',o:['600rpm','900rpm','1,800rpm','1,200rpm'],k:3,e:'N_s = 120f ÷ P = 120 × 60 ÷ 6 = 1,200rpm입니다. 극수가 많아질수록 동기속도는 낮아집니다.'},
+{i:'26-2-12',y:2026,s:2,q:'동기속도 1,800rpm인 유도전동기가 1,710rpm으로 회전할 때 슬립은?',o:['3%','9%','5%','10%'],k:2,e:'s = (1,800 − 1,710) ÷ 1,800 × 100 = 5%입니다. 슬립이 커지면 회전자에 유도되는 전류와 토크가 커지지만 효율은 떨어집니다.'},
+{i:'25-2-01',y:2025,s:2,q:'키르히호프의 전류법칙에 대한 설명으로 옳은 것은?',o:['폐회로의 전압강하 합은 기전력의 합과 같다','한 점에 들어오는 전류의 합은 나가는 전류의 합과 같다','전류는 저항에 반비례한다','전류는 항상 일정하다'],k:1,e:'전류법칙(KCL)은 한 점에 들어오는 전류의 합과 나가는 전류의 합이 같다는 법칙입니다. 전압강하와 기전력의 관계는 전압법칙(KVL)입니다.'},
+{i:'25-2-02',y:2025,s:2,q:'코일을 지나는 자속이 변할 때 기전력이 발생하는 법칙은?',o:['패러데이의 전자기유도 법칙','옴의 법칙','줄의 법칙','쿨롱의 법칙'],k:0,e:'e = −N(dΦ/dt)로, 자속의 시간적 변화율에 비례해 기전력이 유도됩니다. 마이너스 부호는 렌츠의 법칙을 나타냅니다.'},
+{i:'25-2-03',y:2025,s:2,q:'렌츠의 법칙에 대한 설명으로 옳은 것은?',o:['유도 전류는 항상 직류이다','유도 전류는 자속의 변화를 돕는 방향으로 흐른다','유도 기전력은 자속에 반비례한다','유도 전류는 자속의 변화를 방해하는 방향으로 흐른다'],k:3,e:'유도 전류는 자속의 변화를 막으려는 방향으로 흐릅니다. 자석을 가까이하면 밀어내고 멀리하면 끌어당기는 방향입니다.'},
+{i:'25-2-04',y:2025,s:2,q:'역률을 개선하는 방법으로 가장 적절한 것은?',o:['전압을 낮춘다','저항을 직렬로 연결한다','진상용 콘덴서를 부하와 병렬로 설치한다','주파수를 높인다'],k:2,e:'유도성 부하에는 진상용 콘덴서를 병렬로 설치해 지상 무효전력을 상쇄합니다. 역률이 개선되면 같은 전력에 전류가 줄어 손실과 전압강하가 감소합니다.'},
+{i:'25-2-05',y:2025,s:2,q:'3상 Y결선에서 선전압과 상전압의 관계로 옳은 것은?',o:['선전압 = 상전압','선전압 = √3 × 상전압','선전압 = 3 × 상전압','선전압 = 상전압 ÷ √3'],k:1,e:'Y결선에서 선전압은 상전압의 √3배(약 1.732배)이고 선전류는 상전류와 같습니다. 220/380V 계통이 이 관계입니다.'},
+{i:'25-2-06',y:2025,s:2,q:'변압기의 철손에 해당하는 것은?',o:['히스테리시스손과 와전류손','권선의 저항손','표유부하손','기계손'],k:0,e:'철손은 히스테리시스손과 와전류손으로, 부하와 관계없이 거의 일정합니다. 권선 저항에 의한 동손은 전류의 제곱에 비례합니다.'},
+{i:'25-2-07',y:2025,s:2,q:'변압기 효율을 구하는 식으로 옳은 것은?',o:['입력 ÷ 출력 × 100','출력 ÷ 입력 × 철손','(출력 − 동손) ÷ 출력 × 100','출력 ÷ (출력 + 철손 + 동손) × 100'],k:3,e:'효율 = 출력 ÷ 입력 × 100이며, 입력 = 출력 + 철손 + 동손입니다. 철손과 동손이 같을 때 효율이 최대가 됩니다.'},
+{i:'25-2-08',y:2025,s:2,q:'단상 2선식 회로에서 전선 길이 30m, 단면적 4㎟, 전류 10A일 때 전압강하는 약 얼마인가?',o:['0.89V','8.9V','2.67V','26.7V'],k:2,e:'e = 35.6 × L × I ÷ (1000 × A) = 35.6 × 30 × 10 ÷ 4,000 = 10,680 ÷ 4,000 = 약 2.67V입니다.'},
+{i:'25-2-09',y:2025,s:2,q:'저압 전기설비의 제3종 접지공사에서 접지저항의 최댓값은?',o:['10Ω','100Ω','4Ω','500Ω'],k:1,e:'제1종 10Ω, 제2종 4Ω, 제3종 100Ω, 특별제3종 10Ω입니다. 제3종은 400V 미만 저압 기계기구의 외함 접지에 적용됩니다.'},
+{i:'25-2-10',y:2025,s:2,q:'전압계의 측정범위를 넓히는 데 사용하는 것은?',o:['배율기','분류기','변류기','정류기'],k:0,e:'전압계에는 배율기를 직렬로 접속해 측정범위를 넓히고, 전류계에는 분류기를 병렬로 접속합니다.'},
+{i:'25-2-11',y:2025,s:2,q:'온도가 상승하면 저항이 감소하는 부특성 소자는?',o:['제너다이오드','바리스터','포토다이오드','서미스터(NTC)'],k:3,e:'NTC 서미스터는 온도가 오르면 저항이 내려가는 부특성 소자로, 온도 검출·보상과 화재 감지 회로에 쓰입니다.'},
+{i:'25-2-12',y:2025,s:2,q:'전파정류회로에 사용하는 다이오드의 수는?',o:['1개','2개','4개','3개'],k:2,e:'브리지형 전파정류회로는 다이오드 4개로 양쪽 반주기를 모두 정류합니다. 반파정류는 다이오드 1개를 씁니다.'},
+{i:'24-2-01',y:2024,s:2,q:'100W의 전등을 5시간 사용했을 때의 전력량은?',o:['20Wh','500Wh','100Wh','2,000Wh'],k:1,e:'전력량 = 전력 × 시간 = 100W × 5h = 500Wh입니다. 전력량은 전기요금의 기준이 됩니다.'},
+{i:'24-2-02',y:2024,s:2,q:'4Ω과 6Ω을 직렬로, 그 합성저항에 10Ω을 병렬로 연결했을 때 전체 합성저항은?',o:['5Ω','2.5Ω','10Ω','20Ω'],k:0,e:'직렬 부분 4 + 6 = 10Ω이고, 이를 10Ω과 병렬로 하면 10 ÷ 2 = 5Ω입니다.'},
+{i:'24-2-03',y:2024,s:2,q:'2µF과 3µF의 콘덴서를 병렬로 연결했을 때 합성용량은?',o:['1.2µF','2.5µF','6µF','5µF'],k:3,e:'콘덴서 병렬은 C = C1 + C2 = 2 + 3 = 5µF입니다. 병렬로 연결할수록 용량이 커집니다.'},
+{i:'24-2-04',y:2024,s:2,q:'쿨롱의 법칙에 대한 설명으로 옳은 것은?',o:['힘은 전하량의 합에 반비례한다','힘은 거리에 비례한다','두 전하 사이의 힘은 전하량의 곱에 비례하고 거리의 제곱에 반비례한다','힘은 매질과 관계없다'],k:2,e:'F = k·Q1·Q2/r²입니다. 전하량이 클수록, 거리가 가까울수록 힘이 커지며 매질의 유전율에 따라 달라집니다.'},
+{i:'24-2-05',y:2024,s:2,q:'코일에 흐르는 전류가 만드는 자기장의 세기에 대한 설명으로 옳은 것은?',o:['전류에 반비례한다','전류와 권수에 비례하고 코일 길이에 반비례한다','권수에 반비례한다','길이에 비례한다'],k:1,e:'H = NI/ℓ로, 기자력(NI)에 비례하고 자로의 길이에 반비례합니다. 철심을 넣으면 자속밀도가 커집니다.'},
+{i:'24-2-06',y:2024,s:2,q:'유도전동기의 토크에 대한 설명으로 옳은 것은?',o:['전압의 제곱에 비례한다','전압에 반비례한다','전압과 무관하다','전압의 세제곱에 비례한다'],k:0,e:'유도전동기의 토크는 공급전압의 제곱에 비례합니다. 그래서 전압이 10% 떨어지면 토크는 약 19% 감소합니다.'},
+{i:'24-2-07',y:2024,s:2,q:'직류 전동기의 역기전력 식은?',o:['E = V × I·R_a','E = V + I·R_a','E = I·R_a − V','E = V − I·R_a'],k:3,e:'역기전력 E = V − I·R_a로, 회전하면서 전류를 스스로 줄입니다. 기동 직후에는 역기전력이 없어 큰 전류가 흐르므로 기동저항을 넣습니다.'},
+{i:'24-2-08',y:2024,s:2,q:'Y-Δ 기동을 할 때 기동전류는 Δ결선 직접 기동에 비해 약 얼마인가?',o:['1/√3','1/2','1/3','3배'],k:2,e:'Y결선에서는 상전압이 1/√3로 낮아져 기동전류가 직접 기동의 약 1/3, 기동 토크도 1/3이 됩니다.'},
+{i:'24-2-09',y:2024,s:2,q:'인터록 회로에서 상대 기기의 동작 신호를 받아 회로를 끊는 접점은?',o:['a접점','b접점','한시동작 접점','순시동작 접점'],k:1,e:'상대 코일 앞에 b접점을 직렬로 넣으면 상대 기기가 동작할 때 접점이 열려 이쪽 회로가 동작하지 못합니다.'},
+{i:'24-2-10',y:2024,s:2,q:'자기유지 회로에서 버튼과 병렬로 연결해 코일 전류를 계속 흐르게 하는 것은?',o:['릴레이의 보조 a접점','릴레이의 보조 b접점','타이머의 한시접점','퓨즈'],k:0,e:'버튼과 보조 a접점을 병렬로 연결하면 버튼에서 손을 떼도 코일 전류가 유지됩니다. 정지 버튼은 b접점으로 직렬에 넣습니다.'},
+{i:'24-2-11',y:2024,s:2,q:'시퀀스 회로에서 a접점을 직렬로 연결한 것은 어느 논리 게이트에 해당하는가?',o:['NAND','OR','NOT','AND'],k:3,e:'직렬 접점은 모두 닫혀야 전류가 흐르므로 AND, 병렬 접점은 하나만 닫혀도 흐르므로 OR, b접점은 NOT에 해당합니다.'},
+{i:'24-2-12',y:2024,s:2,q:'드모르간의 정리로 옳은 것은?',o:['(A + B)′ = A′ + B′','(A · B)′ = A′ · B′','(A · B)′ = A′ + B′','A + A′ = 0'],k:2,e:'(A · B)′ = A′ + B′, (A + B)′ = A′ · B′입니다. AND와 OR를 바꾸고 각 항을 반전시키는 법칙입니다.'},
+{i:'23-2-01',y:2023,s:2,q:'전압·전류·저항의 관계식으로 옳지 않은 것은?',o:['V = I × R','R = V × I','R = V ÷ I','I = V ÷ R'],k:1,e:'옴의 법칙은 V = IR, I = V/R, R = V/I입니다. R = V × I는 성립하지 않습니다.'},
+{i:'23-2-02',y:2023,s:2,q:'1J의 열량은 약 몇 cal인가?',o:['0.24 cal','1 cal','4.2 cal','24 cal'],k:0,e:'1J = 0.24cal이고 1cal = 4.2J입니다. 줄의 법칙에서 H = 0.24·I²Rt로 cal 단위 열량을 구하는 이유입니다.'},
+{i:'23-2-03',y:2023,s:2,q:'RLC 직렬회로의 임피던스 식은?',o:['Z = R × X_L ÷ X_C','Z = R + X_L + X_C','Z = √(R² + X_L² + X_C²)','Z = √(R² + (X_L − X_C)²)'],k:3,e:'Z = √(R² + (X_L − X_C)²)입니다. 공진하면 X_L = X_C가 되어 Z = R이 되고 전류가 최대가 됩니다.'},
+{i:'23-2-04',y:2023,s:2,q:'전압 200V, 전류 5A, 소비전력 800W인 부하의 역률은?',o:['0.4','0.5','0.8','1.0'],k:2,e:'cosθ = P ÷ (V × I) = 800 ÷ (200 × 5) = 0.8입니다. 역률이 낮으면 같은 전력에 전류가 커져 손실이 늘어납니다.'},
+{i:'23-2-05',y:2023,s:2,q:'변압기의 유도기전력 식은?',o:['E = 2π f N Φ','E = 4.44 f N Φ','E = 4.44 N ÷ Φ','E = f N ÷ Φ'],k:1,e:'E = 4.44fNΦ[V]로, 주파수·권수·최대자속에 비례합니다. 4.44는 사인파의 파형률과 실효값 계수를 합친 값입니다.'},
+{i:'23-2-06',y:2023,s:2,q:'유도전동기의 슬립을 구하는 식은?',o:['s = (N_s − N) ÷ N_s × 100','s = (N − N_s) ÷ N × 100','s = N_s ÷ N × 100','s = N ÷ N_s × 100'],k:0,e:'슬립 s = (동기속도 − 회전속도) ÷ 동기속도 × 100입니다. 슬립이 0이면 회전자가 동기속도와 같아져 유도전류가 생기지 않습니다.'},
+{i:'23-2-07',y:2023,s:2,q:'50Hz, 4극 3상 유도전동기의 동기속도는?',o:['750rpm','1,000rpm','3,000rpm','1,500rpm'],k:3,e:'N_s = 120f ÷ P = 120 × 50 ÷ 4 = 1,500rpm입니다. 같은 극수에서 60Hz는 1,800rpm이 됩니다.'},
+{i:'23-2-08',y:2023,s:2,q:'1비트의 정보를 기억하는 순서논리회로는?',o:['디코더','가산기','플립플롭','인코더'],k:2,e:'플립플롭은 1비트를 기억하는 순서논리회로로 RS·JK·D·T형이 있습니다. 조합논리회로인 가산기·디코더와 구분합니다.'},
+{i:'23-2-09',y:2023,s:2,q:'베이스 전류로 컬렉터 전류를 제어하는 반도체 소자는?',o:['다이오드','트랜지스터','서미스터','사이리스터'],k:1,e:'트랜지스터는 작은 베이스 전류로 큰 컬렉터 전류를 제어하는 증폭·스위칭 소자입니다. 다이오드는 정류, 사이리스터는 대전력 스위칭에 씁니다.'},
+{i:'23-2-10',y:2023,s:2,q:'다이오드 1개로 교류의 반주기만 정류하는 회로는?',o:['반파정류회로','전파정류회로','브리지정류회로','배전압회로'],k:0,e:'반파정류는 반주기만 통과시켜 리플이 큽니다. 전파정류는 다이오드 4개(브리지)로 양쪽 반주기를 정류해 직류에 가깝습니다.'},
+{i:'23-2-11',y:2023,s:2,q:'전류계를 부하에 병렬로 연결하면 어떻게 되는가?',o:['전류가 흐르지 않는다','정확한 전류가 측정된다','전압이 높아져 절연이 파괴된다','큰 전류가 흘러 계기가 소손된다'],k:3,e:'전류계는 내부저항이 매우 작아 병렬로 연결하면 큰 전류가 흘러 소손됩니다. 전류계는 직렬, 전압계는 병렬로 접속합니다.'},
+{i:'23-2-12',y:2023,s:2,q:'전기설비에 접지를 하는 주된 목적은?',o:['역률을 낮추기 위해','전력 소비를 늘리기 위해','감전 방지와 기기 보호','주파수를 일정하게 하기 위해'],k:2,e:'접지는 고장 시 전류를 대지로 흘려보내 감전과 화재를 막고 기기를 보호합니다. 계통접지와 기기접지로 나뉩니다.'},
+{i:'22-2-01',y:2022,s:2,q:'1초 동안 1쿨롱의 전하가 이동할 때의 전류는?',o:['1V','1A','1W','1Ω'],k:1,e:'전류 1A는 1초에 1C의 전하가 이동하는 크기입니다. 전하량 Q = I × t로 계산합니다.'},
+{i:'22-2-02',y:2022,s:2,q:'전선의 저항이 커지는 조건으로 옳은 것은?',o:['길이가 길고 단면적이 작을수록','길이가 짧고 단면적이 클수록','길이와 단면적이 모두 클수록','길이와 단면적이 모두 작을수록'],k:0,e:'R = ρL/A로, 저항은 길이에 비례하고 단면적에 반비례하며 도체의 고유저항 ρ에 비례합니다.'},
+{i:'22-2-03',y:2022,s:2,q:'20Ω의 저항에 3A의 전류가 흐를 때 소비전력은?',o:['60W','120W','360W','180W'],k:3,e:'P = I² × R = 9 × 20 = 180W입니다. 저항이 클수록, 전류가 클수록 발열이 많아집니다.'},
+{i:'22-2-04',y:2022,s:2,q:'평행판 콘덴서의 정전용량에 대한 설명으로 옳은 것은?',o:['면적에 반비례하고 간격에 비례한다','면적과 간격 모두에 비례한다','극판 면적에 비례하고 극판 간격에 반비례한다','전압에 비례한다'],k:2,e:'C = εA/d로, 정전용량은 극판 면적에 비례하고 간격 d에 반비례하며 유전체의 유전율에 비례합니다.'},
+{i:'22-2-05',y:2022,s:2,q:'코일에 흐르는 전류의 변화를 방해하는 작용은?',o:['정전유도','자기유도(인덕턴스)','전자유도','열전효과'],k:1,e:'코일에 전류가 변하면 자속이 변하고, 이를 방해하는 방향으로 기전력이 생기는 자기유도 작용이 인덕턴스입니다.'},
+{i:'22-2-06',y:2022,s:2,q:'3상 Y결선에서 선전류와 상전류의 관계는?',o:['같다','선전류가 √3배 크다','상전류가 √3배 크다','3배 차이난다'],k:0,e:'Y결선은 선전류 = 상전류입니다. Δ결선은 선전류가 상전류의 √3배입니다.'},
+{i:'22-2-07',y:2022,s:2,q:'이상변압기에서 1차와 2차의 전력 관계는?',o:['전압에 비례해 커진다','권수비만큼 커진다','권수비만큼 작아진다','같다'],k:3,e:'이상변압기는 손실이 없어 1차 입력 전력과 2차 출력 전력이 같습니다. 전압이 올라가면 전류는 그만큼 작아집니다.'},
+{i:'22-2-08',y:2022,s:2,q:'3상 유도전동기에서 회전자계를 만드는 것은?',o:['영구자석의 회전','직류 전원','3상 교류의 위상차','콘덴서의 방전'],k:2,e:'3상 교류가 각 상의 위상차를 가지고 고정자 권선에 흐르면 회전하는 자기장이 생깁니다. 이 회전자계가 회전자를 돌립니다.'},
+{i:'22-2-09',y:2022,s:2,q:'타이머의 한시동작 접점에 대한 설명으로 옳은 것은?',o:['즉시 동작하는 접점','일정 시간이 지난 뒤에 동작하는 접점','일정 시간 뒤에 열리는 접점만 있다','전원이 없어도 동작하는 접점'],k:1,e:'한시동작 접점은 코일에 전원이 들어간 뒤 설정된 시간이 지나서 닫히거나 열립니다. 순시동작 접점은 즉시 동작합니다.'},
+{i:'22-2-10',y:2022,s:2,q:'b접점의 동작은 논리 소자 중 무엇에 해당하는가?',o:['NOT','AND','OR','XOR'],k:0,e:'b접점은 평상시 닫혀 있다가 동작하면 열리므로 입력을 반전시키는 NOT에 해당합니다. a접점은 입력과 같은 동작입니다.'},
+{i:'22-2-11',y:2022,s:2,q:'불 대수에서 A + A′ 의 값은?',o:['0','A′','A','1'],k:3,e:'A + A′ = 1, A · A′ = 0입니다. 어떤 값이든 자신과 반대를 합하면 항상 참이 됩니다.'},
+{i:'22-2-12',y:2022,s:2,q:'전력을 전압과 저항으로 나타낸 식은?',o:['P = R÷V','P = V×R','P = V²÷R','P = V÷R²'],k:2,e:'P = V²/R = I²R = VI입니다. 같은 전압에서 저항이 작을수록 전력이 커집니다.'},
+];
+var BANK_S2X = [
+{i:'26-2-13',y:2026,s:2,q:'퓨즈의 작동 원리로 옳은 것은?',o:['전압이 높아지면 저항이 커진다','과전류가 흐르면 금속이 녹아 회로를 차단한다','전류를 증폭한다','교류를 직류로 바꾼다'],k:1,e:'퓨즈는 정격전류를 넘는 전류가 흐르면 내부 금속이 용단되어 회로를 차단하는 보호장치입니다. 차단 후에는 교체해야 합니다.'},
+{i:'26-2-14',y:2026,s:2,q:'구리 도선의 저항은 온도가 올라가면 어떻게 되는가?',o:['증가한다','감소한다','변하지 않는다','0이 된다'],k:0,e:'구리·알루미늄 같은 금속은 양(+)의 온도계수로 온도가 오르면 저항이 증가합니다. 탄소·반도체는 반대입니다.'},
+{i:'26-2-15',y:2026,s:2,q:'100µF의 콘덴서에 200V의 전압을 가했을 때 저장되는 에너지는?',o:['1J','20J','4J','2J'],k:3,e:'W = 1/2 × C × V² = 0.5 × 100×10⁻⁶ × 200² = 2J입니다. 콘덴서는 전기 에너지를 전계로 저장합니다.'},
+{i:'26-2-16',y:2026,s:2,q:'RLC 병렬회로가 공진할 때 임피던스는 어떻게 되는가?',o:['0이 된다','최소가 된다','최대가 된다','저항과 무관하다'],k:2,e:'병렬 공진에서는 L과 C에 흐르는 전류가 서로 상쇄되어 회로 전체 임피던스가 최대가 되고 전원 전류는 최소가 됩니다.'},
+{i:'26-2-17',y:2026,s:2,q:'3상 Δ결선에서 선전류와 상전류의 관계는?',o:['선전류 = 상전류','선전류 = √3 × 상전류','선전류 = 3 × 상전류','선전류 = 상전류 ÷ √3'],k:1,e:'Δ결선은 선전류가 상전류의 √3배이고 선전압과 상전압은 같습니다. Y결선과 반대입니다.'},
+{i:'26-2-18',y:2026,s:2,q:'1차 6,600V·5A인 변압기의 2차 전압이 220V일 때 2차 전류는?',o:['150A','50A','15A','300A'],k:0,e:'이상변압기는 전력이 같으므로 I2 = (6,600 × 5) ÷ 220 = 150A입니다. 전압이 낮아진 만큼 전류가 커집니다.'},
+{i:'26-2-19',y:2026,s:2,q:'3상 유도전동기의 회전방향을 바꾸는 방법은?',o:['부하를 줄인다','전압을 2배로 높인다','극수를 늘린다','3상 전원의 3선 중 2선의 접속을 바꾼다'],k:3,e:'3상 중 두 상을 서로 바꾸면 회전자계의 방향이 반대로 되어 전동기가 역회전합니다. 현장에서 가장 흔한 방법입니다.'},
+{i:'26-2-20',y:2026,s:2,q:'계전기의 기본 기능을 순서대로 옳게 설명한 것은?',o:['판단 → 동작 → 검출','동작 → 검출 → 판단','검출 → 판단 → 동작','검출 → 동작 → 판단'],k:2,e:'계전기는 계전기 코일에서 이상을 검출하고, 설정값과 비교해 판단한 뒤 접점을 동작시켜 회로를 보호합니다.'},
+{i:'25-2-13',y:2025,s:2,q:'자기장 속에서 전류가 흐르는 도체가 받는 힘의 방향을 구하는 법칙은?',o:['플레밍의 오른손 법칙','플레밍의 왼손 법칙','렌츠의 법칙','키르히호프의 법칙'],k:1,e:'플레밍의 왼손 법칙은 전동기의 힘(전자력) 방향을, 오른손 법칙은 발전기의 유도 기전력 방향을 구할 때 씁니다.'},
+{i:'25-2-14',y:2025,s:2,q:'자기인덕턴스를 구하는 식은?',o:['L = N·Φ ÷ I','L = N·I ÷ Φ','L = Φ ÷ (N·I)','L = I ÷ (N·Φ)'],k:0,e:'자기인덕턴스 L = NΦ/I [H]입니다. 권수와 자속에 비례하고 전류에 반비례합니다.'},
+{i:'25-2-15',y:2025,s:2,q:'1차 코일의 전류 변화가 2차 코일에 기전력을 유도하는 현상은?',o:['열전효과','자기유도','정전유도','상호유도'],k:3,e:'상호유도는 이웃한 코일의 자속 변화로 다른 코일에 기전력이 생기는 현상입니다. 변압기의 원리입니다.'},
+{i:'25-2-16',y:2025,s:2,q:'최대값이 100V인 정현파 교류의 실효값은 약 얼마인가?',o:['50V','63.7V','70.7V','141V'],k:2,e:'실효값 = 최대값 ÷ √2 = 100 ÷ 1.414 = 약 70.7V입니다. 평균값은 2/π를 곱한 63.7V입니다.'},
+{i:'25-2-17',y:2025,s:2,q:'정현파 교류의 파형률은?',o:['1.414','1.11','0.637','2'],k:1,e:'파형률 = 실효값 ÷ 평균값 = 1.11입니다. 파고율은 최대값 ÷ 실효값으로 1.414입니다.'},
+{i:'25-2-18',y:2025,s:2,q:'무효전력의 단위는?',o:['var','W','VA','Wh'],k:0,e:'유효전력은 W, 피상전력은 VA, 무효전력은 var로 나타냅니다. 무효전력은 일을 하지 않고 왕복하는 전력입니다.'},
+{i:'25-2-19',y:2025,s:2,q:'유효전력 6kW, 피상전력 10kVA인 부하의 역률은?',o:['0.4','1.67','0.8','0.6'],k:3,e:'역률 = 유효전력 ÷ 피상전력 = 6 ÷ 10 = 0.6입니다. 역률이 낮으면 같은 전력에 전류가 커집니다.'},
+{i:'25-2-20',y:2025,s:2,q:'피상전력을 구하는 식으로 옳은 것은?',o:['S = I²R','S = V × I × cosθ','S = V × I','S = V² ÷ R'],k:2,e:'피상전력 S = VI [VA]이고, 여기에 역률을 곱하면 유효전력, sinθ를 곱하면 무효전력이 됩니다.'},
+{i:'24-2-13',y:2024,s:2,q:'4µF과 12µF의 콘덴서를 직렬로 연결했을 때 합성용량은?',o:['8µF','3µF','16µF','48µF'],k:1,e:'직렬 합성용량 = (4 × 12) ÷ (4 + 12) = 48 ÷ 16 = 3µF입니다. 콘덴서는 직렬에서 용량이 작아집니다.'},
+{i:'24-2-14',y:2024,s:2,q:'12V 전원에 2Ω과 4Ω의 저항을 직렬로 연결했을 때 4Ω 양단의 전압은?',o:['8V','6V','4V','12V'],k:0,e:'전압은 저항에 비례해 분배되므로 4Ω 양단 전압 = 12 × 4/(2+4) = 8V입니다.'},
+{i:'24-2-15',y:2024,s:2,q:'6Ω과 3Ω의 저항을 병렬로 연결하고 전체에 3A를 흘렸을 때 3Ω에 흐르는 전류는?',o:['1A','1.5A','3A','2A'],k:3,e:'전류는 저항에 반비례해 나뉘므로 3Ω 쪽에 3 × 6/(6+3) = 2A가 흐릅니다.'},
+{i:'24-2-16',y:2024,s:2,q:'부하에 최대전력을 전달하기 위한 조건은?',o:['부하저항이 0일 때','부하저항이 내부저항보다 훨씬 클 때','부하저항이 전원의 내부저항과 같을 때','부하저항이 무한대일 때'],k:2,e:'최대전력전달 정리에 따라 부하저항과 내부저항이 같을 때 부하에 최대전력이 전달됩니다. 이때 효율은 50%입니다.'},
+{i:'24-2-17',y:2024,s:2,q:'10A의 전류를 5시간 동안 방전할 수 있는 축전지의 용량은?',o:['2Ah','50Ah','15Ah','500Ah'],k:1,e:'축전지 용량 = 전류 × 시간 = 10 × 5 = 50Ah입니다. 방전율에 따라 실제 사용 가능한 용량은 달라집니다.'},
+{i:'24-2-18',y:2024,s:2,q:'정류회로의 리플(맥동)을 줄이는 방법으로 가장 적절한 것은?',o:['평활용 콘덴서나 초크코일을 붙인다','다이오드를 더 직렬로 연결한다','전원 주파수를 낮춘다','부하를 줄인다'],k:0,e:'평활회로는 콘덴서로 전압 변동을 흡수하거나 초크코일로 전류 변화를 억제해 리플을 줄입니다.'},
+{i:'24-2-19',y:2024,s:2,q:'휘트스톤 브리지가 평형이 되는 조건은?',o:['R1 = R2 = R3 = R4','R1 + R4 = R2 + R3','R1 ÷ R2 = R3 × R4','R1 × R4 = R2 × R3'],k:3,e:'마주 보는 저항의 곱이 같을 때(R1·R4 = R2·R3) 검류계에 전류가 흐르지 않아 평형이 됩니다. 미지저항 측정에 씁니다.'},
+{i:'24-2-20',y:2024,s:2,q:'2µF과 4µF의 콘덴서를 직렬로 연결했을 때 합성용량은 약 얼마인가?',o:['3µF','2µF','1.33µF','6µF'],k:2,e:'직렬 합성용량 = (2 × 4) ÷ (2 + 4) = 8 ÷ 6 = 약 1.33µF입니다.'},
+{i:'23-2-13',y:2023,s:2,q:'다이오드의 주된 기능은?',o:['전압을 증폭한다','교류를 직류로 정류한다','전류를 저장한다','주파수를 변환한다'],k:1,e:'다이오드는 한 방향으로만 전류를 흘려 교류를 직류로 바꾸는 정류 작용을 합니다. PN접합으로 만들어집니다.'},
+{i:'23-2-14',y:2023,s:2,q:'정전압 회로에 사용되는 소자는?',o:['제너다이오드','발광다이오드','서미스터','바리스터'],k:0,e:'제너다이오드는 역방향 항복전압이 일정해 정전압 회로에 쓰입니다. 발광다이오드는 빛, 서미스터는 온도 검출에 씁니다.'},
+{i:'23-2-15',y:2023,s:2,q:'트랜지스터의 접지 방식 중 가장 널리 쓰이는 것은?',o:['플로팅 접지','베이스 접지','컬렉터 접지','이미터 접지'],k:3,e:'이미터 접지는 전압과 전류를 모두 증폭할 수 있고 입력·출력 임피던스가 적당해 가장 널리 쓰입니다.'},
+{i:'23-2-16',y:2023,s:2,q:'이상적인 연산증폭기의 입력 임피던스는?',o:['1kΩ','0','무한대','10kΩ'],k:2,e:'이상 연산증폭기는 입력 임피던스가 무한대, 출력 임피던스가 0, 전압이득이 무한대인 소자로 가정합니다.'},
+{i:'23-2-17',y:2023,s:2,q:'불 대수에서 A + A·B 를 간소화하면?',o:['B','A','A·B','A+B'],k:1,e:'흡수법칙 A + A·B = A입니다. A가 1이면 전체가 1, 0이면 0이 되어 B와 무관합니다.'},
+{i:'23-2-18',y:2023,s:2,q:'JK 플립플롭에서 J와 K가 모두 1일 때 출력은?',o:['이전 상태가 반전된다','항상 0이 된다','항상 1이 된다','변하지 않는다'],k:0,e:'JK 플립플롭은 J=K=1일 때 출력이 반전(토글)됩니다. RS 플립플롭의 금지 상태를 해결한 것입니다.'},
+{i:'23-2-19',y:2023,s:2,q:'플립플롭 4개로 만들 수 있는 최대 상태의 수는?',o:['4','8','32','16'],k:3,e:'플립플롭 1개가 2상태를 기억하므로 4개면 2⁴ = 16가지 상태를 나타낼 수 있습니다.'},
+{i:'23-2-20',y:2023,s:2,q:'NAND 게이트의 특징으로 옳은 것은?',o:['입력이 1개만 필요하다','AND만 만들 수 있다','모든 논리회로를 구성할 수 있는 범용 게이트이다','전원 없이 동작한다'],k:2,e:'NAND 게이트만으로 AND·OR·NOT을 모두 만들 수 있어 범용 게이트라고 합니다. 실제 IC에서도 널리 쓰입니다.'},
+{i:'22-2-13',y:2022,s:2,q:'계자권선과 전기자권선이 병렬로 연결된 직류기는?',o:['직권 발전기','분권 발전기','복권 발전기','타여자 발전기'],k:1,e:'분권은 계자가 전기자와 병렬, 직권은 직렬, 복권은 두 권선을 함께 가진 방식입니다. 분권은 정전압 특성이 좋습니다.'},
+{i:'22-2-14',y:2022,s:2,q:'부하가 없을 때 회전속도가 매우 높아져 위험한 직류전동기는?',o:['직권 전동기','분권 전동기','타여자 전동기','동기 전동기'],k:0,e:'직권 전동기는 부하가 작아지면 계자 자속이 줄어 속도가 급상승합니다. 무부하 운전을 피해야 합니다.'},
+{i:'22-2-15',y:2022,s:2,q:'동기발전기의 회전속도·극수·주파수의 관계식은?',o:['f = P + N','f = 120·P ÷ N','f = N ÷ (120·P)','f = P·N ÷ 120'],k:3,e:'f = PN/120 [Hz]입니다. 극수가 많거나 회전수가 높을수록 주파수가 높아집니다.'},
+{i:'22-2-16',y:2022,s:2,q:'토크 10N·m, 회전속도 1,200rpm인 전동기의 출력은 약 얼마인가?',o:['0.63kW','12.6kW','1.26kW','125.6kW'],k:2,e:'P = 2πNT ÷ 60 = 2 × 3.14 × 1,200 × 10 ÷ 60 = 약 1,256W, 즉 1.26kW입니다.'},
+{i:'22-2-17',y:2022,s:2,q:'입력 10kW, 출력 8kW인 전동기의 효율은?',o:['60%','80%','75%','125%'],k:1,e:'효율 = 출력 ÷ 입력 × 100 = 8 ÷ 10 × 100 = 80%입니다. 손실은 2kW입니다.'},
+{i:'22-2-18',y:2022,s:2,q:'동기속도 1,500rpm인 유도전동기가 1,440rpm으로 회전할 때 슬립은?',o:['4%','2%','6%','10%'],k:0,e:'s = (1,500 − 1,440) ÷ 1,500 × 100 = 4%입니다. 슬립이 작을수록 효율이 좋습니다.'},
+{i:'22-2-19',y:2022,s:2,q:'2극 60Hz 유도전동기의 동기속도는?',o:['1,800rpm','2,400rpm','7,200rpm','3,600rpm'],k:3,e:'N_s = 120 × 60 ÷ 2 = 3,600rpm입니다. 극수가 2개이면 가장 빠른 속도를 가집니다.'},
+{i:'22-2-20',y:2022,s:2,q:'인버터의 기능은?',o:['전압을 승압만 한다','교류를 직류로 변환한다','직류를 교류로 변환한다','주파수를 측정한다'],k:2,e:'인버터는 직류를 원하는 주파수의 교류로 바꾸는 장치입니다. 컨버터는 반대로 교류를 직류로 바꿉니다.'},
+{i:'21-2-01',y:2021,s:2,q:'전류의 발열작용을 이용한 기기는?',o:['전동기','전기다리미','변압기','축전지'],k:1,e:'전기다리미·전기난로는 저항에 전류가 흐를 때 발생하는 줄열을 이용합니다. 전동기는 자기작용, 축전지는 화학작용을 이용합니다.'},
+{i:'21-2-02',y:2021,s:2,q:'전류의 자기작용을 이용한 것은?',o:['전자석','전기분해','백열전구','정류기'],k:0,e:'전류가 흐르는 코일 주위에 자기장이 생기는 자기작용으로 전자석·계전기·전동기가 동작합니다.'},
+{i:'21-2-03',y:2021,s:2,q:'전류의 화학작용을 이용한 것은?',o:['변압기','전기난로','전자석','전기 도금'],k:3,e:'전기분해·도금·축전지 충전은 전류의 화학작용을 이용합니다. 전해질 용액에 전류를 흘려 화학변화를 일으킵니다.'},
+{i:'21-2-04',y:2021,s:2,q:'12Ω의 저항에 6V의 전압을 가하면 흐르는 전류는?',o:['6A','2A','0.5A','72A'],k:2,e:'I = V ÷ R = 6 ÷ 12 = 0.5A입니다.'},
+{i:'21-2-05',y:2021,s:2,q:'2Ω, 3Ω, 5Ω의 저항을 직렬로 연결했을 때 합성저항은?',o:['0.97Ω','10Ω','5Ω','30Ω'],k:1,e:'직렬은 단순히 더하므로 2 + 3 + 5 = 10Ω입니다.'},
+{i:'21-2-06',y:2021,s:2,q:'6Ω, 3Ω, 2Ω의 저항을 병렬로 연결했을 때 합성저항은?',o:['1Ω','2Ω','3Ω','11Ω'],k:0,e:'1/R = 1/6 + 1/3 + 1/2 = 1이므로 R = 1Ω입니다. 병렬은 가장 작은 저항보다 작아집니다.'},
+{i:'21-2-07',y:2021,s:2,q:'220V의 전압에 5A의 전류가 흐르는 부하의 전력은?',o:['44W','220W','1,100kWh','1,100W'],k:3,e:'P = V × I = 220 × 5 = 1,100W입니다.'},
+{i:'21-2-08',y:2021,s:2,q:'1kW의 전열기를 3시간 사용했을 때 소비 전력량은?',o:['0.3kWh','30kWh','3kWh','3,600kWh'],k:2,e:'전력량 = 1kW × 3h = 3kWh입니다. 전력량은 전기요금의 기준이 됩니다.'},
+{i:'21-2-09',y:2021,s:2,q:'저항 4Ω에 5A의 전류를 10초 동안 흘렸을 때 발생하는 열량은?',o:['24 cal','240 cal','1,000 cal','2,400 cal'],k:1,e:'H = 0.24 × I² × R × t = 0.24 × 25 × 4 × 10 = 240cal입니다.'},
+{i:'21-2-10',y:2021,s:2,q:'평행판 콘덴서의 정전용량을 크게 하는 방법은?',o:['극판 면적을 넓히고 간격을 좁힌다','극판 면적을 좁히고 간격을 넓힌다','전압을 높인다','전류를 크게 한다'],k:0,e:'C = εA/d이므로 극판 면적이 넓고 간격이 좁을수록, 유전율이 큰 유전체를 쓸수록 용량이 커집니다.'},
+{i:'21-2-11',y:2021,s:2,q:'인덕턴스의 단위는?',o:['T(테슬라)','F(패럿)','Wb(웨버)','H(헨리)'],k:3,e:'인덕턴스는 H, 정전용량은 F, 자속은 Wb, 자속밀도는 T입니다.'},
+{i:'21-2-12',y:2021,s:2,q:'60Hz 교류의 주기는 약 얼마인가?',o:['6ms','60ms','16.7ms','166ms'],k:2,e:'주기 T = 1 ÷ f = 1 ÷ 60 = 약 0.0167초, 즉 16.7ms입니다.'},
+{i:'21-2-13',y:2021,s:2,q:'최대값 100V인 정현파의 평균값은 약 얼마인가?',o:['50V','63.7V','70.7V','100V'],k:1,e:'평균값 = (2 ÷ π) × 최대값 = 0.637 × 100 = 63.7V입니다. 실효값은 70.7V입니다.'},
+{i:'21-2-14',y:2021,s:2,q:'콘덴서에 교류를 가할 때 전류의 위상은 전압에 비해?',o:['90° 앞선다','90° 뒤진다','180° 다르다','같다'],k:0,e:'콘덴서 전류는 전압보다 90° 앞서고, 코일 전류는 전압보다 90° 뒤집니다.'},
+{i:'21-2-15',y:2021,s:2,q:'코일에 교류를 가할 때 전류의 위상은 전압에 비해?',o:['45° 앞선다','90° 앞선다','같다','90° 뒤진다'],k:3,e:'코일은 전류의 변화를 방해하는 자기유도 때문에 전류가 전압보다 90° 늦게 흐릅니다.'},
+{i:'21-2-16',y:2021,s:2,q:'임피던스의 단위는?',o:['F','H','Ω','S'],k:2,e:'임피던스 Z는 교류회로의 전체 저항으로 단위는 Ω입니다. Z = √(R² + (X_L − X_C)²)입니다.'},
+{i:'21-2-17',y:2021,s:2,q:'인덕턴스 1mH, 정전용량 100µF인 회로의 공진주파수는 약 얼마인가?',o:['50Hz','503Hz','1,592Hz','5,033Hz'],k:1,e:'f0 = 1 ÷ (2π√(LC)) = 1 ÷ (2π × √(1×10⁻⁷)) ≈ 503Hz입니다.'},
+{i:'21-2-18',y:2021,s:2,q:'권수비 1,000 : 100인 변압기의 1차에 2,200V를 가하면 2차 전압은?',o:['220V','110V','22V','2,200V'],k:0,e:'권수비 10이므로 2,200 ÷ 10 = 220V입니다.'},
+{i:'21-2-19',y:2021,s:2,q:'3상 유도전동기가 회전하는 원리는?',o:['정전기로 회전자를 끌어당긴다','영구자석이 계속 밀어낸다','연료를 연소해 회전한다','고정자의 회전자계가 회전자에 유도전류를 만들어 힘을 낸다'],k:3,e:'3상 전류가 만든 회전자계가 회전자 도체에 유도전류를 흘리고, 이 전류와 자계의 상호작용으로 회전력이 생깁니다.'},
+{i:'21-2-20',y:2021,s:2,q:'제2종 접지공사의 접지저항 기준은?',o:['100Ω 이하','10Ω 이하','4Ω 이하','500Ω 이하'],k:2,e:'제1종 10Ω, 제2종 4Ω, 제3종 100Ω, 특별제3종 10Ω입니다. 제2종은 고압·특고압 계통에 적용됩니다.'},
+{i:'20-2-01',y:2020,s:2,q:'전하량의 단위는?',o:['A(암페어)','C(쿨롱)','V(볼트)','W(와트)'],k:1,e:'전하량 Q의 단위는 쿨롱(C)입니다. 1C은 1A의 전류가 1초 동안 흘렀을 때 이동하는 전하량입니다.'},
+{i:'20-2-02',y:2020,s:2,q:'전압의 단위는?',o:['V','A','Ω','J'],k:0,e:'전압(전위차)의 단위는 볼트(V)입니다. 1V는 1Ω의 저항에 1A를 흘리는 전압입니다.'},
+{i:'20-2-03',y:2020,s:2,q:'전기저항의 단위는?',o:['F','V','A','Ω'],k:3,e:'저항의 단위는 옴(Ω)입니다. 도체의 저항은 길이에 비례하고 단면적에 반비례합니다.'},
+{i:'20-2-04',y:2020,s:2,q:'저항이 일정할 때 전압과 전류의 관계는?',o:['전압의 제곱에 비례한다','전압에 반비례한다','전압에 비례한다','관계없다'],k:2,e:'옴의 법칙 I = V/R이므로 저항이 일정하면 전류는 전압에 비례합니다. V-I 그래프는 원점을 지나는 직선입니다.'},
+{i:'20-2-05',y:2020,s:2,q:'저항을 직렬로 연결할 때의 특징은?',o:['각 저항의 전압이 같다','각 저항에 흐르는 전류가 같다','합성저항이 가장 작은 저항보다 작다','전류가 나뉜다'],k:1,e:'직렬회로는 전류가 같고 전압이 나뉩니다. 병렬회로는 전압이 같고 전류가 나뉩니다.'},
+{i:'20-2-06',y:2020,s:2,q:'저항을 병렬로 연결할 때의 특징은?',o:['각 저항에 걸리는 전압이 같다','전류가 같다','합성저항이 커진다','전압이 나뉜다'],k:0,e:'병렬회로는 각 저항에 같은 전압이 걸리고 전류가 저항에 반비례해 나뉩니다. 합성저항은 작아집니다.'},
+{i:'20-2-07',y:2020,s:2,q:'10Ω과 10Ω의 저항을 병렬로 연결하면 합성저항은?',o:['100Ω','10Ω','20Ω','5Ω'],k:3,e:'같은 저항 2개를 병렬로 하면 절반인 5Ω입니다. (10 × 10) ÷ (10 + 10) = 5Ω입니다.'},
+{i:'20-2-08',y:2020,s:2,q:'5Ω의 저항에 2A의 전류가 흐를 때 소비전력은?',o:['10W','40W','20W','100W'],k:2,e:'P = I²R = 4 × 5 = 20W입니다.'},
+{i:'20-2-09',y:2020,s:2,q:'전력량의 단위로 옳은 것은?',o:['W','kWh','kW','V'],k:1,e:'전력량은 전력에 시간을 곱한 값으로 kWh를 씁니다. 1kWh는 1kW를 1시간 사용한 양입니다.'},
+{i:'20-2-10',y:2020,s:2,q:'1J의 열량과 같은 값은?',o:['0.24cal','1cal','4.2cal','24cal'],k:0,e:'1J = 0.24cal, 1cal = 4.2J입니다. 그래서 줄의 법칙에서 0.24를 곱합니다.'},
+{i:'20-2-11',y:2020,s:2,q:'자속의 단위는?',o:['AT','T(테슬라)','H(헨리)','Wb(웨버)'],k:3,e:'자속 Φ의 단위는 Wb, 자속밀도 B는 T, 인덕턴스 L은 H, 기자력은 AT입니다.'},
+{i:'20-2-12',y:2020,s:2,q:'자속밀도의 단위는?',o:['H','Wb','T(테슬라)','F'],k:2,e:'자속밀도 B의 단위는 테슬라(T)로, 단위면적당 자속(Wb/㎡)을 뜻합니다.'},
+{i:'20-2-13',y:2020,s:2,q:'기자력의 단위는?',o:['Wb','AT(암페어턴)','T','H'],k:1,e:'기자력 F = N·I로 권수와 전류의 곱이며 단위는 암페어턴(AT)입니다.'},
+{i:'20-2-14',y:2020,s:2,q:'전자유도 법칙을 이용한 기기는?',o:['발전기','전기난로','전구','퓨즈'],k:0,e:'발전기는 코일을 지나는 자속을 변화시켜 기전력을 얻는 전자유도를 이용합니다.'},
+{i:'20-2-15',y:2020,s:2,q:'직류전동기에서 역기전력이 생기는 이유는?',o:['계자가 약해지기 때문','전압이 너무 낮기 때문','저항이 커지기 때문','전기자가 자기장 속에서 회전하며 도체가 자속을 끊기 때문'],k:3,e:'회전하는 전기자 코일이 자속을 끊어 렌츠의 법칙에 따라 전원과 반대 방향의 기전력이 생깁니다.'},
+{i:'20-2-16',y:2020,s:2,q:'3상 교류에서 상전압이 220V일 때 Y결선의 선간전압은?',o:['127V','220V','380V','440V'],k:2,e:'Y결선의 선간전압 = √3 × 상전압 = 1.732 × 220 ≈ 380V입니다.'},
+{i:'20-2-17',y:2020,s:2,q:'변압기가 동작하는 기본 원리는?',o:['정전유도','상호유도','열전효과','화학반응'],k:1,e:'1차 코일의 교류가 만드는 자속이 2차 코일에 상호유도로 기전력을 발생시킵니다.'},
+{i:'20-2-18',y:2020,s:2,q:'변압기의 동손에 대한 설명으로 옳은 것은?',o:['부하 전류의 제곱에 비례한다','부하와 관계없이 일정하다','전압에만 비례한다','주파수에 반비례한다'],k:0,e:'동손은 권선 저항에 의한 손실로 I²R에 비례해 부하가 클수록 커집니다. 철손은 부하와 무관합니다.'},
+{i:'20-2-19',y:2020,s:2,q:'유도전동기의 슬립이 0이라는 의미는?',o:['부하가 최대이다','최대 토크가 발생한다','전원이 차단되었다','회전자가 동기속도와 같아 토크가 발생하지 않는다'],k:3,e:'슬립이 0이면 회전자와 회전자계의 상대속도가 없어 유도전류가 생기지 않고 토크도 발생하지 않습니다.'},
+{i:'20-2-20',y:2020,s:2,q:'a접점의 동작으로 옳은 것은?',o:['동작과 무관하게 항상 닫혀 있다','평상시 닫혀 있다가 동작하면 열린다','평상시 열려 있다가 동작하면 닫힌다','전원이 없으면 닫힌다'],k:2,e:'a접점은 상시 열린 접점으로, 코일에 전원이 들어가면 닫힙니다. b접점은 반대로 동작 시 열립니다.'},
+];
+var BANK_S3 = [
+{i:'26-3-01',y:2026,s:3,q:'화재예방법과 소방시설법으로 분법된 뒤, 소방시설의 설치·유지와 자체점검을 규정하는 법률은?',o:['화재의 예방 및 안전관리에 관한 법률','소방시설 설치 및 관리에 관한 법률','소방기본법','소방시설공사업법'],k:1,e:'2022년 12월 1일부터 소방시설의 설치·유지·자체점검은 소방시설법, 소방안전관리자·소방안전교육·화재예방은 화재예방법이 맡습니다.'},
+{i:'26-3-02',y:2026,s:3,q:'소방시설 5대 분류 중 경보설비에 해당하는 것은?',o:['비상방송설비','유도등','비상콘센트설비','연결송수관설비'],k:0,e:'경보설비에는 자동화재탐지설비·비상경보설비·비상방송설비·누전경보기가 있습니다. 유도등은 피난구조설비, 비상콘센트·연결송수관은 소화활동설비입니다.'},
+{i:'26-3-03',y:2026,s:3,q:'자체점검 중 작동점검에서 확인하는 사항으로 가장 적절한 것은?',o:['건축물의 내화구조 성능','주요 구성부품의 구조와 성능 기준 적합 여부','소방시설의 설계 도면 일치 여부','인위적으로 조작했을 때 소방시설이 정상 작동하는지 여부'],k:3,e:'작동점검은 수신기·감지기·경종 등을 인위적으로 조작해 작동 여부를 확인합니다. 구조와 성능까지 확인하는 것은 종합점검입니다.'},
+{i:'26-3-04',y:2026,s:3,q:'소방안전관리가 우수한 소방안전관리대상물이 받을 수 있는 혜택은?',o:['소방안전관리자를 선임하지 않아도 된다','자체점검을 전혀 하지 않아도 된다','3년의 범위에서 종합점검을 면제받을 수 있다','소방시설을 철거할 수 있다'],k:2,e:'소방시설법령에 따라 소방안전관리가 우수한 대상물은 3년의 범위에서 종합점검의 전부 또는 일부를 면제받을 수 있습니다.'},
+{i:'26-3-05',y:2026,s:3,q:'자체점검 결과 보고서의 보관 기간은?',o:['1년','2년','3년','5년'],k:1,e:'자체점검 결과 보고서는 2년간 보관해야 하며, 점검을 마친 날부터 15일 이내에 소방본부장 또는 소방서장에게 보고합니다.'},
+{i:'26-3-06',y:2026,s:3,q:'자체점검을 마친 뒤 소방본부장 또는 소방서장에게 보고해야 하는 기한은?',o:['점검을 마친 날부터 15일 이내','점검을 마친 날부터 10일 이내','점검을 마친 날부터 5일 이내','점검을 마친 날부터 30일 이내'],k:0,e:'관계인은 점검이 끝난 날부터 15일 이내에 보고합니다. 점검을 대행한 관리업자가 관계인에게 결과를 제출하는 기한은 10일입니다.'},
+{i:'26-3-07',y:2026,s:3,q:'소방안전관리자를 선임해야 하는 기한은?',o:['대통령령으로 정하는 날부터 7일 이내','사용승인 후 1년 이내','대통령령으로 정하는 날부터 60일 이내','대통령령으로 정하는 날부터 30일 이내'],k:3,e:'화재예방법에 따라 소방안전관리대상물의 관계인은 대통령령으로 정하는 날부터 30일 이내에 소방안전관리자를 선임하고 신고합니다.'},
+{i:'26-3-08',y:2026,s:3,q:'소방안전관리보조자를 두어야 하는 공동주택의 기준은?',o:['100세대 이상','200세대 이상','300세대 이상','500세대 이상'],k:2,e:'300세대 이상인 아파트, 연면적 1만5천㎡ 이상 특정소방대상물, 기숙사·의료·노유자·숙박시설 등이 보조자 선임 대상입니다.'},
+{i:'26-3-09',y:2026,s:3,q:'소방기본법에 따른 소방신호의 종류로 옳은 것은?',o:['경계 · 대피 · 진화 · 해제','경계 · 발화 · 진화 · 종포','발화 · 경보 · 진압 · 종료','주의 · 경계 · 발화 · 진화'],k:1,e:'소방신호는 경계(화재 확대 우려)·발화(화재 발생)·진화(진압 중)·종포(진화 완료) 네 가지입니다.'},
+{i:'26-3-10',y:2026,s:3,q:'소방용품을 판매하거나 설치하기 위해 필요한 것은?',o:['형식승인과 제품검사','설계도면 검사만','자체점검 결과 보고','소방안전교육 이수'],k:0,e:'소방용품은 소방청장이 정한 기술기준에 따른 형식승인을 받고, 생산된 제품마다 제품검사를 통과해야 판매·설치할 수 있습니다.'},
+{i:'26-3-11',y:2026,s:3,q:'소방시설공사업을 등록해야 하는 관청은?',o:['시장·군수·구청장','소방청장','행정안전부장관','시·도지사'],k:3,e:'소방시설공사업법에 따라 소방시설공사업·감리업은 시·도지사에게 등록하며 기술인력과 시설 기준을 갖추어야 합니다.'},
+{i:'26-3-12',y:2026,s:3,q:'위험물안전관리법에서 위험물을 성질별로 몇 류로 분류하는가?',o:['4류','5류','6류','8류'],k:2,e:'산화성고체·가연성고체·자연발화성 및 금수성·인화성액체·자기반응성·산화성액체의 6류로 분류합니다.'},
+{i:'25-3-01',y:2025,s:3,q:'화재예방법이 주로 규정하는 사항으로 가장 적절한 것은?',o:['소방시설의 설치 기준','소방안전관리자 선임과 소방안전교육','자체점검의 방법과 절차','소방용품의 형식승인'],k:1,e:'화재예방법은 소방안전관리자·보조자, 소방안전교육, 화재위험평가, 화재예방강화지구 등 사람과 예방 활동을 규정합니다.'},
+{i:'25-3-02',y:2025,s:3,q:'소방시설법의 규정 내용으로 가장 적절한 것은?',o:['소방시설의 설치·유지 및 자체점검','소방공무원의 임용','위험물의 저장 기준','다중이용업소의 영업 신고'],k:0,e:'소방시설법은 소방시설의 종류와 설치·유지 기준, 자체점검, 소방용품, 방염 등을 규정합니다.'},
+{i:'25-3-03',y:2025,s:3,q:'특정소방대상물에 대한 설명으로 옳은 것은?',o:['소방공무원이 근무하는 청사','소방서가 직접 관리하는 건물','위험물을 저장하는 시설만','소방시설을 설치·유지·관리해야 하는 건축물·시설 등'],k:3,e:'특정소방대상물은 용도별로 분류되며, 용도와 규모에 따라 설치해야 하는 소방시설이 시행령 별표로 정해집니다.'},
+{i:'25-3-04',y:2025,s:3,q:'소방시설법상 관계인의 범위로 옳은 것은?',o:['소방안전관리자만','소유자만','소유자 · 관리자 · 점유자','건축주와 감리자'],k:2,e:'관계인은 특정소방대상물의 소유자·관리자·점유자를 말하며, 소방시설의 설치·유지와 자체점검 의무를 집니다.'},
+{i:'25-3-05',y:2025,s:3,q:'소방특별조사를 실시할 수 있는 자는?',o:['건축허가권자','소방청장 · 소방본부장 · 소방서장','소방시설관리업자','소방안전관리자'],k:1,e:'소방청장·소방본부장·소방서장은 화재예방과 안전관리를 위해 소방특별조사를 할 수 있고, 결과에 따라 개수·이전·사용금지 등을 명할 수 있습니다.'},
+{i:'25-3-06',y:2025,s:3,q:'다중이용업소를 운영하려는 자가 갖추어야 하는 것은?',o:['소방시설등의 설치와 완비증명','소방안전관리자 2명 선임','소방차량 보유','자체 소방대 조직'],k:0,e:'다중이용업소는 소방시설등의 설치와 안전시설등의 기준을 갖추고 완비증명을 받아야 영업할 수 있습니다.'},
+{i:'25-3-07',y:2025,s:3,q:'소방기본법상 소방의 임무로 보기 어려운 것은?',o:['화재의 예방·경계·진압','인명구조','구급','건축물의 설계'],k:3,e:'소방의 임무는 화재의 예방·경계·진압, 인명구조, 구급 및 그 밖의 재난 대응입니다. 건축물 설계는 소방의 임무가 아닙니다.'},
+{i:'25-3-08',y:2025,s:3,q:'화재경계지구를 지정할 수 있는 자는?',o:['소방안전관리자','건축주','소방본부장 또는 소방서장','관할 경찰서장'],k:2,e:'소방본부장 또는 소방서장은 화재가 발생할 우려가 큰 지역을 화재경계지구로 지정하고 필요한 조치를 할 수 있습니다.'},
+{i:'25-3-09',y:2025,s:3,q:'유도등이 속하는 소방시설 분류는?',o:['경보설비','피난구조설비','소화활동설비','소화용수설비'],k:1,e:'유도등과 비상조명등은 피난구조설비입니다. 경보설비는 알리는 설비, 소화활동설비는 소방활동을 돕는 설비입니다.'},
+{i:'25-3-10',y:2025,s:3,q:'비상콘센트설비가 속하는 소방시설 분류는?',o:['소화활동설비','소화설비','경보설비','피난구조설비'],k:0,e:'비상콘센트설비·연결송수관설비·연결살수설비·무선통신보조설비는 소화활동설비입니다.'},
+{i:'25-3-11',y:2025,s:3,q:'소방안전관리대상물의 특급 기준으로 옳은 것은?',o:['자동화재탐지설비 설치 대상','연면적 1만5천㎡ 이상인 건축물','옥내소화전설비 설치 대상','30층 이상 또는 높이 120m 이상인 건축물'],k:3,e:'특급은 30층 이상 또는 높이 120m 이상(아파트는 50층 이상 또는 200m 이상)입니다. 연면적 기준은 1급, 시설 기준은 2·3급입니다.'},
+{i:'25-3-12',y:2025,s:3,q:'소방시설관리업자가 자체점검을 대행했을 때 점검 결과를 관계인에게 제출하는 기한은?',o:['점검을 마친 날부터 30일 이내','점검을 마친 날부터 15일 이내','점검을 마친 날부터 10일 이내','다음 달 말일까지'],k:2,e:'관리업자는 점검이 끝난 날부터 10일 이내에 결과 보고서를 관계인에게 제출합니다. 관계인의 소방서 보고 기한은 15일입니다.'},
+{i:'24-3-01',y:2024,s:3,q:'소방시설등 자체점검의 두 가지 구분은?',o:['일상점검과 정기점검','작동점검과 종합점검','자체점검과 위탁점검','소방점검과 안전점검'],k:1,e:'작동점검은 인위적 조작에 의한 작동 여부를, 종합점검은 주요 구성부품의 구조·성능 기준까지 확인합니다.'},
+{i:'24-3-02',y:2024,s:3,q:'소방안전관리대상물의 등급 구분으로 옳은 것은?',o:['특급 · 1급 · 2급 · 3급','1급 · 2급 · 3급','특급 · 1급 · 2급','A급 · B급 · C급'],k:0,e:'소방안전관리대상물은 특급·1급·2급·3급으로 나뉘며, 등급에 따라 선임 자격과 인원이 달라집니다.'},
+{i:'24-3-03',y:2024,s:3,q:'소방시설공사업을 등록하려면 갖추어야 하는 것은?',o:['위험물 저장소','소방안전관리자 자격','소방차량과 장비','기술인력과 시설 기준'],k:3,e:'소방시설공사업법에 따라 기술인력과 시설 기준을 갖추어 시·도지사에게 등록해야 합니다.'},
+{i:'24-3-04',y:2024,s:3,q:'위험물의 지정수량에 대한 설명으로 옳은 것은?',o:['저장소의 최대 면적','모든 위험물에 같은 수량을 적용한 값','위험물의 종류별로 정한 수량으로, 이 수량 이상 저장·취급하면 법의 적용을 받는다','위험물의 최대 허용 온도'],k:2,e:'지정수량은 위험물 종류별로 위험성을 고려해 정한 수량입니다. 지정수량 이상을 저장·취급하면 위험물안전관리법에 따른 시설·선임 의무가 생깁니다.'},
+{i:'24-3-05',y:2024,s:3,q:'위험물을 지정수량 이상 저장하는 시설에서 선임해야 하는 자는?',o:['소방안전관리자','위험물안전관리자','소방시설관리사','위험물감독관'],k:1,e:'위험물안전관리법에 따라 지정수량 이상의 위험물을 저장·취급하는 자는 위험물안전관리자를 선임해야 합니다.'},
+{i:'24-3-06',y:2024,s:3,q:'소방기본법상 소방용수시설에 해당하는 것은?',o:['소화전 · 저수조 · 급수탑','소화기 · 스프링클러','유도등 · 비상조명등','감지기 · 경종'],k:0,e:'소방용수시설은 소화전·저수조·급수탑 등 소방활동에 필요한 물을 공급하는 시설입니다.'},
+{i:'24-3-07',y:2024,s:3,q:'소방자동차 전용구역에 주차할 수 없는 이유는?',o:['소방관 주차 공간이 부족하기 때문에','배기가스가 건물에 유입되기 때문에','도로 폭이 좁기 때문에','화재 시 소방자동차의 신속한 접근을 보장하기 위해'],k:3,e:'소방자동차 전용구역은 화재 시 소방차가 신속하게 접근할 수 있도록 확보한 공간이므로 주차나 물건 적치를 할 수 없습니다.'},
+{i:'24-3-08',y:2024,s:3,q:'방염성능검사 대상으로 옳은 것은?',o:['감지기','소화기','실내 장식물 · 커튼 등 방염대상물품','유도등'],k:2,e:'소방시설법에 따라 공연장·숙박시설 등의 실내 장식물, 커튼, 카펫 등은 방염성능검사를 받은 제품을 사용해야 합니다.'},
+{i:'24-3-09',y:2024,s:3,q:'소방시설의 완공검사 대상으로 가장 적절한 것은?',o:['소방시설을 처음 설계할 때','소방시설을 신설·증설·개조한 뒤 공사를 마친 경우','자체점검을 할 때마다','소방안전관리자를 선임할 때'],k:1,e:'소방시설공사를 마치면 소방시설법에 따라 완공검사를 받아야 하며, 검사에 합격해야 사용할 수 있습니다.'},
+{i:'24-3-10',y:2024,s:3,q:'특정소방대상물의 관계인이 실시해야 하는 소방훈련의 횟수는?',o:['연 1회 이상','연 2회 이상','2년에 1회','5년에 1회'],k:0,e:'화재예방법에 따라 관계인은 연 1회 이상 소방훈련과 대피훈련을 실시해야 하며, 훈련 결과를 기록·보관합니다.'},
+{i:'24-3-11',y:2024,s:3,q:'소방안전관리자가 받아야 하는 정기 소방안전교육의 횟수로 옳은 것은?',o:['정기교육은 없다','2년에 1회','3년에 1회','연 1회 이상'],k:3,e:'소방안전관리자와 보조자는 화재예방법에 따라 연 1회 이상 소방안전교육을 받아야 합니다.'},
+{i:'24-3-12',y:2024,s:3,q:'소방본부장 또는 소방서장이 소방시설의 유지·관리 상태가 불량할 때 내릴 수 있는 조치는?',o:['건물 철거 명령','영업 허가 취소','개수 · 이전 · 사용금지 명령','소방안전관리자 해임'],k:2,e:'소방시설법에 따라 개수·이전·사용금지 등을 명할 수 있으며, 이행하지 않으면 벌칙이 따릅니다.'},
+{i:'23-3-01',y:2023,s:3,q:'제4류 위험물에 해당하는 것은?',o:['질산 · 과산화수소','휘발유 · 등유','황린 · 칼륨','마그네슘 · 황'],k:1,e:'제4류는 인화성액체로 휘발유·등유·경유·중유 등입니다. 질산은 6류, 황린은 3류, 마그네슘·황은 2류입니다.'},
+{i:'23-3-02',y:2023,s:3,q:'제1류 위험물의 성질은?',o:['산화성 고체','가연성 고체','인화성 액체','자기반응성 물질'],k:0,e:'제1류는 산화성 고체로 염소산염·과산화물 등이 있습니다. 산소를 내놓아 다른 물질의 연소를 돕습니다.'},
+{i:'23-3-03',y:2023,s:3,q:'제6류 위험물의 예로 옳은 것은?',o:['염소산칼륨 · 질산암모늄','황린 · 칼륨','휘발유 · 등유','질산 · 과산화수소'],k:3,e:'제6류는 산화성 액체로 질산·과염소산·과산화수소가 있습니다. 염소산칼륨은 1류입니다.'},
+{i:'23-3-04',y:2023,s:3,q:'다중이용업소의 관계인과 종업원이 받아야 하는 소방안전교육 주기는?',o:['3년에 1회 이상','1년에 1회 이상','2년에 1회 이상','교육 의무가 없다'],k:2,e:'다중이용업소법에 따라 관계인과 종업원은 2년에 1회 이상 소방안전교육을 받아야 합니다.'},
+{i:'23-3-05',y:2023,s:3,q:'소방시설법상 성능위주설계를 해야 하는 대상으로 옳은 것은?',o:['모든 단독주택','높이 100m 이상인 건축물 등 대통령령으로 정한 특정소방대상물','연면적 500㎡ 미만 근린생활시설','모든 창고시설'],k:1,e:'성능위주설계는 높이 100m 이상, 연면적 20만㎡ 이상, 30층 이상 등 대통령령으로 정한 특정소방대상물이 대상입니다.'},
+{i:'23-3-06',y:2023,s:3,q:'자체점검을 실시할 수 있는 인력으로 옳은 것은?',o:['소방시설관리사 또는 소방시설관리업자 소속 기술인력','건축기사 자격자','전기기능사 자격자','소방안전관리보조자'],k:0,e:'자체점검은 관계인이 직접 하거나 소방시설관리사·소방시설관리업자 등 점검 인력이 실시합니다. 점검 인력의 자격은 시행령에 정해져 있습니다.'},
+{i:'23-3-07',y:2023,s:3,q:'소방안전관리자의 업무로 보기 어려운 것은?',o:['화재 예방을 위한 순찰과 감독','소방시설의 자체점검 실시','소방훈련과 교육의 실시','건축물의 구조 설계'],k:3,e:'소방안전관리자는 소방시설의 점검·유지, 소방훈련·교육, 화재예방 순찰 등 실무를 담당합니다. 건축물 설계는 건축사의 업무입니다.'},
+{i:'23-3-08',y:2023,s:3,q:'화재예방강화지구에 대한 설명으로 옳은 것은?',o:['소방차가 통행할 수 없는 지역','소방서가 설치되는 지역','화재 발생 우려가 높은 지역을 지정해 화재예방조치를 강화하는 제도','위험물을 저장할 수 있는 지역'],k:2,e:'화재예방법에 따라 시·도지사 등은 화재가 발생할 우려가 높은 지역을 화재예방강화지구로 지정해 예방조치를 강화할 수 있습니다.'},
+{i:'23-3-09',y:2023,s:3,q:'자체점검 결과 소방시설이 기준에 맞지 않는 경우 관계인이 해야 할 일은?',o:['다음 점검 때까지 그대로 둔다','개수·보수 등 필요한 조치를 하고 결과를 보고한다','소방서에 철거를 신청한다','소방안전관리자를 교체한다'],k:1,e:'관계인은 점검 결과에 따라 소방시설을 개수·보수하고, 그 결과를 정해진 기한 내에 소방서에 보고해야 합니다.'},
+{i:'23-3-10',y:2023,s:3,q:'위험물 제조소·저장소의 위치·구조 및 설비 기준을 정하는 법률은?',o:['위험물안전관리법','소방시설법','화재예방법','산업안전보건법'],k:0,e:'위험물안전관리법과 그 시행령·시행규칙이 위험물 제조소·저장소·취급소의 위치·구조·설비 기준을 정합니다.'},
+{i:'23-3-11',y:2023,s:3,q:'소방대의 출동과 소방활동을 방해한 경우 적용되는 법률은?',o:['다중이용업소법','소방시설법','화재예방법','소방기본법'],k:3,e:'소방기본법은 소방대의 출동과 소방활동을 방해하는 행위를 금지하고 벌칙을 정합니다.'},
+{i:'23-3-12',y:2023,s:3,q:'소방시설을 기능에 따라 구분한 5대 분류로 옳은 것은?',o:['소화설비 · 감지설비 · 경보설비 · 피난설비 · 활동설비','소화설비 · 경보설비 · 피난설비 · 방화설비 · 구조설비','소화설비 · 경보설비 · 피난구조설비 · 소화용수설비 · 소화활동설비','소화설비 · 경보설비 · 유도설비 · 급수설비 · 활동설비'],k:2,e:'소방시설은 소화설비, 경보설비, 피난구조설비, 소화용수설비, 소화활동설비의 5가지로 구분합니다.'},
+{i:'22-3-01',y:2022,s:3,q:'소방기본법의 목적으로 가장 적절한 것은?',o:['소방시설의 설치 기준을 정하는 것','화재의 예방·경계·진압과 인명구조·구급으로 국민의 생명·신체·재산을 보호','위험물의 저장 기준을 정하는 것','소방시설공사업의 등록을 정하는 것'],k:1,e:'소방기본법은 화재의 예방·경계·진압, 인명구조·구급 등 소방활동의 기본 원칙을 정합니다.'},
+{i:'22-3-02',y:2022,s:3,q:'위험물안전관리법의 목적으로 가장 적절한 것은?',o:['위험물의 안전한 저장·취급과 재해 방지','소방공무원의 처우 개선','건축물의 내화 기준 정립','소방용품의 형식승인'],k:0,e:'위험물안전관리법은 위험물의 저장·취급·운반 등에 따른 위험을 방지해 공공의 안전을 확보하는 것이 목적입니다.'},
+{i:'22-3-03',y:2022,s:3,q:'소방시설공사업법의 목적으로 가장 적절한 것은?',o:['위험물의 운반 기준','소방관의 인사 관리','화재조사의 방법','소방시설공사의 적정한 시공과 안전관리'],k:3,e:'소방시설공사업법은 소방시설공사업의 건전한 발전과 소방시설공사의 적정을 기해 화재를 예방하는 것을 목적으로 합니다.'},
+{i:'22-3-04',y:2022,s:3,q:'다중이용업소의 안전관리에 관한 특별법의 목적으로 가장 적절한 것은?',o:['소방시설공사업 등록','식품 위생 관리','불특정 다수인이 이용하는 업소의 화재 예방과 피난 안전 확보','위험물 저장 허가'],k:2,e:'다중이용업소법은 영업장의 설치·유지와 안전시설 기준을 정해 화재와 피난 사고를 막는 것이 목적입니다.'},
+{i:'22-3-05',y:2022,s:3,q:'소방청장의 소관 사무로 가장 적절한 것은?',o:['소방안전관리자 선임 신고 수리','소방용품의 형식승인','화재경계지구 지정','위험물 제조소 허가'],k:1,e:'소방용품의 형식승인은 소방청장의 소관입니다. 소방안전관리자 신고와 화재경계지구 지정은 소방본부장·소방서장, 위험물 허가는 시·도지사 소관입니다.'},
+{i:'22-3-06',y:2022,s:3,q:'소방시설의 자체점검을 실시하지 않은 경우 관계인에게 부과될 수 있는 것은?',o:['과태료','징역 10년','소방면허 취소','건축물 등기 말소'],k:0,e:'자체점검을 실시하지 않거나 결과를 보고하지 않으면 과태료 등 행정처분과 벌칙이 부과될 수 있습니다.'},
+{i:'22-3-07',y:2022,s:3,q:'소방안전관리자를 선임한 뒤 해야 하는 것은?',o:['자체 소방대를 조직한다','즉시 해임한다','건축허가를 다시 받는다','선임 사실을 소방본부장 또는 소방서장에게 신고한다'],k:3,e:'소방안전관리자를 선임하면 그 사실을 소방본부장 또는 소방서장에게 신고해야 합니다.'},
+{i:'22-3-08',y:2022,s:3,q:'소화설비에 해당하는 것은?',o:['비상방송설비','유도등','스프링클러설비','비상콘센트설비'],k:2,e:'스프링클러·옥내소화전·소화기·물분무·포·분말소화설비는 소화설비입니다. 유도등은 피난구조, 비상방송은 경보, 비상콘센트는 소화활동설비입니다.'},
+{i:'22-3-09',y:2022,s:3,q:'소화활동설비에 해당하지 않는 것은?',o:['연결송수관설비','옥내소화전설비','연결살수설비','비상콘센트설비'],k:1,e:'옥내소화전설비는 소화설비입니다. 연결송수관·연결살수·비상콘센트·무선통신보조설비는 소화활동설비입니다.'},
+{i:'22-3-10',y:2022,s:3,q:'소방안전관리 업무를 총괄하는 자는?',o:['소방안전관리자','소방시설관리사','위험물안전관리자','방화관리자'],k:0,e:'소방안전관리자는 소방시설의 점검·유지와 소방훈련·교육 등 소방안전관리 업무를 총괄합니다.'},
+{i:'22-3-11',y:2022,s:3,q:'위험물을 저장·취급하는 시설의 명칭으로 옳게 묶은 것은?',o:['작업소 · 저유소 · 충전소','제조장 · 보관소 · 판매소','공장 · 창고 · 주유소','제조소 · 저장소 · 취급소'],k:3,e:'위험물안전관리법은 위험물을 제조·저장·취급하는 시설을 제조소·저장소·취급소로 구분하고 각각의 기준을 정합니다.'},
+{i:'22-3-12',y:2022,s:3,q:'특정소방대상물에 설치해야 하는 소방시설은 무엇으로 정해지는가?',o:['소방서가 매년 새로 고시한다','관계인이 자유롭게 선택한다','대상물의 용도와 규모에 따라 시행령 별표로 정해진다','건축주와 소방업체가 협의해 정한다'],k:2,e:'소방시설법 시행령 별표에 따라 특정소방대상물의 용도와 규모별로 설치해야 하는 소방시설이 정해져 있습니다.'},
+];
+var BANK_S3X = [
+{i:'26-3-13',y:2026,s:3,q:'소방기본법상 화재의 정의로 옳은 것은?',o:['불꽃이 발생하는 모든 화학반응','사람의 의도에 반하거나 고의에 의해 발생하는 연소현상','산소와 결합하는 모든 반응','온도가 100℃를 넘는 현상'],k:1,e:'소방기본법은 화재를 사람의 의도에 반하거나 고의에 의해 발생하는 연소현상으로 정의합니다. 폭발도 화재의 범위에 포함해 다룹니다.'},
+{i:'26-3-14',y:2026,s:3,q:'소방용수시설을 설치·유지해야 하는 자는?',o:['시·도지사','소방안전관리자','건축주','소방시설관리업자'],k:0,e:'소방기본법에 따라 시·도지사는 소방용수시설을 설치·유지하고, 소방본부장·소방서장은 그 위치와 상태를 관리합니다.'},
+{i:'26-3-15',y:2026,s:3,q:'위험물안전관리법상 예방규정을 작성해야 하는 대상은?',o:['위험물을 운반하는 자','지정수량 이상 저장하는 모든 시설','모든 주유소','지정수량의 10배 이상의 위험물을 저장·취급하는 제조소 등의 관계인'],k:3,e:'지정수량의 10배 이상 위험물을 저장·취급하는 제조소·저장소·취급소의 관계인은 예방규정을 작성해 두어야 합니다.'},
+{i:'26-3-16',y:2026,s:3,q:'소방시설공사의 감리를 수행할 수 있는 자는?',o:['전기기능사 자격자','건축기사 자격자','소방시설관리사 등 소방시설공사업법령이 정한 자','소방안전관리보조자'],k:2,e:'소방시설공사 감리는 소방시설관리사 등 법령이 정한 감리자만 수행할 수 있습니다. 감리는 시공이 설계도서대로 이루어지는지 확인합니다.'},
+{i:'26-3-17',y:2026,s:3,q:'다중이용업소의 영업자가 가입해야 하는 보험은?',o:['자동차보험','화재배상책임보험','산재보험','생명보험'],k:1,e:'다중이용업소법에 따라 영업자는 화재로 인한 제3자의 신체·재산 피해를 보상하기 위한 화재배상책임보험에 가입해야 합니다.'},
+{i:'26-3-18',y:2026,s:3,q:'소방안전관리자를 해임한 경우 다시 선임해야 하는 기한은?',o:['해임한 날부터 30일 이내','해임한 날부터 15일 이내','해임한 날부터 60일 이내','다음 연도 말까지'],k:0,e:'화재예방법에 따라 소방안전관리자를 해임하거나 퇴직한 경우에도 30일 이내에 다시 선임하고 신고해야 합니다.'},
+{i:'26-3-19',y:2026,s:3,q:'방염대상물품에 해당하지 않는 것은?',o:['실내 장식물','커튼','카펫','소화기'],k:3,e:'방염대상물품은 커튼·카펫·실내 장식물·합판 등 실내에 쓰이는 물품입니다. 소화기는 소방용품입니다.'},
+{i:'26-3-20',y:2026,s:3,q:'위험물을 운반할 때의 준수사항으로 옳은 것은?',o:['운반 중에는 환기를 하지 않는다','용기는 아무 것이나 사용한다','위험물과 서로 반응할 수 있는 물질은 함께 적재하지 않는다','위험물은 항상 만재해 운반한다'],k:2,e:'위험물 운반 시에는 전용 용기를 사용하고, 서로 반응해 위험을 키울 수 있는 물질은 혼재 적재하지 않아야 합니다.'},
+{i:'25-3-13',y:2025,s:3,q:'특정소방대상물의 소방시설을 유지·관리해야 하는 의무자는?',o:['소방서장','관계인','건축주만','소방시설관리업자'],k:1,e:'소방시설법상 관계인(소유자·관리자·점유자)이 소방시설을 유지·관리하고 자체점검을 실시할 의무를 집니다.'},
+{i:'25-3-14',y:2025,s:3,q:'소방안전관리보조자의 업무로 옳은 것은?',o:['소방안전관리자의 업무를 보조한다','소방시설공사를 감리한다','자체점검을 단독으로 대행한다','소방서의 조사를 대신한다'],k:0,e:'소방안전관리보조자는 소방안전관리자의 업무를 보조하는 사람으로, 정해진 대상물에 30일 이내에 선임합니다.'},
+{i:'25-3-15',y:2025,s:3,q:'소방기본법상 구조대와 구급대의 임무는?',o:['소방시설을 점검한다','화재 원인을 조사한다','위험물을 허가한다','재난 현장에서 인명을 구조하고 응급환자를 구급한다'],k:3,e:'소방기본법에 따라 구조대는 인명구조, 구급대는 응급환자의 구급과 이송을 담당합니다.'},
+{i:'25-3-16',y:2025,s:3,q:'소방자동차가 긴급하게 소방활동을 할 때의 통행에 대한 설명으로 옳은 것은?',o:['신호를 반드시 지켜야만 통행할 수 있다','일반 차량이 우선한다','다른 차량과 보행자는 소방자동차의 통행을 방해해서는 안 된다','소방자동차는 고속도로를 통행할 수 없다'],k:2,e:'소방기본법은 소방자동차가 긴급 소방활동을 할 때 다른 차량과 보행자가 진로를 양보하고 통행을 방해하지 않도록 정하고 있습니다.'},
+{i:'25-3-17',y:2025,s:3,q:'위험물 제조소를 설치하려는 자가 받아야 하는 것은?',o:['소방청장의 형식승인','시·도지사의 허가','소방서장의 완공검사만','건축허가만'],k:1,e:'위험물안전관리법에 따라 위험물 제조소를 설치하려면 시·도지사의 허가를 받아야 하고, 완공 후에는 완공검사를 받습니다.'},
+{i:'25-3-18',y:2025,s:3,q:'위험물 저장소의 구분으로 옳은 것은?',o:['옥내저장소 · 옥외저장소 · 지하저장소 · 이동저장소','대형 · 중형 · 소형','고압 · 저압','고정 · 가변'],k:0,e:'위험물 저장소는 위치와 구조에 따라 옥내·옥외·지하·이동저장소로 구분하고 각각 기준을 정합니다.'},
+{i:'25-3-19',y:2025,s:3,q:'소방시설공사업 등록증을 다른 사람에게 빌려주는 행위는?',o:['아무 문제가 없다','허가를 받으면 가능하다','신고만 하면 가능하다','법으로 금지되어 있다'],k:3,e:'소방시설공사업법은 등록증 대여와 명의 대여를 금지하고 있습니다. 적발되면 등록취소 등 행정처분과 벌칙이 따릅니다.'},
+{i:'25-3-20',y:2025,s:3,q:'다중이용업소에 설치해야 하는 안전시설등에 해당하는 것은?',o:['에스컬레이터','주차장 · 정원','비상구 · 유도등 · 소화기','냉난방 설비'],k:2,e:'다중이용업소법상 안전시설등은 비상구·유도등·소화기 등 화재 시 피난과 소화에 필요한 시설을 말합니다.'},
+{i:'24-3-13',y:2024,s:3,q:'소방시설등 자체점검 중 작동점검은 연 몇 회 이상 실시하는가?',o:['연 2회 이상','연 1회 이상','2년에 1회','월 1회'],k:1,e:'작동점검은 연 1회 이상 실시합니다. 종합점검 대상인 경우 종합점검을 받은 달부터 6개월이 되는 달에 작동점검을 합니다.'},
+{i:'24-3-14',y:2024,s:3,q:'특급 소방안전관리대상물의 종합점검 횟수는?',o:['반기에 1회 이상','연 1회 이상','2년에 1회','3년에 1회'],k:0,e:'종합점검은 연 1회 이상이 원칙이지만, 특급 소방안전관리대상물은 반기에 1회 이상 실시해야 합니다.'},
+{i:'24-3-15',y:2024,s:3,q:'2급 소방안전관리대상물의 기준으로 옳은 것은?',o:['연면적 1만5천㎡ 이상 대상물','30층 이상 고층 건축물','자동화재탐지설비만 설치된 대상물','옥내소화전설비나 스프링클러설비를 설치해야 하는 대상물'],k:3,e:'2급은 옥내소화전설비·스프링클러설비 등을 설치해야 하는 대상물, 3급은 자동화재탐지설비·간이스프링클러설비 등을 설치하는 대상물입니다.'},
+{i:'24-3-16',y:2024,s:3,q:'3급 소방안전관리대상물의 기준으로 옳은 것은?',o:['옥내소화전설비 설치 대상물','연면적 1만5천㎡ 이상 대상물','자동화재탐지설비나 간이스프링클러설비를 설치해야 하는 대상물','30층 이상 건축물'],k:2,e:'3급은 자동화재탐지설비·간이스프링클러설비 등을 설치해야 하는 대상물로, 가장 낮은 등급입니다.'},
+{i:'24-3-17',y:2024,s:3,q:'소방안전관리보조자를 두지 않아도 되는 곳은?',o:['300세대 이상 아파트','100세대 아파트','연면적 1만5천㎡ 이상 특정소방대상물','노유자시설'],k:1,e:'보조자 선임 대상은 300세대 이상 아파트, 연면적 1만5천㎡ 이상 특정소방대상물, 기숙사·의료·노유자·수련·숙박시설 등입니다.'},
+{i:'24-3-18',y:2024,s:3,q:'소방시설관리업을 등록해야 하는 관청은?',o:['시·도지사','소방청장','시장·군수','소방본부장'],k:0,e:'소방시설관리업과 소방시설공사업은 모두 시·도지사에게 등록합니다. 소방청장은 소방용품 형식승인을 맡습니다.'},
+{i:'24-3-19',y:2024,s:3,q:'소화용수설비에 해당하는 것은?',o:['유도등','옥내소화전설비','비상방송설비','상수도소화용수설비'],k:3,e:'소화용수설비는 상수도소화용수설비·소화수조 등 소화에 필요한 물을 공급하는 설비입니다. 옥내소화전은 소화설비입니다.'},
+{i:'24-3-20',y:2024,s:3,q:'소방시설의 설치·유지 기준을 구성하는 두 가지는?',o:['법률과 시행령','설계기준과 시공기준','성능기준과 기술기준','건축기준과 전기기준'],k:2,e:'소방시설의 설치·유지 기준은 화재안전성능기준(NFPC)과 화재안전기술기준(NFTC)으로 구성됩니다.'},
+{i:'23-3-13',y:2023,s:3,q:'다중이용업소의 관계인이 소방안전교육을 받지 않은 경우 받을 수 있는 제재는?',o:['영업허가 자동 갱신','과태료','소방시설 철거','형사처벌만'],k:1,e:'소방안전교육을 받지 않으면 과태료가 부과될 수 있습니다. 교육은 2년에 1회 이상 받아야 합니다.'},
+{i:'23-3-14',y:2023,s:3,q:'소방기본법상 화재의 원인과 피해를 조사하는 자는?',o:['소방본부장 또는 소방서장','건축주','보험사','경찰서장'],k:0,e:'소방본부장 또는 소방서장은 화재의 원인 및 피해를 조사합니다. 화재조사 결과는 예방대책의 기초자료가 됩니다.'},
+{i:'23-3-15',y:2023,s:3,q:'소방활동으로 손실이 발생한 경우의 조치로 옳은 것은?',o:['건축주가 전액 배상한다','손실은 모두 소방관 개인이 부담한다','보상하지 않는다','법령이 정한 바에 따라 손실을 보상할 수 있다'],k:3,e:'소방기본법은 화재 진압 등 소방활동으로 타인의 재산에 손실이 생긴 경우 정해진 절차에 따라 보상할 수 있도록 규정합니다.'},
+{i:'23-3-16',y:2023,s:3,q:'위험물의 저장·취급 기준으로 옳지 않은 것은?',o:['서로 반응하는 위험물은 분리해 저장한다','위험물은 지정된 장소에 저장한다','위험물을 용기 없이 바닥에 쌓아 둔다','저장소의 환기를 유지한다'],k:2,e:'위험물은 정해진 용기와 장소에 저장하고, 반응 위험이 있는 물질은 분리해야 합니다. 용기 없이 방치하는 것은 위반입니다.'},
+{i:'23-3-17',y:2023,s:3,q:'소방용품에 해당하는 것은?',o:['건축 자재','감지기 · 경종 · 유도등 · 소화기','전기 배선','급수 펌프'],k:1,e:'소방용품은 소방청장이 정한 감지기·경종·유도등·소화기 등으로, 형식승인과 제품검사를 거쳐야 판매·설치할 수 있습니다.'},
+{i:'23-3-18',y:2023,s:3,q:'소방시설공사의 종류로 옳은 것은?',o:['신설 · 증설 · 개조 · 이전','설계 · 감리 · 검사','제조 · 판매 · 설치','점검 · 보수 · 철거'],k:0,e:'소방시설공사는 소방시설을 새로 설치하는 신설, 늘리는 증설, 변경하는 개조, 옮기는 이전으로 구분합니다.'},
+{i:'23-3-19',y:2023,s:3,q:'화재위험평가의 목적으로 가장 적절한 것은?',o:['보험료를 결정한다','건물의 시세를 평가한다','소방관 수를 산정한다','대상물의 화재 위험을 평가해 예방대책을 세운다'],k:3,e:'화재예방법에 따른 화재위험평가는 특정소방대상물의 화재 위험 요인을 평가해 맞춤형 예방대책을 수립하는 제도입니다.'},
+{i:'23-3-20',y:2023,s:3,q:'소방시설공사의 하자보수 책임은 누구에게 있는가?',o:['소방서','건축주','공사를 시공한 소방시설공사업자','소방안전관리자'],k:2,e:'소방시설에 하자가 발생하면 시공한 소방시설공사업자가 하자보수 책임을 집니다. 하자보수 기간은 법령으로 정해져 있습니다.'},
+{i:'22-3-13',y:2022,s:3,q:'위험물안전관리법상 위험물의 정의로 가장 적절한 것은?',o:['모든 화학약품','발화성·인화성 등 화재 위험이 큰 물품','압축된 모든 기체','물에 녹는 모든 물질'],k:1,e:'위험물은 발화성·인화성 등 화재의 위험성이 큰 물품으로, 법에서 정한 종류와 지정수량을 기준으로 관리합니다.'},
+{i:'22-3-14',y:2022,s:3,q:'특정소방대상물에 설치해야 하는 소방시설의 기준은 어디에 정해져 있는가?',o:['소방시설법 시행령 별표','건축법 시행규칙','소방서의 연간 계획','건축주의 설계도'],k:0,e:'특정소방대상물의 용도·규모별로 설치해야 하는 소방시설은 소방시설법 시행령 별표에 정해져 있습니다.'},
+{i:'22-3-15',y:2022,s:3,q:'화재예방법상 소방안전관리대상물에 해당하는 것은?',o:['모든 공장','모든 단독주택','모든 창고','아파트 · 숙박시설 · 의료시설 등'],k:3,e:'소방안전관리대상물은 화재예방법 시행령이 정한 아파트·숙박·의료·노유자·판매시설 등으로, 소방안전관리자를 선임해야 합니다.'},
+{i:'22-3-16',y:2022,s:3,q:'소방기본법상 특정소방대상물의 소방훈련에 대해 소방본부장이 할 수 있는 일은?',o:['훈련을 대신 수행한다','훈련을 금지할 수 있다','훈련에 필요한 지원과 지도를 할 수 있다','훈련 비용을 전액 부담한다'],k:2,e:'소방본부장·소방서장은 관계인이 실시하는 소방훈련을 지도하고 필요한 지원을 할 수 있습니다.'},
+{i:'22-3-17',y:2022,s:3,q:'위험물 제조소를 완공한 뒤 받아야 하는 검사는?',o:['소방청장의 형식승인','시·도지사의 완공검사','건축주의 자체검사','소방서장의 자체점검'],k:1,e:'위험물 제조소·저장소를 설치·변경한 뒤에는 시·도지사의 완공검사를 받아야 사용할 수 있습니다.'},
+{i:'22-3-18',y:2022,s:3,q:'소방시설의 개수·이전·사용금지 명령을 내릴 수 있는 자는?',o:['소방본부장 또는 소방서장','건축주','소방안전관리자','소방시설관리업자'],k:0,e:'소방시설법에 따라 소방본부장·소방서장은 소방시설의 유지·관리 상태가 불량하면 개수·이전·사용금지를 명할 수 있습니다.'},
+{i:'22-3-19',y:2022,s:3,q:'소방시설공사 감리원의 업무로 옳은 것은?',o:['소방시설을 직접 시공한다','공사비를 정산한다','건축 허가를 대행한다','시공이 설계도서와 기준에 맞게 이루어지는지 확인한다'],k:3,e:'감리원은 소방시설공사가 설계도서와 소방시설공사업법령의 기준에 따라 시공되는지 확인하고 감리 결과를 보고합니다.'},
+{i:'22-3-20',y:2022,s:3,q:'다중이용업소 영업자의 의무로 옳은 것은?',o:['소방관을 고용한다','손님 수를 제한한다','안전시설등을 유지·관리하고 점검한다','매년 건물을 신축한다'],k:2,e:'영업자는 안전시설등을 항상 유지·관리하고, 소방안전교육을 받으며, 화재배상책임보험에 가입해야 합니다.'},
+{i:'21-3-01',y:2021,s:3,q:'소방업무를 담당하는 행정기관으로 옳게 묶은 것은?',o:['소방청 · 경찰서 · 구청','소방청 · 소방본부 · 소방서','소방본부 · 시청 · 도청','소방서 · 법원 · 검찰'],k:1,e:'소방청은 국가 소방행정을, 소방본부는 시·도, 소방서는 시·군·구 단위의 소방업무를 담당합니다.'},
+{i:'21-3-02',y:2021,s:3,q:'소방대가 출동하는 경우로 옳지 않은 것은?',o:['건축물의 설계 요청','화재 신고','인명구조 요청','구급 신고'],k:0,e:'소방대는 화재·구조·구급 신고와 재난 현장에 출동합니다. 건축 설계는 소방의 업무가 아닙니다.'},
+{i:'21-3-03',y:2021,s:3,q:'화재경계지구를 지정하는 목적으로 가장 적절한 것은?',o:['건축을 장려하기 위해','관광객을 유치하기 위해','주차 공간을 확보하기 위해','화재 우려가 큰 지역의 예방과 경계를 강화하기 위해'],k:3,e:'화재경계지구는 화재가 발생할 우려가 큰 지역을 지정해 소방용수 확보 등 예방·경계 조치를 강화하는 제도입니다.'},
+{i:'21-3-04',y:2021,s:3,q:'제1류 위험물의 예로 옳은 것은?',o:['황린','휘발유','염소산칼륨','질산'],k:2,e:'제1류는 산화성 고체로 염소산칼륨·과산화물 등이 있습니다. 휘발유는 4류, 황린은 3류, 질산은 6류입니다.'},
+{i:'21-3-05',y:2021,s:3,q:'제2류 위험물의 성질은?',o:['산화성 고체','가연성 고체','인화성 액체','자연발화성 물질'],k:1,e:'제2류는 가연성 고체로 황·마그네슘·적린 등이 있습니다. 비교적 낮은 온도에서 착화할 수 있습니다.'},
+{i:'21-3-06',y:2021,s:3,q:'제3류 위험물의 예로 옳은 것은?',o:['칼륨 · 나트륨','휘발유 · 등유','질산 · 과산화수소','유기과산화물'],k:0,e:'제3류는 자연발화성 및 금수성 물질로 칼륨·나트륨·황린 등이 있습니다. 물과 만나면 발화하거나 가스를 냅니다.'},
+{i:'21-3-07',y:2021,s:3,q:'제5류 위험물의 예로 옳은 것은?',o:['염소산칼륨','마그네슘','황린','유기과산화물'],k:3,e:'제5류는 자기반응성 물질로 유기과산화물·질산에스테르 등이 있습니다. 스스로 분해·폭발할 수 있습니다.'},
+{i:'21-3-08',y:2021,s:3,q:'제4류 위험물 중 물에 잘 녹는 수용성 물질은?',o:['등유','휘발유','메탄올','경유'],k:2,e:'메탄올·아세톤은 물에 잘 녹는 수용성 위험물로, 포 소화 시 내알코올형 포를 사용해야 합니다.'},
+{i:'21-3-09',y:2021,s:3,q:'위험물을 지정수량 미만으로 저장·취급할 때의 설명으로 옳은 것은?',o:['법 적용을 받아 허가를 받아야 한다','위험물안전관리법의 시설·선임 기준 적용을 받지 않는다','반드시 지하에 저장해야 한다','위험물안전관리자를 선임해야 한다'],k:1,e:'지정수량 미만이면 위험물안전관리법에 따른 제조소 설치 허가와 안전관리자 선임 의무가 적용되지 않습니다. 다만 안전관리는 필요합니다.'},
+{i:'21-3-10',y:2021,s:3,q:'소방시설등 자체점검의 대상은?',o:['특정소방대상물의 소방시설등','모든 공사 현장','위험물 운반 차량','소방청 청사'],k:0,e:'자체점검은 특정소방대상물에 설치된 소방시설등을 대상으로 관계인이 실시합니다.'},
+{i:'21-3-11',y:2021,s:3,q:'1급 소방안전관리대상물의 기준으로 옳은 것은?',o:['자동화재탐지설비 설치 대상','30층 이상 건축물','옥내소화전 설치 대상','연면적 1만5천㎡ 이상인 특정소방대상물 등'],k:3,e:'1급은 연면적 1만5천㎡ 이상인 특정소방대상물 등이 해당합니다. 특급은 30층·120m 이상, 2·3급은 설치 설비로 구분합니다.'},
+{i:'21-3-12',y:2021,s:3,q:'소방안전관리대상물의 등급을 정하는 기준으로 옳게 묶은 것은?',o:['소유자의 자산','건물의 색상 · 위치','층수 · 높이 · 연면적 · 설치된 소방시설','입주민 수만'],k:2,e:'등급은 층수와 높이, 연면적, 설치된 소방시설의 종류를 기준으로 특급·1급·2급·3급으로 나눕니다.'},
+{i:'21-3-13',y:2021,s:3,q:'소방안전교육을 받아야 하는 자로 가장 적절한 것은?',o:['모든 시민','소방안전관리자와 소방안전관리보조자','건축주만','소방공무원만'],k:1,e:'화재예방법에 따라 소방안전관리자·보조자는 연 1회 이상 소방안전교육을 받아야 합니다.'},
+{i:'21-3-14',y:2021,s:3,q:'소방훈련 결과에 대한 처리로 옳은 것은?',o:['훈련 결과를 기록하고 보관한다','구두로만 알리고 기록하지 않는다','소방서에 매번 제출한다','기록은 필요 없다'],k:0,e:'관계인은 소방훈련·대피훈련을 실시한 뒤 그 결과를 기록해 두어야 합니다. 기록은 자체점검 등과 함께 확인됩니다.'},
+{i:'21-3-15',y:2021,s:3,q:'위험물안전관리자를 선임해야 하는 자는?',o:['소방시설관리업자','모든 공장의 대표','위험물을 운반하는 자','지정수량 이상의 위험물을 저장·취급하는 자'],k:3,e:'지정수량 이상의 위험물을 저장·취급하는 시설의 관계인은 위험물안전관리자를 선임해야 합니다.'},
+{i:'21-3-16',y:2021,s:3,q:'소방시설공사의 완공검사를 받아야 하는 시기는?',o:['설계를 마친 직후','공사를 시작하기 전','소방시설공사를 마친 뒤 사용하기 전','사용승인 후 1년'],k:2,e:'소방시설공사를 마치면 사용하기 전에 완공검사를 받아야 하며, 합격해야 해당 소방시설을 사용할 수 있습니다.'},
+{i:'21-3-17',y:2021,s:3,q:'피난구조설비에 해당하지 않는 것은?',o:['유도등','비상콘센트설비','비상조명등','피난기구'],k:1,e:'피난구조설비는 유도등·비상조명등·피난기구 등입니다. 비상콘센트설비는 소화활동설비입니다.'},
+{i:'21-3-18',y:2021,s:3,q:'소화활동설비에 해당하는 것은?',o:['연결송수관설비','옥내소화전설비','비상경보설비','유도등'],k:0,e:'연결송수관·연결살수·비상콘센트·무선통신보조설비는 소화활동설비입니다. 옥내소화전은 소화설비입니다.'},
+{i:'21-3-19',y:2021,s:3,q:'소방시설법상 소방용품의 형식승인을 받아야 하는 대상은?',o:['수도관','모든 건축 자재','전기 배선','감지기 · 경종 · 유도등 등 소방청장이 정한 소방용품'],k:3,e:'소방청장이 정한 소방용품은 형식승인을 받고 제품검사를 통과해야 판매·설치할 수 있습니다.'},
+{i:'21-3-20',y:2021,s:3,q:'소방시설의 설치 의무가 발생하는 대상은?',o:['모든 농지','모든 개인 주택의 창고','특정소방대상물','모든 차량'],k:2,e:'소방시설법은 특정소방대상물에 대해 용도와 규모에 따라 필요한 소방시설을 설치하도록 정하고 있습니다.'},
+{i:'20-3-01',y:2020,s:3,q:'소방시설법의 목적으로 가장 적절한 것은?',o:['소방공무원의 인사를 관리한다','소방시설의 설치·유지 및 안전관리를 통해 화재와 재난을 예방하고 피해를 줄인다','위험물의 운반을 허가한다','건축물의 설계를 심의한다'],k:1,e:'소방시설법은 소방시설의 설치·유지와 안전관리 기준을 정해 화재·재난으로부터 국민을 보호하는 것을 목적으로 합니다.'},
+{i:'20-3-02',y:2020,s:3,q:'화재예방법의 목적으로 가장 적절한 것은?',o:['화재의 예방과 안전관리에 관한 사항을 정해 화재로 인한 피해를 줄인다','소방시설의 시공 기준을 정한다','위험물 저장소를 허가한다','소방차의 통행을 규정한다'],k:0,e:'화재예방법은 소방안전관리·소방안전교육·화재위험평가 등 화재 예방과 안전관리에 관한 사항을 정합니다.'},
+{i:'20-3-03',y:2020,s:3,q:'소방기본법의 기본이념으로 가장 적절한 것은?',o:['위험물의 사용을 늘린다','소방시설의 판매를 촉진한다','건축물의 고층화를 유도한다','국민의 생명·신체·재산을 화재와 재난으로부터 보호한다'],k:3,e:'소방기본법은 화재의 예방·경계·진압과 구조·구급을 통해 국민의 생명·신체·재산을 보호하는 것을 기본이념으로 합니다.'},
+{i:'20-3-04',y:2020,s:3,q:'소방시설공사업법상 등록해야 하는 업의 종류는?',o:['소방점검업과 보험업','소방시설판매업과 제조업','소방시설공사업과 소방시설감리업','건축업과 전기업'],k:2,e:'소방시설공사업법은 소방시설공사업과 소방시설감리업을 등록 대상으로 정하고 있습니다.'},
+{i:'20-3-05',y:2020,s:3,q:'다중이용업소의 정의로 가장 적절한 것은?',o:['정부가 운영하는 시설','불특정 다수인이 이용하는 영업장','종업원이 100명 이상인 공장','주거용 건물'],k:1,e:'다중이용업소는 불특정 다수인이 이용하는 영업장으로, 화재 시 인명피해 우려가 커 별도 법으로 관리합니다.'},
+{i:'20-3-06',y:2020,s:3,q:'위험물안전관리자의 역할로 가장 적절한 것은?',o:['위험물 취급 시설의 안전관리 업무를 총괄한다','소방시설공사를 감리한다','건축 허가를 검토한다','소방차를 운전한다'],k:0,e:'위험물안전관리자는 위험물의 저장·취급에 관한 안전관리 업무를 총괄하고, 종업원에게 안전기준을 지도합니다.'},
+{i:'20-3-07',y:2020,s:3,q:'소방시설의 설치 대상이 되는 건축물 등을 무엇이라 하는가?',o:['다중이용업소','일반건축물','위험물시설','특정소방대상물'],k:3,e:'소방시설을 설치·유지·관리해야 하는 건축물과 시설을 특정소방대상물이라 하며, 용도별로 분류됩니다.'},
+{i:'20-3-08',y:2020,s:3,q:'관계인이 소방안전관리자에게 해야 할 일은?',o:['선임하지 않아도 된다','업무를 대신 수행한다','업무를 성실히 수행하도록 지도·감독한다','매월 교체한다'],k:2,e:'관계인은 소방안전관리자가 소방시설 점검·교육·훈련 등의 업무를 성실히 수행하도록 지도·감독해야 합니다.'},
+{i:'20-3-09',y:2020,s:3,q:'자체점검을 실시한 뒤 작성해야 하는 것은?',o:['건축 도면','점검 기록과 결과 보고서','소방훈련 계획서','보험 증권'],k:1,e:'자체점검을 하면 점검기록표를 작성하고 점검 결과 보고서를 소방서에 제출하며, 보고서는 2년간 보관합니다.'},
+{i:'20-3-10',y:2020,s:3,q:'소방시설관리업의 업무로 옳은 것은?',o:['소방시설의 점검·유지와 관리','소방시설의 제조','위험물의 운반','건축물의 설계'],k:0,e:'소방시설관리업은 소방시설의 점검·유지·관리를 대행하는 업으로, 시·도지사에게 등록해야 합니다.'},
+{i:'20-3-11',y:2020,s:3,q:'위험물 제조소의 위치 기준으로 가장 적절한 것은?',o:['안전거리는 관계없다','건물 지하에만 설치한다','주거지역 한가운데 설치한다','주변 건물과 일정한 안전거리를 확보한다'],k:3,e:'위험물 제조소·저장소는 주변 건축물·도로 등과의 안전거리를 확보해야 하며, 위치·구조·설비 기준은 위험물안전관리법령이 정합니다.'},
+{i:'20-3-12',y:2020,s:3,q:'위험물 저장소의 환기가 중요한 이유는?',o:['냄새를 좋게 하기 위해','먼지를 없애기 위해','가연성 증기가 체류해 폭발할 위험을 줄이기 위해','건물을 건조하게 유지하기 위해'],k:2,e:'위험물에서 발생한 가연성 증기가 체류하면 작은 점화원에도 폭발할 수 있어 환기와 농도 관리가 필수입니다.'},
+{i:'20-3-13',y:2020,s:3,q:'소방신호 중 발화신호의 의미는?',o:['화재 확대에 대비하라는 신호','화재가 발생했음을 알리는 신호','진화되었음을 알리는 신호','훈련을 시작한다는 신호'],k:1,e:'발화신호는 화재 발생, 경계신호는 화재 확대 우려, 진화신호는 진압 중, 종포신호는 진화 완료를 뜻합니다.'},
+{i:'20-3-14',y:2020,s:3,q:'소방신호 중 경계신호의 의미는?',o:['화재가 커질 우려가 있어 대비하라는 신호','화재가 꺼졌다는 신호','구조 요청 신호','소방훈련 신호'],k:0,e:'경계신호는 화재가 확대될 우려가 있을 때 주변에 경계와 대비를 요청하는 신호입니다.'},
+{i:'20-3-15',y:2020,s:3,q:'소방시설법상 방염성능검사의 대상은?',o:['비상콘센트','소화기','감지기','방염대상물품'],k:3,e:'방염대상물품은 방염성능검사를 받은 제품을 사용해야 합니다. 소화기·감지기는 소방용품으로 별도 검사를 받습니다.'},
+{i:'20-3-16',y:2020,s:3,q:'소화설비에 해당하지 않는 것은?',o:['물분무소화설비','스프링클러설비','비상방송설비','포소화설비'],k:2,e:'비상방송설비는 경보설비입니다. 스프링클러·물분무·포·분말소화설비는 소화설비입니다.'},
+{i:'20-3-17',y:2020,s:3,q:'화재예방강화지구를 지정할 수 있는 자는?',o:['소방안전관리자','시·도지사','건축주','소방시설관리업자'],k:1,e:'화재예방법에 따라 시·도지사는 화재 발생 우려가 높은 지역을 화재예방강화지구로 지정해 예방조치를 강화할 수 있습니다.'},
+{i:'20-3-18',y:2020,s:3,q:'소방시설의 유지·관리 상태를 확인하는 가장 기본적인 방법은?',o:['자체점검 실시','건축 도면 검토','소방훈련 참관','보험 가입'],k:0,e:'관계인은 자체점검으로 소방시설의 작동과 구조를 확인하고, 이상이 있으면 개수·보수해 유지·관리 상태를 유지합니다.'},
+{i:'20-3-19',y:2020,s:3,q:'소방안전관리자가 점검 결과 이상을 발견했을 때의 조치로 옳은 것은?',o:['소방서에만 알리고 끝낸다','혼자 판단해 철거한다','기록하지 않고 넘어간다','관계인에게 보고하고 개수·보수를 요청한다'],k:3,e:'소방안전관리자는 이상이 있으면 관계인에게 보고해 필요한 조치를 하게 하고, 그 결과를 기록·유지합니다.'},
+{i:'20-3-20',y:2020,s:3,q:'소방시설공사업자의 준수사항으로 옳은 것은?',o:['감리 없이 시공한다','임의로 소방시설을 줄여 시공한다','설계도서와 소방시설 기준에 따라 시공한다','완공검사를 받지 않는다'],k:2,e:'소방시설공사업자는 설계도서와 소방시설공사업법령의 기준에 따라 성실하게 시공해야 하며, 임의 변경은 허용되지 않습니다.'},
+];
+var BANK_S4 = [
+{i:'26-4-01',y:2026,s:4,q:'경계구역 설정 기준으로 옳지 않은 것은?',o:['면적은 600㎡ 이하로 한다','층마다 반드시 1개만 설정한다','주된 출입구에서 내부 전체가 보이면 1,000㎡까지 할 수 있다','한 변의 길이는 50m 이하로 한다'],k:1,e:'경계구역은 600㎡ 이하·한 변 50m 이하가 원칙이고, 주된 출입구에서 내부 전체가 보이면 1,000㎡까지 가능합니다. 층마다 1개로 정해진 것은 아닙니다.'},
+{i:'26-4-02',y:2026,s:4,q:'계단·경사로의 경계구역은 높이 몇 m 이하마다 별도로 설정하는가?',o:['45m','30m','15m','60m'],k:0,e:'계단과 경사로는 높이 45m 이하마다 별도 경계구역으로 설정합니다. 지하층의 계단·경사로는 지하 1개 층을 제외하고 별도 구역으로 합니다.'},
+{i:'26-4-03',y:2026,s:4,q:'부착높이 4m 미만인 장소에서 연기감지기 1종 1개가 담당하는 감지면적은?',o:['50㎡','75㎡','100㎡','150㎡'],k:3,e:'연기감지기 1·2종은 부착높이 4m 미만에서 150㎡마다, 4m 이상 20m 미만에서 75㎡마다 1개를 설치합니다. 3종은 4m 미만에서 50㎡입니다.'},
+{i:'26-4-04',y:2026,s:4,q:'바닥면적 1,200㎡인 실에 연기감지기 1종(부착높이 4m 미만)을 설치할 때 최소 개수는?',o:['6개','9개','8개','12개'],k:2,e:'1,200 ÷ 150 = 8이므로 8개입니다. 감지구역마다 따로 계산하며 나누어떨어지지 않으면 올림합니다.'},
+{i:'26-4-05',y:2026,s:4,q:'보행거리 100m인 복도에 연기감지기를 설치할 때 최소 개수는?',o:['3개','4개','5개','6개'],k:1,e:'복도·통로는 보행거리 30m마다 1개이므로 100 ÷ 30 = 3.33, 올림해 4개입니다. 구부러진 모퉁이에는 추가로 설치합니다.'},
+{i:'26-4-06',y:2026,s:4,q:'감지기를 벽 또는 보로부터 최소 몇 m 이상 떨어뜨려 설치하는가?',o:['0.6m','0.3m','1.0m','1.5m'],k:0,e:'감지기는 벽 또는 보로부터 0.6m 이상, 실내 공기유입구로부터 1.5m 이상 떨어뜨려 설치합니다.'},
+{i:'26-4-07',y:2026,s:4,q:'발신기의 설치 높이 기준은?',o:['바닥에서 0.5m 이상 1.0m 이하','천장에서 0.5m 이내','바닥에서 1.5m 이상 2.0m 이하','바닥에서 0.8m 이상 1.5m 이하'],k:3,e:'발신기는 층마다 설치하고 조작스위치를 바닥에서 0.8m 이상 1.5m 이하에 두며, 각 부분에서 수평거리 25m 이내가 되게 합니다.'},
+{i:'26-4-08',y:2026,s:4,q:'비상경보설비의 음향장치는 정격전압의 몇 %에서도 음압 90dB 이상을 낼 수 있어야 하는가?',o:['60%','70%','80%','100%'],k:2,e:'음향장치는 정격전압의 80%에서도 음향장치 중심에서 1m 떨어진 곳의 음압이 90dB 이상이어야 합니다.'},
+{i:'26-4-09',y:2026,s:4,q:'비상방송설비는 기동장치로부터 신호를 받은 뒤 몇 초 이내에 방송이 시작되어야 하는가?',o:['5초','10초','20초','30초'],k:1,e:'비상방송설비는 기동장치의 신호를 받은 뒤 10초 이내에 자동으로 방송이 시작되어야 합니다.'},
+{i:'26-4-10',y:2026,s:4,q:'유도등의 비상전원은 일반적으로 몇 분 이상 유효하게 작동할 수 있어야 하는가?',o:['20분','10분','30분','60분'],k:0,e:'유도등은 원칙적으로 20분 이상 작동해야 하며, 지하층을 제외한 층수가 11층 이상인 층과 지하상가 등은 60분 이상입니다.'},
+{i:'26-4-11',y:2026,s:4,q:'비상콘센트설비 전원회로의 공급용량 기준은?',o:['0.5kVA 이상','1.0kVA 이상','3.0kVA 이상','1.5kVA 이상'],k:3,e:'비상콘센트설비는 단상교류 220V, 공급용량 1.5kVA 이상, 각 층에 2회로 이상, 전용회로 하나에 비상콘센트 10개 이하로 설치합니다.'},
+{i:'26-4-12',y:2026,s:4,q:'무선통신보조설비의 임피던스 기준은?',o:['25Ω','75Ω','50Ω','100Ω'],k:2,e:'무선통신보조설비의 임피던스는 50Ω이며, 누설동축케이블은 4m 이내마다 고정하고 고압 전로에서 1.5m 이상 떨어뜨립니다.'},
+{i:'25-4-01',y:2025,s:4,q:'부착높이 8m 이상 15m 미만인 장소에 설치할 수 있는 감지기는?',o:['스포트형 정온식 감지기','차동식 분포형 감지기','연기감지기 3종','단독경보형감지기'],k:1,e:'8m 이상 15m 미만에는 차동식 분포형, 이온화식 1·2종, 광전식 1·2종, 연기복합형, 불꽃감지기를 쓸 수 있습니다. 스포트형 열감지기는 8m 미만까지입니다.'},
+{i:'25-4-02',y:2025,s:4,q:'감지기를 설치하지 않을 수 있는 장소로 가장 적절한 것은?',o:['목욕실·샤워실처럼 평상시 수증기가 많은 장소','거실','복도','계단실'],k:0,e:'천장 높이 20m 이상, 부식성 가스가 체류하는 장소, 목욕실·샤워실, 먼지·수증기가 많은 장소에는 감지기를 설치하지 않을 수 있습니다.'},
+{i:'25-4-03',y:2025,s:4,q:'자동화재탐지설비의 종단저항을 설치하는 목적은?',o:['수신기의 전원을 충전하기 위해','감지기의 감도를 높이기 위해','경종의 음압을 높이기 위해','감지기 회로의 도통을 감시하기 위해'],k:3,e:'종단저항은 감지기 회로 끝에 설치해 회로가 끊어졌는지 도통 상태를 감시합니다. 전용함에 설치하면 바닥에서 1.5m 이내에 둡니다.'},
+{i:'25-4-04',y:2025,s:4,q:'자동화재탐지설비 감지기 회로의 절연저항 기준은?',o:['5MΩ 이상','1MΩ 이상','0.1MΩ 이상','20MΩ 이상'],k:2,e:'감지기 회로는 직류 250V 절연저항계로 0.1MΩ 이상이어야 하며, 전로저항은 50Ω 이하여야 합니다.'},
+{i:'25-4-05',y:2025,s:4,q:'감지기 회로 끝에 설치된 감지기에 걸리는 전압은 정격전압의 몇 % 이상이어야 하는가?',o:['60%','80%','70%','90%'],k:1,e:'회로 끝 감지기의 단자전압은 감지기 정격전압의 80% 이상이 되도록 배선해야 합니다. 그래서 전압강하를 고려한 배선 설계가 필요합니다.'},
+{i:'25-4-06',y:2025,s:4,q:'P형 수신기의 공통선 1가닥에 8개의 경계구역을 접속하려면 어떻게 해야 하는가?',o:['공통선을 1가닥 추가한다','그대로 접속한다','경계구역을 7개로 줄인다','종단저항을 2개 설치한다'],k:0,e:'P형 수신기는 한 공통선에 경계구역 7개 이하를 접속할 수 있습니다. 8개부터는 공통선을 1가닥씩 추가합니다.'},
+{i:'25-4-07',y:2025,s:4,q:'P형 발신기 회로의 기본 가닥수(전화선 제외)는?',o:['4가닥','5가닥','8가닥','6가닥'],k:3,e:'지구선·지구공통선·응답선·경종선·표시등선·경종표시등공통선의 6가닥이며, 전화선을 포함하면 7가닥입니다.'},
+{i:'25-4-08',y:2025,s:4,q:'중계기를 설치하는 주된 목적은?',o:['감지기의 종류를 바꾼다','경종의 음압을 높인다','수신기에서 직접 도통시험을 하지 않는 경우 회로를 중계하고 배선량과 전압강하를 줄인다','비상전원을 공급한다'],k:2,e:'중계기는 수신기와 감지기 사이에서 신호를 중계해 배선량과 전압강하를 줄입니다. 수신기에서 직접 감지기 회로를 시험하지 않을 때 설치합니다.'},
+{i:'25-4-09',y:2025,s:4,q:'P형 수신기의 기능으로 보기 어려운 것은?',o:['화재 신호의 수신','누전 전류의 검출','음향장치의 작동','경계구역의 표시'],k:1,e:'누전 전류의 검출은 누전경보기의 기능입니다. 수신기는 화재 신호를 받아 경계구역을 표시하고 음향장치를 작동시킵니다.'},
+{i:'25-4-10',y:2025,s:4,q:'자동화재탐지설비의 전원회로 배선으로 옳은 것은?',o:['내화배선','일반 배선','내열배선만','광케이블'],k:0,e:'전원회로는 내화배선, 감지기 회로는 내화배선 또는 내열배선으로 하며, 다른 전선과 별도의 관·덕트에 설치합니다.'},
+{i:'25-4-11',y:2025,s:4,q:'바닥면적 150㎡를 초과하는 실에 단독경보형감지기를 설치하는 기준은?',o:['300㎡마다 1개','100㎡마다 1개 이상','실마다 1개','150㎡마다 1개 이상'],k:3,e:'단독경보형감지기는 각 실마다 설치하되 바닥면적이 150㎡를 초과하면 150㎡마다 1개 이상 설치합니다.'},
+{i:'25-4-12',y:2025,s:4,q:'발신기는 각 부분에서 수평거리 몇 m 이내에 설치해야 하는가?',o:['15m','30m','25m','50m'],k:2,e:'발신기는 층마다 설치하고 각 부분에서 수평거리 25m 이내에 오도록 합니다. 복도·구획된 실의 보행거리가 40m 이상이면 추가합니다.'},
+{i:'24-4-01',y:2024,s:4,q:'피난구유도등을 출입구 인근 천장에도 추가로 설치하는 이유는?',o:['조도를 높이기 위해','위에서도 피난구 위치를 알 수 있도록 하기 위해','비상전원을 충전하기 위해','연기를 감지하기 위해'],k:1,e:'피난구유도등은 바닥에서 1.5m 이상의 출입구에 인접하게 설치하고, 위에서도 위치를 알 수 있도록 출입구 인근 천장에 수직 방향으로 추가 설치합니다.'},
+{i:'24-4-02',y:2024,s:4,q:'복도통로유도등의 설치 높이와 간격으로 옳은 것은?',o:['바닥에서 1m 이하, 보행거리 20m마다','바닥에서 1.5m 이상, 보행거리 20m마다','바닥에서 1m 이하, 보행거리 30m마다','천장에만, 10m마다'],k:0,e:'복도통로유도등은 바닥에서 1m 이하에 설치하고 보행거리 20m마다 설치합니다. 계단통로유도등도 1m 이하로 계단참마다 설치합니다.'},
+{i:'24-4-03',y:2024,s:4,q:'통로유도등의 조도 기준은?',o:['0.2lx 이상','0.5lx 이상','5lx 이상','1lx 이상'],k:3,e:'통로유도등은 1lx 이상, 계단통로유도등은 0.5lx 이상, 객석유도등은 0.2lx 이상입니다.'},
+{i:'24-4-04',y:2024,s:4,q:'평상시 유도등의 비상전원을 충전하는 선은?',o:['공통선','점등선','충전선','접지선'],k:2,e:'유도등의 3선식은 공통선·충전선·점등선입니다. 평상시에는 충전선으로 비상전원을 충전하고, 화재신호를 받으면 점등선으로 점등합니다.'},
+{i:'24-4-05',y:2024,s:4,q:'비상조명등의 조도 기준은?',o:['바닥에서 0.5lx 이상','바닥에서 1lx 이상','바닥에서 3lx 이상','천장에서 5lx 이상'],k:1,e:'비상조명등은 설치 장소의 각 부분 바닥에서 1lx 이상의 조도를 유지해야 하며, 예비전원은 20분 이상(11층 이상 등은 60분) 작동해야 합니다.'},
+{i:'24-4-06',y:2024,s:4,q:'경계전로의 정격전류가 60A를 초과할 때 설치해야 하는 누전경보기는?',o:['1급','2급','3급','설치하지 않아도 된다'],k:0,e:'경계전로의 정격전류가 60A를 초과하면 1급 누전경보기를 설치합니다. 60A 이하이면 1급 또는 2급을 설치할 수 있습니다.'},
+{i:'24-4-07',y:2024,s:4,q:'누전경보기의 전원 측에 사용하는 과전류차단기의 정격 기준은?',o:['60A 이하','30A 이하','50A 이하','15A 이하(배선용차단기는 20A 이하)'],k:3,e:'누전경보기의 전원은 분전반에서 전용회로로 공급하고, 과전류차단기는 15A 이하(배선용차단기는 20A 이하)를 사용합니다.'},
+{i:'24-4-08',y:2024,s:4,q:'11층 이상 건물에서 2층에 화재가 발생했을 때 우선경보 대상은?',o:['발화층과 모든 상층','발화층만','발화층과 직상 4개층','지하층을 포함한 전 층'],k:2,e:'2층 이상에서 발화하면 발화층과 그 직상 4개층에 우선경보합니다. 1층에서 발화하면 지하층도 포함하고, 지하층 발화 시에는 지하 전 층과 직상층에 경보합니다.'},
+{i:'24-4-09',y:2024,s:4,q:'비상콘센트는 각 부분에서 수평거리 몇 m 이내에 설치하는가?',o:['25m','50m','30m','100m'],k:1,e:'비상콘센트는 각 부분에서 수평거리 50m 이내에 설치합니다. 지하상가나 지하 3,000㎡ 이상인 층은 25m 이내입니다.'},
+{i:'24-4-10',y:2024,s:4,q:'비상콘센트 보호함 상부에 설치하는 표시등의 색은?',o:['적색','녹색','황색','청색'],k:0,e:'비상콘센트 보호함 상부에는 적색 표시등을 설치해 위치를 쉽게 찾을 수 있게 합니다.'},
+{i:'24-4-11',y:2024,s:4,q:'비상콘센트설비의 절연저항 기준은?',o:['0.1MΩ 이상','1MΩ 이상','5MΩ 이상','20MΩ 이상'],k:3,e:'비상콘센트설비는 전원부와 외함 사이를 500V 절연저항계로 측정해 20MΩ 이상이어야 합니다. 감지기 회로의 0.1MΩ과 구분합니다.'},
+{i:'24-4-12',y:2024,s:4,q:'무선통신보조설비의 누설동축케이블은 몇 m 이내마다 고정하는가?',o:['2m','6m','4m','10m'],k:2,e:'누설동축케이블은 4m 이내마다 고정하고, 고압 전로와 1.5m 이상 떨어뜨려 설치합니다.'},
+{i:'23-4-01',y:2023,s:4,q:'열감지기의 종류에 해당하는 것은?',o:['이온화식 · 광전식','차동식 · 정온식','자외선식 · 적외선식','연기복합식'],k:1,e:'열감지기는 차동식과 정온식, 연기감지기는 이온화식과 광전식, 불꽃감지기는 자외선식·적외선식입니다.'},
+{i:'23-4-02',y:2023,s:4,q:'이온화식 감지기가 검출하는 것은?',o:['연기에 의한 이온 전류의 변화','주위 온도의 상승','불꽃의 자외선','가스의 압력'],k:0,e:'이온화식 감지기는 방사선원으로 이온화한 공간에 연기 입자가 들어오면 이온 전류가 변하는 것을 검출합니다.'},
+{i:'23-4-03',y:2023,s:4,q:'광전식 감지기의 원리로 옳은 것은?',o:['적외선을 방출해 연기를 태운다','연기에 의한 이온 전류의 변화를 검출한다','온도 상승률을 검출한다','연기에 의한 빛의 산란 또는 감광을 검출한다'],k:3,e:'광전식은 발광부의 빛이 연기 입자에 부딪혀 산란되거나 감광되는 정도로 연기를 검출합니다.'},
+{i:'23-4-04',y:2023,s:4,q:'불꽃감지기가 검출하는 것은?',o:['실내 온도','연기의 농도','불꽃의 자외선 또는 적외선','가스 농도'],k:2,e:'불꽃감지기는 화염이 내는 자외선이나 적외선을 검출해 빠르게 화재를 감지합니다. 석유류 저장탱크 등에 사용합니다.'},
+{i:'23-4-05',y:2023,s:4,q:'바닥면적 300㎡인 실에 연기감지기 1종(부착높이 4m 미만)을 설치할 때 최소 개수는?',o:['1개','2개','3개','4개'],k:1,e:'300 ÷ 150 = 2이므로 2개입니다. 감지구역별로 계산하며 소수점이 나오면 올림합니다.'},
+{i:'23-4-06',y:2023,s:4,q:'계단·경사로에서 연기감지기를 설치하는 수직거리 기준은?',o:['15m마다','10m마다','20m마다','30m마다'],k:0,e:'계단·경사로는 수직거리 15m마다 1개를 설치합니다. 연기감지기 3종은 10m마다입니다.'},
+{i:'23-4-07',y:2023,s:4,q:'감지구역에 대한 설명으로 옳은 것은?',o:['층 전체를 하나로 보는 구역','수신기가 설치된 방','경계구역과 같은 개념이다','감지기가 설치된 구역으로, 감지면적을 기준으로 산정한다'],k:3,e:'감지구역은 감지기가 담당하는 구역으로 감지면적을 기준으로 산정하며, 경계구역과 구분됩니다. 한 경계구역 안에 여러 감지구역이 있을 수 있습니다.'},
+{i:'23-4-08',y:2023,s:4,q:'비상경보설비의 음향장치는 층마다 수평거리 몇 m 이하가 되도록 설치하는가?',o:['15m','30m','25m','50m'],k:2,e:'음향장치는 층마다 수평거리 25m 이하가 되도록 설치하고, 음향장치 중심에서 1m 떨어진 곳의 음압이 90dB 이상이어야 합니다.'},
+{i:'23-4-09',y:2023,s:4,q:'비상방송설비의 음량조정기 배선 방식은?',o:['2선식','3선식','4선식','광배선'],k:1,e:'음량조정기는 3선식으로 배선해 스위치를 조작해도 비상방송이 우선 동작하도록 합니다.'},
+{i:'23-4-10',y:2023,s:4,q:'지하층을 제외한 층수가 11층 이상인 건물의 유도등 비상전원 용량은?',o:['60분 이상','20분 이상','30분 이상','10분 이상'],k:0,e:'11층 이상인 층과 지하상가 등은 60분 이상, 그 밖의 장소는 20분 이상 유효하게 작동해야 합니다.'},
+{i:'23-4-11',y:2023,s:4,q:'비상콘센트설비는 각 층에 몇 회로 이상 설치하는가?',o:['1회로','제한 없음','3회로','2회로'],k:3,e:'비상콘센트설비는 각 층에 2회로 이상 설치하고, 전용회로 하나에 비상콘센트 10개 이하로 접속합니다.'},
+{i:'23-4-12',y:2023,s:4,q:'계단통로유도등의 설치 위치로 옳은 것은?',o:['천장에만','계단 입구에 1개만','계단참마다 바닥에서 1m 이하','바닥에서 1.5m 이상'],k:2,e:'계단통로유도등은 바닥에서 1m 이하로 계단참마다 설치합니다. 한 층에 계단참이 2개 이상이면 2개 계단참마다 설치할 수 있습니다.'},
+{i:'22-4-01',y:2022,s:4,q:'자동화재탐지설비의 구성 요소로 보기 어려운 것은?',o:['수신기','유도등','감지기','중계기'],k:1,e:'자동화재탐지설비는 수신기·중계기·감지기·발신기·음향장치 등으로 구성됩니다. 유도등은 피난구조설비입니다.'},
+{i:'22-4-02',y:2022,s:4,q:'주된 출입구에서 내부 전체가 보이는 경우 경계구역은 최대 몇 ㎡까지 가능한가?',o:['1,000㎡','800㎡','600㎡','1,500㎡'],k:0,e:'원칙은 600㎡ 이하·한 변 50m 이하이지만, 주된 출입구에서 내부 전체가 보이면 1,000㎡까지 하나의 경계구역으로 할 수 있습니다.'},
+{i:'22-4-03',y:2022,s:4,q:'바닥면적 500㎡ 이하인 층은 어떻게 경계구역을 설정할 수 있는가?',o:['면적과 관계없이 1개 층만 가능하다','3개 층까지 가능하다','층마다 따로 해야 한다','2개 층까지 하나의 경계구역으로 할 수 있다'],k:3,e:'500㎡ 이하인 경우에는 2개 층을 하나의 경계구역으로 설정할 수 있습니다. 다만 계단·경사로는 별도 구역입니다.'},
+{i:'22-4-04',y:2022,s:4,q:'스포트형 감지기의 부착 각도 기준은?',o:['경사와 관계없다','수직으로만 부착한다','45도 이상 경사되지 않게 부착한다','30도 이상 기울여 부착한다'],k:2,e:'스포트형 감지기는 45도 이상 경사되지 않도록 부착해야 연기·열이 원활히 유입됩니다.'},
+{i:'22-4-05',y:2022,s:4,q:'연기감지기 3종의 감지면적 기준은?',o:['부착높이 4m 미만에서 75㎡마다','부착높이 4m 미만에서 50㎡마다','부착높이 4m 미만에서 150㎡마다','부착높이 20m 미만에서 150㎡마다'],k:1,e:'연기감지기 3종은 부착높이 4m 미만에서만 사용하며 50㎡마다 1개를 설치합니다. 1·2종은 150㎡(4m 미만)·75㎡(4~20m)입니다.'},
+{i:'22-4-06',y:2022,s:4,q:'복도에 연기감지기 3종을 설치할 때 보행거리 기준은?',o:['20m마다','15m마다','30m마다','40m마다'],k:0,e:'복도·통로에서는 보행거리 30m마다(3종은 20m마다) 설치합니다.'},
+{i:'22-4-07',y:2022,s:4,q:'유도등의 비상전원은 평상시 무엇으로 충전하는가?',o:['축전지 자체','비상발전기만','태양전지','상용전원'],k:3,e:'유도등은 평상시 상용전원으로 충전선을 통해 내장 축전지를 충전하고, 정전이나 화재신호를 받으면 점등선으로 전환해 점등합니다.'},
+{i:'22-4-08',y:2022,s:4,q:'무선통신보조설비를 구성하는 기기로 보기 어려운 것은?',o:['누설동축케이블','분배기','유도등','증폭기'],k:2,e:'무선통신보조설비는 누설동축케이블·안테나·분배기·증폭기·무선중계기 등으로 구성됩니다. 유도등은 피난구조설비입니다.'},
+{i:'22-4-09',y:2022,s:4,q:'정격전류 60A 이하인 경계전로에 설치할 수 있는 누전경보기는?',o:['1급만','1급 또는 2급','3급만','설치할 수 없다'],k:1,e:'60A 이하인 경계전로에는 1급 또는 2급 누전경보기를 설치할 수 있고, 60A를 초과하면 1급을 설치합니다.'},
+{i:'22-4-10',y:2022,s:4,q:'감지기 회로의 배선은 다른 전선과 어떻게 설치하는가?',o:['별도의 관·덕트에 설치한다','같은 관에 함께 넣는다','전력선과 묶어 시공한다','바닥에 매립한다'],k:0,e:'자동화재탐지설비의 배선은 다른 전선과 별도의 관·덕트에 설치해야 합니다. 60V 미만 약전류회로로 전압이 같은 경우에만 예외가 있습니다.'},
+{i:'22-4-11',y:2022,s:4,q:'전용함에 종단저항을 설치할 때 높이 기준은?',o:['높이 제한 없음','바닥에서 0.8m 이내','천장에서 0.5m 이내','바닥에서 1.5m 이내'],k:3,e:'종단저항을 전용함에 설치하는 경우 바닥에서 1.5m 이내에 두고, 종단감지기에 다는 경우에는 별도 표시를 합니다.'},
+{i:'22-4-12',y:2022,s:4,q:'복도나 구획된 실의 보행거리가 몇 m 이상이면 발신기를 추가하는가?',o:['25m','30m','40m','50m'],k:2,e:'발신기는 층마다 25m 이내에 설치하고, 복도나 구획된 실의 보행거리가 40m 이상이면 발신기를 추가로 설치합니다.'},
+];
+var BANK_S4X = [
+{i:'26-4-13',y:2026,s:4,q:'자동화재속보설비의 기능은?',o:['화재를 직접 소화한다','화재 신호를 자동으로 소방관서에 전송한다','연기를 제거한다','비상전원을 공급한다'],k:1,e:'자동화재속보설비는 자동화재탐지설비가 화재를 감지하면 전화회선 등을 통해 소방관서에 자동으로 신호를 보내 출동을 요청합니다.'},
+{i:'26-4-14',y:2026,s:4,q:'시각경보장치는 주로 누구를 위한 설비인가?',o:['청각장애인 등 소리를 듣기 어려운 사람','시각장애인','노약자만','소방관'],k:0,e:'시각경보장치는 경보음을 듣기 어려운 청각장애인 등을 위해 섬광으로 화재를 알리는 설비입니다.'},
+{i:'26-4-15',y:2026,s:4,q:'가스누설경보기의 주된 기능은?',o:['소화약제를 방출한다','가스 누설을 자동으로 차단한다','연기를 감지한다','가스 누설을 검출해 경보한다'],k:3,e:'가스누설경보기는 가스 사용 시설에서 누설된 가스를 검출해 경보를 울려 인명과 재산 피해를 막습니다.'},
+{i:'26-4-16',y:2026,s:4,q:'소방시설에 공급하는 비상전원의 종류로 옳은 것은?',o:['수력발전설비','태양광설비와 풍력설비','자가발전설비와 축전지설비','상용전원만'],k:2,e:'소방시설의 비상전원은 자가발전설비나 축전지설비로 확보합니다. 정전 시에도 일정 시간 소방시설이 작동해야 합니다.'},
+{i:'26-4-17',y:2026,s:4,q:'주소형(아날로그) 감지기의 특징은?',o:['경계구역 단위로만 표시된다','감지기마다 고유 주소가 있어 개별 감지기의 상태를 확인할 수 있다','전원이 필요 없다','감지기끼리 배선을 공유하지 않는다'],k:1,e:'주소형 감지기는 감지기마다 주소를 부여해 어느 감지기가 동작했는지 개별적으로 파악할 수 있고, 감도 변화도 감시할 수 있습니다.'},
+{i:'26-4-18',y:2026,s:4,q:'유도등의 평상시 점등 상태로 옳은 것은?',o:['평상시에도 점등 상태를 유지한다','화재 때만 점등한다','정전 때만 점등한다','점검 때만 점등한다'],k:0,e:'유도등은 평상시에도 점등되어 피난구 위치를 안내해야 하며, 정전이나 화재 시에는 비상전원으로 자동 전환됩니다.'},
+{i:'26-4-19',y:2026,s:4,q:'감지기에 설치된 표시등의 역할은?',o:['음향을 발생한다','감지기의 감도를 조절한다','수신기에 전원을 공급한다','감지기가 동작했음을 표시한다'],k:3,e:'감지기의 표시등은 감지기가 작동하면 점등되어 현장에서 어느 감지기가 동작했는지 확인할 수 있게 합니다.'},
+{i:'26-4-20',y:2026,s:4,q:'P형 수신기의 화재 표시 방식으로 옳은 것은?',o:['화재 온도를 표시한다','감지기의 주소를 표시한다','동작한 경계구역의 번호를 표시한다','소화약제의 양을 표시한다'],k:2,e:'P형 수신기는 동작한 경계구역 번호를 표시해 화재 위치를 알려줍니다. 주소형은 개별 감지기 주소를 표시합니다.'},
+{i:'25-4-13',y:2025,s:4,q:'정온식 감지기의 동작 원리는?',o:['온도 상승률이 일정값을 넘으면 동작한다','주위 온도가 설정값에 도달하면 동작한다','연기 농도를 검출해 동작한다','불꽃의 자외선을 검출해 동작한다'],k:1,e:'정온식은 일정 온도(예: 70℃)에 도달하면 동작하는 방식이고, 차동식은 온도 상승률이 일정값을 넘을 때 동작합니다.'},
+{i:'25-4-14',y:2025,s:4,q:'차동식 감지기의 동작 원리는?',o:['온도 상승률이 일정값을 넘으면 동작한다','절대 온도가 설정값에 도달하면 동작한다','연기를 검출한다','가스 농도를 검출한다'],k:0,e:'차동식은 단위시간당 온도 상승률이 설정값을 초과할 때 동작합니다. 급격한 온도 변화에 민감합니다.'},
+{i:'25-4-15',y:2025,s:4,q:'천장 또는 반자의 높이가 몇 m 이상인 장소에는 감지기를 설치하지 않을 수 있는가?',o:['8m','15m','10m','20m'],k:3,e:'천장·반자 높이 20m 이상인 장소는 감지를 기대하기 어려워 감지기를 설치하지 않을 수 있습니다.'},
+{i:'25-4-16',y:2025,s:4,q:'발신기의 표시등 역할은?',o:['수신기의 전원을 표시한다','발신기의 음량을 조절한다','발신기가 조작되었음을 표시한다','경종을 대신한다'],k:2,e:'발신기의 표시등은 발신기를 눌러 화재 신호를 보냈을 때 점등되어 조작 여부를 확인할 수 있게 합니다.'},
+{i:'25-4-17',y:2025,s:4,q:'수신기를 설치하기에 가장 적절한 장소는?',o:['옥상','관리인이 상시 근무하는 방재실 등','지하 주차장','화장실 앞 복도'],k:1,e:'수신기는 관리인이 상시 근무하는 장소에 설치해 화재 신호를 즉시 확인하고 대응할 수 있게 해야 합니다.'},
+{i:'25-4-18',y:2025,s:4,q:'감지기 회로의 전압강하를 줄이는 방법으로 옳은 것은?',o:['전선의 굵기를 굵게 하고 배선 길이를 짧게 한다','전선을 가늘게 한다','감지기를 더 멀리 배치한다','전원 전압을 낮춘다'],k:0,e:'전압강하는 전선 길이와 전류에 비례하고 단면적에 반비례합니다. 굵은 전선을 쓰고 거리를 줄이면 전압강하가 작아집니다.'},
+{i:'25-4-19',y:2025,s:4,q:'비상경보설비의 음향장치 종류로 옳은 것은?',o:['감지기 · 발신기','스피커 · 앰프','유도등 · 표시등','벨 · 사이렌 · 부저'],k:3,e:'비상경보설비의 음향장치는 벨·사이렌·부저 등으로 화재를 소리로 알립니다. 스피커는 비상방송설비에 씁니다.'},
+{i:'25-4-20',y:2025,s:4,q:'비상경보설비 발신기의 기능은?',o:['경종을 끈다','연기를 자동으로 감지한다','사람이 수동으로 조작해 화재 신호를 보낸다','소화약제를 방출한다'],k:2,e:'발신기는 화재를 발견한 사람이 수동으로 눌러 수신기에 화재 신호를 보내는 설비입니다.'},
+{i:'24-4-13',y:2024,s:4,q:'거실통로유도등의 설치 높이는?',o:['바닥에서 1m 이하','바닥에서 1.5m 이상','천장에만','바닥에서 0.8m 이하'],k:1,e:'거실통로유도등은 바닥에서 1.5m 이상, 복도·계단통로유도등은 1m 이하에 설치합니다.'},
+{i:'24-4-14',y:2024,s:4,q:'유도등의 광원으로 주로 사용되는 것은?',o:['수명이 긴 LED','백열전구','네온관','할로겐등'],k:0,e:'유도등은 소비전력이 적고 수명이 긴 LED 광원을 주로 사용합니다. 비상전원으로도 충분한 시간을 확보할 수 있습니다.'},
+{i:'24-4-15',y:2024,s:4,q:'비상조명등을 설치해야 하는 장소로 가장 적절한 것은?',o:['창고 바닥','옥상 정원','주차장 입구','거실 · 복도 · 계단'],k:3,e:'비상조명등은 정전 시 피난에 필요한 거실·복도·계단 등에 설치해 바닥에서 1lx 이상의 조도를 확보합니다.'},
+{i:'24-4-16',y:2024,s:4,q:'누전경보기에서 누설전류를 검출하는 부분은?',o:['음향장치','수신기','영상변류기','종단저항'],k:2,e:'누전경보기는 영상변류기(CT)로 전로의 누설전류를 검출하고, 설정값을 넘으면 수신부에서 경보를 냅니다.'},
+{i:'24-4-17',y:2024,s:4,q:'누전경보기의 기본 기능은?',o:['과전류를 차단한다','전로의 누설전류를 검출해 경보한다','화재를 감지한다','비상전원을 공급한다'],k:1,e:'누전경보기는 저압 전로의 누설전류를 감시해 누전에 의한 화재와 감전을 예방합니다.'},
+{i:'24-4-18',y:2024,s:4,q:'비상콘센트설비의 전원회로는 어떻게 구성하는가?',o:['분전반에서 전용회로로 공급한다','일반 콘센트 회로에서 분기한다','조명회로와 함께 쓴다','발전기 없이 상용전원만 쓴다'],k:0,e:'비상콘센트설비의 전원회로는 주배전반 등에서 전용회로로 끌어와야 하며, 다른 부하와 섞이지 않게 합니다.'},
+{i:'24-4-19',y:2024,s:4,q:'무선통신보조설비를 설치하는 주된 목적은?',o:['CCTV 영상을 전송한다','방송을 크게 한다','휴대전화를 충전한다','지하 등 전파가 닿기 어려운 곳에서 소방무선통신을 돕는다'],k:3,e:'무선통신보조설비는 지하층·터널 등 전파 음영지역에서 소방대원의 무선통신이 원활하도록 전파를 증폭·중계합니다.'},
+{i:'24-4-20',y:2024,s:4,q:'스프링클러설비 유수검지장치의 압력스위치 역할은?',o:['펌프를 정지시킨다','물의 온도를 조절한다','물의 흐름을 감지해 경보 신호를 보낸다','배관의 압력을 높인다'],k:2,e:'유수검지장치의 압력스위치는 스프링클러 헤드가 열려 물이 흐르면 압력 변화를 감지해 화재 신호를 보냅니다.'},
+{i:'23-4-13',y:2023,s:4,q:'옥내소화전함의 표시등 역할은?',o:['화재를 감지한다','소화전의 위치를 알리고 작동 상태를 표시한다','경보음을 낸다','비상전원을 공급한다'],k:1,e:'옥내소화전함의 표시등은 소화전 위치를 쉽게 찾도록 하고, 밸브를 열면 점등되어 작동 상태를 알립니다.'},
+{i:'23-4-14',y:2023,s:4,q:'소방펌프 제어반의 기능은?',o:['소방펌프를 자동 또는 수동으로 기동·정지한다','화재를 감지한다','유도등을 점등한다','누전을 검출한다'],k:0,e:'소방펌프 제어반은 압력 스위치나 유수검지장치의 신호에 따라 펌프를 자동 기동하고, 수동 조작과 상태 표시 기능도 합니다.'},
+{i:'23-4-15',y:2023,s:4,q:'감시제어반의 기능은?',o:['피난을 유도한다','소화약제를 저장한다','전력을 발전한다','소방시설의 상태를 감시하고 제어한다'],k:3,e:'감시제어반은 화재수신기·펌프·제연설비 등 소방시설의 작동 상태를 감시하고 원격으로 제어합니다.'},
+{i:'23-4-16',y:2023,s:4,q:'비상발전기의 역할은?',o:['연기를 배출한다','화재를 직접 진압한다','정전 시 소방시설에 전원을 공급한다','누설전류를 검출한다'],k:2,e:'비상발전기는 상용전원이 끊겼을 때 소방시설과 비상조명 등에 필요한 전원을 공급합니다.'},
+{i:'23-4-17',y:2023,s:4,q:'축전지설비가 소방시설에서 하는 역할은?',o:['전압을 승압한다','정전 시 일정 시간 전원을 공급한다','주파수를 변환한다','접지를 제공한다'],k:1,e:'축전지설비는 정전 시 유도등·비상조명등·수신기 등에 일정 시간 전원을 공급하는 비상전원입니다.'},
+{i:'23-4-18',y:2023,s:4,q:'자동화재탐지설비의 배선을 시공할 때 옳은 것은?',o:['금속관·합성수지관 등에 넣어 시공한다','벽에 그대로 노출해 묶는다','바닥에 테이프로 붙인다','전력선과 같은 관에 넣는다'],k:0,e:'감지기 회로의 배선은 금속관·합성수지관 등에 넣어 보호하고, 전력선과는 별도의 관·덕트를 사용합니다.'},
+{i:'23-4-19',y:2023,s:4,q:'유도등 3선식 배선에서 공통선의 역할은?',o:['조도를 높인다','비상전원을 충전한다','화재 신호를 보낸다','충전선과 점등선의 공통 귀로를 만든다'],k:3,e:'공통선은 충전선·점등선과 함께 유도등 회로를 구성하는 공통 귀로입니다. 평상시 충전, 화재 시 점등에 함께 쓰입니다.'},
+{i:'23-4-20',y:2023,s:4,q:'수신기가 화재 신호를 받으면 하는 일로 옳은 것은?',o:['유도등을 소등한다','소화약제를 방출한다','경계구역을 표시하고 음향장치를 작동시킨다','전원을 차단한다'],k:2,e:'수신기는 감지기·발신기의 신호를 받아 경계구역을 표시하고, 음향장치를 작동시켜 화재를 알립니다.'},
+{i:'22-4-13',y:2022,s:4,q:'자동화재탐지설비의 목적으로 가장 적절한 것은?',o:['화재를 자동으로 소화한다','화재를 자동으로 감지해 경보하고 초기 대응을 돕는다','연기를 배출한다','피난을 유도한다'],k:1,e:'자동화재탐지설비는 감지기로 화재를 자동 감지해 수신기에 표시하고 음향장치로 경보해 초기 소화와 피난을 돕습니다.'},
+{i:'22-4-14',y:2022,s:4,q:'수신기의 예비전원으로 주로 사용하는 것은?',o:['축전지','태양전지','연료전지','수력발전기'],k:0,e:'수신기의 예비전원은 축전지를 사용하며, 정전 시에도 일정 시간 작동하도록 용량을 확보합니다.'},
+{i:'22-4-15',y:2022,s:4,q:'중계기를 설치하면 배선은 어떻게 되는가?',o:['전원이 필요 없어진다','배선이 두 배로 늘어난다','배선이 없어진다','수신기와 감지기 사이의 배선이 간소해진다'],k:3,e:'중계기는 여러 감지기 회로를 모아 수신기와 연결하므로 배선량과 전압강하를 줄이고 시공을 간편하게 합니다.'},
+{i:'22-4-16',y:2022,s:4,q:'자동화재탐지설비에서 전원회로와 감지기 회로를 분리하는 이유는?',o:['감도를 높이기 위해','배선을 짧게 하기 위해','전원 측 고장이 감지기 회로에 영향을 주지 않게 하기 위해','비용을 줄이기 위해'],k:2,e:'전원회로는 내화배선, 감지기 회로는 내화·내열배선으로 하고 서로 분리해 전원 측 사고가 감지 회로에 파급되지 않게 합니다.'},
+{i:'22-4-17',y:2022,s:4,q:'소방시설의 전원은 어떻게 공급하는가?',o:['일반 조명회로에서 분기한다','전용회로로 공급하고 다른 부하와 분리한다','전원을 공유해도 무관하다','수동으로만 공급한다'],k:1,e:'소방시설의 전원은 전용회로로 공급하고 일반 부하와 분리해, 다른 부하 고장에도 소방시설이 작동하도록 합니다.'},
+{i:'22-4-18',y:2022,s:4,q:'감지기를 실내 공기유입구로부터 최소 몇 m 떨어뜨려 설치하는가?',o:['1.5m','0.6m','2.5m','3m'],k:0,e:'감지기는 공기유입구로부터 1.5m 이상, 벽·보로부터 0.6m 이상 떨어뜨려 설치합니다.'},
+{i:'22-4-19',y:2022,s:4,q:'비상콘센트를 계단 출입구에서 몇 m 이내에 설치하는가?',o:['25m','10m','15m','5m'],k:3,e:'비상콘센트는 계단 출입구에서 5m 이내, 각 부분에서 수평거리 50m 이내(지하상가 등은 25m)에 설치합니다.'},
+{i:'22-4-20',y:2022,s:4,q:'음향장치의 음압을 측정하는 위치는?',o:['5m 떨어진 곳','3m 떨어진 곳','음향장치 중심에서 1m 떨어진 곳','천장에서 1m 아래'],k:2,e:'음향장치는 중심에서 1m 떨어진 곳에서 90dB 이상이어야 하며, 정격전압의 80%에서도 이를 유지해야 합니다.'},
+{i:'21-4-01',y:2021,s:4,q:'자동화재탐지설비를 구성하는 기기로 옳게 묶은 것은?',o:['소화기 · 스프링클러 · 유도등','수신기 · 중계기 · 감지기 · 발신기 · 음향장치','비상콘센트 · 배연기','소방펌프 · 저수조'],k:1,e:'자동화재탐지설비는 수신기·중계기·감지기·발신기·음향장치 등으로 구성됩니다.'},
+{i:'21-4-02',y:2021,s:4,q:'감지기의 기능은?',o:['화재 발생을 자동으로 감지해 신호를 보낸다','화재 신호를 경계구역별로 표시한다','경보음을 낸다','소화약제를 방출한다'],k:0,e:'감지기는 열·연기·불꽃 등의 변화를 감지해 수신기에 전기 신호를 보냅니다.'},
+{i:'21-4-03',y:2021,s:4,q:'발신기의 기능은?',o:['전원을 공급한다','화재를 자동 감지한다','경보음을 낸다','수동으로 화재 신호를 보낸다'],k:3,e:'발신기는 사람이 직접 조작해 화재 신호를 수신기에 보내는 수동 설비입니다.'},
+{i:'21-4-04',y:2021,s:4,q:'수신기의 기능은?',o:['연기를 배출한다','화재를 직접 진압한다','화재 신호를 수신해 표시하고 경보를 지시한다','전원을 충전한다'],k:2,e:'수신기는 감지기·발신기의 신호를 받아 경계구역을 표시하고 음향장치 등에 경보를 지시합니다.'},
+{i:'21-4-05',y:2021,s:4,q:'경종의 기능은?',o:['화재를 감지한다','경보음을 발생시켜 화재를 알린다','유도등을 점등한다','전원을 차단한다'],k:1,e:'경종은 수신기의 지시에 따라 경보음을 내 화재를 알리는 음향장치입니다.'},
+{i:'21-4-06',y:2021,s:4,q:'표시등의 기능은?',o:['설비의 작동 상태나 위치를 빛으로 표시한다','경보음을 낸다','화재를 감지한다','전원을 공급한다'],k:0,e:'표시등은 수신기·발신기·소화전함 등에서 작동 상태나 위치를 빛으로 알려줍니다.'},
+{i:'21-4-07',y:2021,s:4,q:'감지기를 감지 원리에 따라 나눌 때 옳게 묶은 것은?',o:['수동식 · 자동식 · 반자동식','차동식 · 정온식 · 이온화식','스포트형 · 분포형 · 분리형','연기감지기 · 열감지기 · 불꽃감지기'],k:3,e:'감지 원리로는 연기·열·불꽃으로 나뉘고, 그 안에서 이온화식·광전식, 차동식·정온식처럼 세분됩니다.'},
+{i:'21-4-08',y:2021,s:4,q:'연기감지기 2종(부착높이 4m 이상 20m 미만)의 감지면적은?',o:['150㎡마다','50㎡마다','75㎡마다','200㎡마다'],k:2,e:'연기감지기 1·2종은 4m 미만에서 150㎡, 4m 이상 20m 미만에서 75㎡마다 설치합니다.'},
+{i:'21-4-09',y:2021,s:4,q:'차동식 분포형 감지기의 구조로 옳은 것은?',o:['바이메탈의 변형을 이용한다','공기관과 다이어프램으로 온도 상승을 감지한다','방사선의 이온화를 이용한다','빛의 산란을 이용한다'],k:1,e:'차동식 분포형(공기관식)은 공기관이 가열되어 팽창한 공기로 다이어프램을 밀어 접점을 닫는 방식입니다.'},
+{i:'21-4-10',y:2021,s:4,q:'정온식 스포트형 감지기의 감지 소자로 주로 쓰이는 것은?',o:['바이메탈','공기관','광전소자','방사선원'],k:0,e:'정온식 스포트형은 바이메탈 등이 설정 온도에서 변형되며 접점을 닫아 동작합니다.'},
+{i:'21-4-11',y:2021,s:4,q:'이온화식 감지기에 사용되는 방사선원은?',o:['라듐-226','코발트-60','우라늄-235','아메리슘-241'],k:3,e:'이온화식 감지기는 아메리슘-241의 방사선으로 공기를 이온화하고, 연기가 들어오면 이온 전류가 변하는 것을 검출합니다.'},
+{i:'21-4-12',y:2021,s:4,q:'광전식 감지기의 검출 원리는?',o:['온도 상승률','연기에 의한 이온 전류 변화','연기에 의한 빛의 산란 또는 감광','자외선 방출'],k:2,e:'광전식은 발광부의 빛이 연기 입자에 산란되거나 감광되는 정도로 연기를 검출합니다.'},
+{i:'21-4-13',y:2021,s:4,q:'감지기 회로에 전압강하가 크게 생기면?',o:['감도가 높아진다','감지기가 정상적으로 동작하지 않을 수 있다','경종이 커진다','전원이 충전된다'],k:1,e:'전압강하가 크면 회로 끝 감지기의 전압이 정격의 80% 아래로 떨어져 오동작하거나 동작하지 않을 수 있습니다.'},
+{i:'21-4-14',y:2021,s:4,q:'종단저항을 설치하는 위치는?',o:['감지기 회로의 끝부분','수신기 내부','전원 인입구','경종 옆'],k:0,e:'종단저항은 감지기 회로의 맨 끝에 설치해 회로의 도통 상태를 감시합니다.'},
+{i:'21-4-15',y:2021,s:4,q:'경계구역의 면적 기준은?',o:['1,000㎡ 이하','400㎡ 이하','800㎡ 이하','600㎡ 이하'],k:3,e:'하나의 경계구역은 600㎡ 이하이면서 한 변의 길이가 50m 이하여야 합니다. 예외적으로 1,000㎡까지 가능한 경우가 있습니다.'},
+{i:'21-4-16',y:2021,s:4,q:'계단·경사로의 경계구역 기준 높이는?',o:['15m 이하마다','30m 이하마다','45m 이하마다','60m 이하마다'],k:2,e:'계단과 경사로는 높이 45m 이하마다 별도 경계구역으로 설정합니다.'},
+{i:'21-4-17',y:2021,s:4,q:'P형 발신기 회로에서 경계구역이 늘어나면 증가하는 선은?',o:['응답선','지구선','경종선','전화선'],k:1,e:'경계구역이 늘어나면 지구선이 1가닥씩 늘고, 지구선이 7개를 넘으면 지구공통선을 추가합니다.'},
+{i:'21-4-18',y:2021,s:4,q:'비상경보설비 음향장치의 음압 기준은?',o:['1m 떨어진 곳에서 90dB 이상','1m 떨어진 곳에서 70dB 이상','3m 떨어진 곳에서 90dB 이상','5m 떨어진 곳에서 60dB 이상'],k:0,e:'음향장치 중심에서 1m 떨어진 곳의 음압이 90dB 이상이어야 하며, 정격전압의 80%에서도 유지해야 합니다.'},
+{i:'21-4-19',y:2021,s:4,q:'비상방송설비 확성기는 층마다 수평거리 몇 m 이하로 설치하는가?',o:['50m','15m','30m','25m'],k:3,e:'비상방송설비의 확성기는 층마다 수평거리 25m 이하가 되도록 설치합니다.'},
+{i:'21-4-20',y:2021,s:4,q:'유도등이 점등되지 않을 때 확인할 사항으로 가장 적절한 것은?',o:['경종의 음압','감지기의 감도','충전선과 내장 축전지의 상태','수신기의 경계구역 수'],k:2,e:'유도등은 평상시 충전선으로 축전지를 충전합니다. 점등되지 않으면 충전선 단선이나 축전지 열화를 확인해야 합니다.'},
+{i:'20-4-01',y:2020,s:4,q:'유도등의 목적으로 가장 적절한 것은?',o:['화재를 감지한다','화재 시 피난구와 피난 방향을 안내한다','경보음을 낸다','소화약제를 방출한다'],k:1,e:'유도등은 화재나 정전 시 피난구와 피난 통로를 빛으로 안내해 신속한 피난을 돕습니다.'},
+{i:'20-4-02',y:2020,s:4,q:'피난구유도등의 설치 위치로 옳은 것은?',o:['피난구의 출입구에 인접하게','복도 중앙에','계단참마다','객석 뒤편에'],k:0,e:'피난구유도등은 피난구 바닥에서 1.5m 이상의 위치에 출입구에 인접하게 설치합니다.'},
+{i:'20-4-03',y:2020,s:4,q:'유도등의 설치 높이 기준으로 옳지 않은 것은?',o:['피난구유도등은 바닥에서 1.5m 이상','복도통로유도등은 바닥에서 1m 이하','거실통로유도등은 바닥에서 1.5m 이상','계단통로유도등은 바닥에서 2m 이상'],k:3,e:'계단통로유도등은 계단참마다 바닥에서 1m 이하에 설치합니다. 2m 이상은 기준에 맞지 않습니다.'},
+{i:'20-4-04',y:2020,s:4,q:'객석유도등의 조도 기준은?',o:['1lx 이상','0.5lx 이상','0.2lx 이상','5lx 이상'],k:2,e:'객석유도등은 0.2lx 이상, 계단통로유도등은 0.5lx 이상, 통로유도등은 1lx 이상입니다.'},
+{i:'20-4-05',y:2020,s:4,q:'유도등의 점등 방식으로 옳은 것은?',o:['화재 신호가 있을 때만 점등한다','평상시에도 점등을 유지한다','야간에만 점등한다','점검 시에만 점등한다'],k:1,e:'유도등은 평상시에도 점등해 피난구 위치를 안내하고, 정전 시에는 비상전원으로 자동 전환됩니다.'},
+{i:'20-4-06',y:2020,s:4,q:'비상조명등의 목적은?',o:['정전 시 피난에 필요한 조명을 확보한다','화재를 감지한다','경보음을 낸다','유도 방향을 표시한다'],k:0,e:'비상조명등은 정전이나 화재로 조명이 꺼졌을 때 거실·복도·계단에 일정 시간 조명을 제공합니다.'},
+{i:'20-4-07',y:2020,s:4,q:'비상조명등의 예비전원은 몇 분 이상 작동해야 하는가?',o:['60분','10분','30분','20분'],k:3,e:'비상조명등은 원칙적으로 20분 이상 작동해야 하며, 11층 이상 등 일부 장소는 60분 이상입니다.'},
+{i:'20-4-08',y:2020,s:4,q:'비상콘센트설비의 목적은?',o:['비상조명을 켠다','일반 가전제품에 전원을 공급한다','소방활동에 필요한 전원을 공급한다','유도등을 점등한다'],k:2,e:'비상콘센트설비는 화재 시 소방대가 조명·펌프·구조장비 등을 사용할 수 있도록 전원을 공급합니다.'},
+{i:'20-4-09',y:2020,s:4,q:'비상콘센트설비의 공급용량 기준은?',o:['0.5kVA 이상','1.5kVA 이상','3kVA 이상','5kVA 이상'],k:1,e:'비상콘센트설비는 단상교류 220V, 공급용량 1.5kVA 이상이어야 합니다.'},
+{i:'20-4-10',y:2020,s:4,q:'비상콘센트설비의 전용회로 하나에 접속할 수 있는 비상콘센트 수는?',o:['10개 이하','5개 이하','15개 이하','제한 없음'],k:0,e:'전용회로 하나에 비상콘센트를 10개 이하로 접속해야 하며, 각 층에 2회로 이상 설치합니다.'},
+{i:'20-4-11',y:2020,s:4,q:'지하상가에 설치하는 비상콘센트의 수평거리 기준은?',o:['100m 이내','50m 이내','30m 이내','25m 이내'],k:3,e:'지하상가와 지하 3,000㎡ 이상인 층의 비상콘센트는 수평거리 25m 이내, 그 밖의 장소는 50m 이내입니다.'},
+{i:'20-4-12',y:2020,s:4,q:'무선통신보조설비의 무선중계기 역할은?',o:['전원을 공급한다','화재를 감지한다','무선 신호를 증폭·중계한다','유도방향을 표시한다'],k:2,e:'무선중계기는 음영지역에서 소방무선 신호를 받아 증폭해 다시 송신함으로써 통신 범위를 넓힙니다.'},
+{i:'20-4-13',y:2020,s:4,q:'누전경보기를 설치하는 주된 목적은?',o:['과전류를 차단한다','누설전류를 검출해 누전에 의한 화재와 감전을 예방한다','정전을 예방한다','전압을 안정시킨다'],k:1,e:'누전경보기는 저압 전로의 누설전류를 감시해 누전에 의한 화재와 감전 사고를 예방합니다.'},
+{i:'20-4-14',y:2020,s:4,q:'누전경보기의 설치 대상은?',o:['저압 전로','고압 전로','발전기','변압기'],k:0,e:'누전경보기는 저압 전로에서 누설전류를 검출하는 설비로, 경계전로의 정격전류에 따라 1급·2급을 설치합니다.'},
+{i:'20-4-15',y:2020,s:4,q:'단독경보형감지기의 기능은?',o:['유도등을 점등한다','수신기에만 신호를 보낸다','소화약제를 방출한다','감지기 자체에서 경보음을 발생시킨다'],k:3,e:'단독경보형감지기는 감지기와 경보장치가 일체형으로, 화재를 감지하면 자체에서 경보음을 냅니다.'},
+{i:'20-4-16',y:2020,s:4,q:'연기감지기 1종(부착높이 4m 미만)이 담당하는 면적은?',o:['50㎡','75㎡','150㎡','200㎡'],k:2,e:'연기감지기 1·2종은 4m 미만에서 150㎡마다, 4m 이상 20m 미만에서 75㎡마다 설치합니다.'},
+{i:'20-4-17',y:2020,s:4,q:'감지기를 설치하지 않을 수 있는 장소로 옳은 것은?',o:['거실','먼지나 수증기가 많아 오동작이 우려되는 장소','사무실','복도'],k:1,e:'먼지·수증기가 많거나 부식성 가스가 체류하는 장소는 감지기의 오동작 우려가 있어 설치를 면제할 수 있습니다.'},
+{i:'20-4-18',y:2020,s:4,q:'감지기와 벽 또는 보 사이의 이격거리 기준은?',o:['0.6m 이상','0.3m 이상','1.5m 이상','2m 이상'],k:0,e:'감지기는 벽이나 보로부터 0.6m 이상 떨어뜨려 설치해야 연기와 열이 원활히 유입됩니다.'},
+{i:'20-4-19',y:2020,s:4,q:'감지기 회로의 전로저항 기준은?',o:['0.1MΩ 이하','5Ω 이하','500Ω 이하','50Ω 이하'],k:3,e:'감지기 회로의 전로저항은 50Ω 이하이어야 하며, 절연저항은 0.1MΩ 이상이어야 합니다.'},
+{i:'20-4-20',y:2020,s:4,q:'감지기 회로의 절연저항 기준은?',o:['20MΩ 이상','1MΩ 이상','0.1MΩ 이상','50MΩ 이상'],k:2,e:'감지기 회로는 직류 250V 절연저항계로 측정해 0.1MΩ 이상이어야 합니다. 비상콘센트의 20MΩ과 구분합니다.'},
+];
 
-function quizPool(){
-  var out = [];
-  for (var i = 0; i < QUIZ.length; i++){
-    if (!qz.filter || QUIZ[i].s === qz.filter) out.push(QUIZ[i]);
+/* ================= CBT 모의고사 엔진 (v2) ================= */
+var BANK = BANK_S1.concat(BANK_S1X, BANK_S2, BANK_S2X, BANK_S3, BANK_S3X, BANK_S4, BANK_S4X);
+
+var SETS = [
+  {id:'y2026', y:2026, title:'2026년 기출유형 모의고사', short:'2026년 기출유형'},
+  {id:'y2025', y:2025, title:'2025년 기출유형 모의고사', short:'2025년 기출유형'},
+  {id:'y2024', y:2024, title:'2024년 기출유형 모의고사', short:'2024년 기출유형'},
+  {id:'y2023', y:2023, title:'2023년 기출유형 모의고사', short:'2023년 기출유형'},
+  {id:'y2022', y:2022, title:'2022년 기출유형 모의고사', short:'2022년 기출유형'},
+  {id:'y2021', y:2021, title:'2021년 기출유형 모의고사', short:'2021년 기출유형'},
+  {id:'y2020', y:2020, title:'2020년 기출유형 모의고사', short:'2020년 기출유형'}
+];
+var CIRCLED = ['①', '②', '③', '④'];
+var K2 = {
+  a:'sobang_cbt_answers_v2',
+  m:'sobang_cbt_marks_v2',
+  t:'sobang_cbt_times_v2',
+  r:'sobang_cbt_results_v2'
+};
+
+var ansStore = sGet(K2.a, {});
+var markStore = sGet(K2.m, {});
+var timeStore = sGet(K2.t, {});
+var resStore = sGet(K2.r, {});
+
+/* 문항 사전 */
+var ALLQ = {};
+var ORDER = {};
+(function(){
+  var i, q;
+  for (i = 0; i < BANK.length; i++){
+    q = BANK[i];
+    ALLQ[q.i] = q;
+    ORDER[q.i] = i;
   }
+  for (i = 0; i < QUIZ.length; i++){
+    q = QUIZ[i];
+    q.y = q.y || 0;
+    if (!ALLQ[q.i]){ ALLQ[q.i] = q; ORDER[q.i] = BANK.length + i; }
+  }
+})();
+
+function yearPool(y){
+  var out = [], i, q;
+  for (i = 0; i < BANK.length; i++){
+    q = BANK[i];
+    if (q.y === y) out.push(q);
+  }
+  out.sort(function(a, b){
+    if (a.s !== b.s) return a.s - b.s;
+    return (ORDER[a.i] || 0) - (ORDER[b.i] || 0);
+  });
   return out;
 }
-function wrongCount(pool){
-  var n = 0;
-  for (var i = 0; i < pool.length; i++) if (wrongSet[pool[i].i]) n++;
+function countKeys(o){
+  var n = 0, k;
+  for (k in o) if (o[k]) n++;
   return n;
 }
-function renderQuizSetup(){
-  var pool = quizPool();
-  $('stTotal').textContent = pool.length;
-  $('stDone').textContent = stats.answered;
-  $('stBest').textContent = stats.best ? stats.best + '점' : '-';
-  var w = wrongCount(pool);
-  var wb = $('btnWrongOnly');
-  wb.disabled = (w === 0);
-  wb.textContent = w ? '틀린 문제만 다시 풀기 (' + w + ')' : '틀린 문제만 다시 풀기';
-  var sb = document.querySelectorAll('[data-size]');
-  for (var i = 0; i < sb.length; i++){
-    var v = parseInt(sb[i].getAttribute('data-size'), 10);
-    sb[i].className = 'btn small' + (v === qz.size ? ' on' : '');
+function markPool(){
+  var out = [], i;
+  for (i = 0; i < BANK.length; i++) if (markStore[BANK[i].i]) out.push(BANK[i]);
+  for (i = 0; i < QUIZ.length; i++) if (markStore[QUIZ[i].i]) out.push(QUIZ[i]);
+  return out;
+}
+function wrongPool(){
+  var out = [], i;
+  for (i = 0; i < BANK.length; i++) if (wrongSet[BANK[i].i]) out.push(BANK[i]);
+  for (i = 0; i < QUIZ.length; i++) if (wrongSet[QUIZ[i].i]) out.push(QUIZ[i]);
+  return out;
+}
+function answeredCount(setId){
+  var m = ansStore[setId] || {}, n = 0, k;
+  for (k in m) if (typeof m[k] === 'number' && m[k] >= 0) n++;
+  return n;
+}
+function fmtScore(v){
+  var r = Math.round(v * 10) / 10;
+  return (r % 1 === 0) ? String(r) : r.toFixed(1);
+}
+function pad2(n){ return (n < 10 ? '0' : '') + n; }
+function fmtTime(s){
+  s = Math.max(0, Math.floor(s || 0));
+  var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+  if (h > 0) return h + ':' + pad2(m) + ':' + pad2(ss);
+  return pad2(m) + ':' + pad2(ss);
+}
+function setById(id){
+  for (var i = 0; i < SETS.length; i++) if (SETS[i].id === id) return SETS[i];
+  return null;
+}
+function titleFor(id){
+  var s = setById(id);
+  if (s) return s.short;
+  if (id === 'bm') return '북마크 복습';
+  if (id === 'wr') return '오답 복습';
+  if (id === 'quick') return '빠른 20문항';
+  if (id === 'retry') return '오답 다시 풀기';
+  return '모의고사';
+}
+
+/* ---------- 토스트 ---------- */
+var toastTimer = null;
+function toast(msg){
+  var el = $('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'toast on';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.className = 'toast'; }, 2000);
+}
+
+/* ---------- 선택 화면 ---------- */
+function renderSets(){
+  $('hBank').textContent = BANK.length;
+  var done = 0, i, id;
+  for (i = 0; i < SETS.length; i++) done += answeredCount(SETS[i].id);
+  $('hDone').textContent = done;
+
+  var best = -1;
+  for (id in resStore){
+    if (resStore[id] && typeof resStore[id].avg === 'number' && resStore[id].avg > best) best = resStore[id].avg;
   }
-}
-function showQuizPane(name){
-  $('quizSetup').style.display = (name === 'setup') ? 'block' : 'none';
-  $('quizPlay').style.display = (name === 'play') ? 'block' : 'none';
-  $('quizResult').style.display = (name === 'result') ? 'block' : 'none';
-}
-function beginSession(list){
-  qz.list = list;
-  qz.idx = 0; qz.answered = false; qz.chosen = -1; qz.correct = 0; qz.wrongIds = [];
-  qz.active = true;
-  showQuizPane('play');
-  renderQuestion();
-  window.scrollTo(0, 0);
-}
-function startQuiz(scope){
-  var pool = quizPool();
-  if (scope === 'wrong') pool = pool.filter(function(q){ return !!wrongSet[q.i]; });
-  if (!pool.length) return;
-  pool = shuffleArr(pool.slice(0));
-  if (qz.size > 0 && pool.length > qz.size) pool = pool.slice(0, qz.size);
-  beginSession(pool);
-}
-function renderQuestion(){
-  var q = qz.list[qz.idx];
-  var total = qz.list.length;
-  $('qpLabel').textContent = (qz.idx + 1) + ' / ' + total;
-  $('qpScore').textContent = '정답 ' + qz.correct;
-  $('qpProgress').style.width = Math.round(qz.idx / total * 100) + '%';
-  var s = SUBJECTS[q.s - 1];
-  $('qpSubj').textContent = s.short + ' · ' + s.tag;
-  $('qpDot').style.background = 'var(--s' + q.s + ')';
-  $('qpType').textContent = (q.t === 'ox') ? 'O / X' : '4지선다';
-  $('qpQ').textContent = q.q;
+  $('hBest').textContent = (best < 0) ? '-' : fmtScore(best);
+  $('hWrong').textContent = countKeys(wrongSet);
+
   var h = '';
-  for (var i = 0; i < q.o.length; i++){
-    var cls = 'opt' + (q.t === 'ox' ? ' ox' : '');
-    var mark = (q.t === 'ox') ? q.o[i] : String(i + 1);
-    var txt = (q.t === 'ox') ? (q.o[i] === 'O' ? '맞다' : '아니다') : q.o[i];
-    h += '<button class="' + cls + '" data-k="' + i + '"><span class="mark">' + mark + '</span><span class="txt">' + txt + '</span></button>';
+  for (i = 0; i < SETS.length; i++){
+    var st = SETS[i], n = yearPool(st.y).length, a = answeredCount(st.id), r = resStore[st.id];
+    var bestHtml = r
+      ? '<b class="' + (r.pass ? 'ok' : 'no') + '">' + fmtScore(r.avg) + '</b>' + (r.pass ? '합격권' : '과락·미달')
+      : '<b>–</b>기록 없음';
+    h += '<button class="setcard" data-set="' + st.id + '">' +
+         '<span class="yr">' + st.y + '</span>' +
+         '<span class="mid"><b>' + st.title + '</b><em>' + n + '문항 · 과목당 20문항 · ' +
+           (a ? a + '문항 응답' : '아직 시작 전') + '</em></span>' +
+         '<span class="best">' + bestHtml + '</span>' +
+         '<span class="arrow">›</span></button>';
   }
-  $('qpOpts').innerHTML = h;
-  $('qpExpl').innerHTML = '';
-  var nb = $('qpNext');
-  nb.disabled = true;
-  nb.textContent = (qz.idx === total - 1) ? '결과 보기' : '다음 문제';
-  qz.answered = false;
-  qz.chosen = -1;
+  $('setList').innerHTML = h;
+
+  var mb = markPool().length, mw = wrongPool().length;
+  var m = '';
+  m += modeCard('bm', '🔖', '북마크 복습', mb ? mb + '문항 · 표시한 문제만' : '북마크한 문제가 없습니다', mb);
+  m += modeCard('wr', '🎯', '오답 복습', mw ? mw + '문항 · 틀린 문제만' : '틀린 문제가 없습니다', mw);
+  m += modeCard('quick', '⚡', '빠른 20문항', '전체 7개년 560문항 중 무작위 20문항', 20);
+  $('modeList').innerHTML = m;
 }
-function answerQuiz(k){
-  if (qz.answered) return;
-  var q = qz.list[qz.idx];
-  qz.answered = true;
-  qz.chosen = k;
-  var ok = (k === q.k);
-  if (ok){ qz.correct++; delete wrongSet[q.i]; }
-  else { qz.wrongIds.push(q.i); wrongSet[q.i] = true; }
-  sSet(KEYS.w, wrongSet);
-  var opts = $('qpOpts').children;
-  for (var i = 0; i < opts.length; i++){
-    var oi = parseInt(opts[i].getAttribute('data-k'), 10);
-    var mark = opts[i].querySelector('.mark');
-    if (oi === q.k){ opts[i].className += ' correct'; if (mark) mark.textContent = '\u2713'; }
-    else if (oi === k){ opts[i].className += ' wrong'; if (mark) mark.textContent = '\u2715'; }
-  }
-  $('qpScore').textContent = '정답 ' + qz.correct;
-  var ansTxt = (q.t === 'ox') ? (q.o[q.k] === 'O' ? 'O(맞다)' : 'X(아니다)') : (q.k + 1) + '번 ' + q.o[q.k];
-  var head = ok ? '정답입니다' : '오답 \u00B7 정답은 ' + ansTxt;
-  $('qpExpl').innerHTML = '<div class="expl ' + (ok ? 'ok' : 'no') + '"><b>' + head + '</b>' + q.e + '</div>';
-  $('qpNext').disabled = false;
+function modeCard(id, icon, name, desc, n){
+  return '<button class="setcard mode" data-set="' + id + '"' + (n ? '' : ' data-empty="1"') + '>' +
+    '<span class="yr"><span>' + icon + '</span></span>' +
+    '<span class="mid"><b>' + name + '</b><em>' + desc + '</em></span>' +
+    '<span class="best">' + (n ? '<b>' + n + '</b>문항' : '<b>0</b>문항') + '</span>' +
+    '<span class="arrow">›</span></button>';
 }
-function finishQuiz(){
-  var total = qz.list.length;
-  var pct = total ? Math.round(qz.correct / total * 100) : 0;
-  $('qrRing').style.setProperty('--p', pct);
-  $('qrScore').textContent = pct + '점';
-  $('qrSub').textContent = '정답 ' + qz.correct + ' / ' + total;
-  var msg;
-  if (pct >= 80) msg = '아주 좋습니다. 이 페이스면 합격권입니다.';
-  else if (pct >= 60) msg = '합격선 근처입니다. 틀린 문제만 한 번 더 풀어보세요.';
-  else msg = '지금은 오답을 남기는 단계입니다. 해설을 한 번 더 읽어보세요.';
-  $('qrMsg').textContent = msg;
-  var h = '';
-  if (qz.wrongIds.length){
-    h = '<div style="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin-bottom:6px">틀린 문제 ' + qz.wrongIds.length + '개</div>';
-    for (var i = 0; i < qz.wrongIds.length; i++){
-      var q = findQuiz(qz.wrongIds[i]);
-      if (!q) continue;
-      var a = (q.t === 'ox') ? (q.o[q.k] === 'O' ? '정답 O (맞다)' : '정답 X (아니다)') : '정답 ' + (q.k + 1) + '번 \u00B7 ' + q.o[q.k];
-      h += '<div class="ri"><b>' + escapeHtml(q.q) + '</b>' + escapeHtml(a) + '</div>';
-    }
-  } else {
-    h = '<div class="ri">틀린 문제가 없습니다. 완벽합니다!</div>';
+
+/* ---------- 세션 ---------- */
+var cbt = {open:false, setId:'', title:'', list:[], idx:0, showExp:false, showAns:false, sec:0, paused:false, confirm:0, last:null, anim:''};
+
+function ansMap(create){
+  if (!ansStore[cbt.setId] && create) ansStore[cbt.setId] = {};
+  return ansStore[cbt.setId] || {};
+}
+function ansOf(qid){
+  var m = ansMap(false);
+  return (typeof m[qid] === 'number') ? m[qid] : -1;
+}
+function putTime(){
+  if (!cbt.setId) return;
+  timeStore[cbt.setId] = cbt.sec;
+  sSet(K2.t, timeStore);
+}
+function openSession(list, setId){
+  if (!list || !list.length){ toast('풀 문항이 없습니다.'); return; }
+  cbt.open = true;
+  cbt.setId = setId;
+  cbt.title = titleFor(setId);
+  cbt.list = list;
+  cbt.idx = 0;
+  cbt.showExp = false;
+  cbt.showAns = false;
+  cbt.confirm = 0;
+  cbt.sec = typeof timeStore[setId] === 'number' ? timeStore[setId] : 0;
+  cbt.paused = false;
+  $('player').className = 'player on';
+  $('cbtTimer').className = 'ptimer';
+  paintTime();
+  renderQ();
+  document.body.style.overflow = 'hidden';
+}
+function startSet(id){
+  if (id === 'bm'){
+    var bp = markPool();
+    if (!bp.length){ toast('북마크한 문제가 없습니다.'); return; }
+    openSession(bp, 'bm');
+    return;
   }
-  $('qrList').innerHTML = h;
-  $('btnRetryWrong').disabled = (qz.wrongIds.length === 0);
-  stats.sessions++;
-  stats.answered += total;
-  stats.correct += qz.correct;
-  if (pct > stats.best) stats.best = pct;
-  sSet(KEYS.s, stats);
-  qz.active = false;
-  showQuizPane('result');
+  if (id === 'wr'){
+    var wp = wrongPool();
+    if (!wp.length){ toast('틀린 문제가 없습니다.'); return; }
+    openSession(wp, 'wr');
+    return;
+  }
+  if (id === 'quick'){
+    var qp = shuffleArr(BANK.slice(0)).slice(0, 20);
+    openSession(qp, 'quick');
+    return;
+  }
+  var st = setById(id);
+  if (!st) return;
+  openSession(yearPool(st.y), id);
+}
+function closeSession(){
+  if (!cbt.open) return;
+  putTime();
+  cbt.open = false;
+  $('player').className = 'player';
+  $('sheet').className = 'sheet';
+  $('res').className = 'res';
+  document.body.style.overflow = '';
+  cbt.setId = '';
+  renderSets();
   window.scrollTo(0, 0);
 }
 
-$('qpOpts').addEventListener('click', function(e){
-  var b = closestEl(e.target, '.opt');
-  if (!b) return;
-  answerQuiz(parseInt(b.getAttribute('data-k'), 10));
-});
-$('qpNext').addEventListener('click', function(){
-  if (qz.idx < qz.list.length - 1){ qz.idx++; renderQuestion(); window.scrollTo(0, 0); }
-  else finishQuiz();
-});
-$('qpQuit').addEventListener('click', function(){
-  qz.active = false;
-  showQuizPane('setup');
-  renderQuizSetup();
-  window.scrollTo(0, 0);
-});
-$('btnStartQuiz').addEventListener('click', function(){ startQuiz('all'); });
-$('btnWrongOnly').addEventListener('click', function(){ startQuiz('wrong'); });
-$('btnNewQuiz').addEventListener('click', function(){
-  showQuizPane('setup');
-  renderQuizSetup();
-  window.scrollTo(0, 0);
-});
-$('btnRetryWrong').addEventListener('click', function(){
-  var pool = [];
-  for (var i = 0; i < qz.wrongIds.length; i++){
-    var q = findQuiz(qz.wrongIds[i]);
-    if (q) pool.push(q);
-  }
-  if (!pool.length) return;
-  beginSession(shuffleArr(pool));
-});
-$('quizChips').addEventListener('click', function(e){
-  var chip = closestEl(e.target, '.chip');
-  if (!chip) return;
-  qz.filter = parseInt(chip.getAttribute('data-f'), 10);
-  setChips('quizChips', qz.filter);
-  renderQuizSetup();
-});
-var sizeBtns = document.querySelectorAll('[data-size]');
-for (var si = 0; si < sizeBtns.length; si++){
-  sizeBtns[si].addEventListener('click', function(){
-    qz.size = parseInt(this.getAttribute('data-size'), 10);
-    renderQuizSetup();
-  });
+/* ---------- 타이머 ---------- */
+function paintTime(){
+  var el = $('cbtTime');
+  if (el) el.textContent = fmtTime(cbt.sec);
 }
+function tickTimer(){
+  if (!cbt.open || cbt.paused) return;
+  cbt.sec++;
+  paintTime();
+  if (cbt.sec % 5 === 0) putTime();
+}
+setInterval(tickTimer, 1000);
+
+/* ---------- 문항 렌더 ---------- */
+function renderQ(){
+  var q = cbt.list[cbt.idx];
+  if (!q) return;
+  var n = cbt.list.length, a = ansOf(q.i), i;
+  $('cbtNo').textContent = String(cbt.idx + 1);
+  $('cbtTotal').textContent = '/ ' + n;
+  $('cbtTitle').textContent = cbt.title;
+  $('cbtExp').className = 'ptoggle' + (cbt.showExp ? ' on' : '');
+  $('cbtAns').className = 'ptoggle' + (cbt.showAns ? ' on' : '');
+  $('cbtMark').className = 'picon' + (markStore[q.i] ? ' on' : '');
+
+  var subj = SUBJECTS[q.s - 1] || {short:'문제', tag:''};
+  var h = '';
+  h += '<div class="pqsubj"><i style="background:var(--s' + q.s + ')"></i>' + subj.short + ' · ' + escapeHtml(subj.tag) + '</div>';
+  h += '<p class="pq">' + escapeHtml(q.q) + '</p><div class="popts" id="cbtOpts">';
+  for (i = 0; i < q.o.length; i++){
+    var cls = 'popt';
+    if (a === i) cls += ' sel';
+    if (cbt.showAns){
+      if (i === q.k) cls += ' ok';
+      else if (a === i) cls += ' no';
+    }
+    h += '<button class="' + cls + '" data-k="' + i + '"><span class="pmk">' + CIRCLED[i] + '</span><span class="ptx">' + escapeHtml(q.o[i]) + '</span></button>';
+  }
+  h += '</div>';
+  if (cbt.showAns){
+    h += '<div class="pans">정답 ' + CIRCLED[q.k] + ' ' + escapeHtml(q.o[q.k]) + '</div>';
+  }
+  if (cbt.showExp){
+    h += '<div class="pexpl"><b>해설</b>' + escapeHtml(q.e) + '</div>';
+  }
+  $('cbtBody').innerHTML = h;
+  $('cbtBody').scrollTop = 0;
+
+  $('cbtPos').textContent = (cbt.idx + 1) + ' / ' + n;
+  $('cbtBar').style.width = Math.round((cbt.idx + 1) / n * 100) + '%';
+  $('cbtPrev').disabled = (cbt.idx === 0);
+  $('cbtNext').disabled = (cbt.idx === n - 1);
+  if (cbt.anim){
+    $('cbtBody').className = 'pbody anim-' + cbt.anim;
+    cbt.anim = '';
+    setTimeout(function(){ var b = $('cbtBody'); if (b) b.className = 'pbody'; }, 260);
+  }
+}
+
+function selectAnswer(k){
+  var q = cbt.list[cbt.idx];
+  if (!q || k < 0 || k > 3) return;
+  var m = ansMap(true);
+  m[q.i] = k;
+  sSet(K2.a, ansStore);
+  cbt.confirm = 0;
+  stats.answered = (stats.answered || 0);
+  renderQ();
+}
+function goQ(idx){
+  if (idx < 0 || idx >= cbt.list.length) return;
+  cbt.idx = idx;
+  cbt.showExp = false;
+  cbt.showAns = false;
+  cbt.confirm = 0;
+  renderQ();
+}
+function toggleExp(){ cbt.showExp = !cbt.showExp; renderQ(); }
+function toggleAns(){ cbt.showAns = !cbt.showAns; renderQ(); }
+function toggleMark(){
+  var q = cbt.list[cbt.idx];
+  if (!q) return;
+  if (markStore[q.i]) delete markStore[q.i];
+  else markStore[q.i] = true;
+  sSet(K2.m, markStore);
+  renderQ();
+  toast(markStore[q.i] ? '북마크에 담았습니다.' : '북마크를 해제했습니다.');
+}
+
+/* ---------- 답안 확인 시트 ---------- */
+function openSheet(){
+  if (!cbt.open) return;
+  var n = cbt.list.length, h = '', i, a, q, cls;
+  var answered = 0;
+  for (i = 0; i < n; i++){
+    q = cbt.list[i];
+    a = ansOf(q.i);
+    cls = 'gcell';
+    if (a >= 0) answered++;
+    if (cbt.last && cbt.last.map && typeof cbt.last.map[q.i] === 'number'){
+      cls += (cbt.last.map[q.i] === 1) ? ' right' : ' wrong';
+    } else if (a >= 0){
+      cls += ' done';
+    }
+    if (markStore[q.i]) cls += ' mk';
+    if (i === cbt.idx) cls += ' cur';
+    h += '<button class="' + cls + '" data-i="' + i + '">' + (i + 1) + '</button>';
+  }
+  $('ggrid').innerHTML = h;
+  $('sheetMeta').textContent = answered + ' / ' + n + ' 응답';
+  $('sheet').className = 'sheet on';
+}
+function closeSheet(){ $('sheet').className = 'sheet'; }
+
+/* ---------- 채점 ---------- */
+function doScore(){
+  if (!cbt.open || !cbt.list.length) return;
+  var i, q, a, un = 0;
+  for (i = 0; i < cbt.list.length; i++){
+    q = cbt.list[i];
+    if (ansOf(q.i) < 0) un++;
+  }
+  if (un > 0 && cbt.confirm !== 1){
+    cbt.confirm = 1;
+    toast('미응답 ' + un + '문항이 있습니다. 한 번 더 누르면 채점합니다.');
+    return;
+  }
+  cbt.confirm = 0;
+  scoreNow();
+}
+
+function scoreNow(){
+  var per = {}, i, q, a, right = 0, wrong = 0, un = 0;
+  var map = {}, wrongList = [];
+  for (i = 1; i <= 4; i++) per[i] = {n:0, c:0};
+  for (i = 0; i < cbt.list.length; i++){
+    q = cbt.list[i];
+    if (!per[q.s]) per[q.s] = {n:0, c:0};
+    per[q.s].n++;
+    a = ansOf(q.i);
+    if (a < 0){ un++; map[q.i] = 0; continue; }
+    if (a === q.k){
+      right++;
+      per[q.s].c++;
+      map[q.i] = 1;
+      if (wrongSet[q.i]){ delete wrongSet[q.i]; }
+    } else {
+      wrong++;
+      map[q.i] = -1;
+      wrongSet[q.i] = true;
+      wrongList.push(q.i);
+    }
+  }
+  var subjList = [], sum = 0, minSc = 100, k;
+  for (k in per){
+    if (!per[k].n) continue;
+    var sc = per[k].c / per[k].n * 100;
+    subjList.push({id: parseInt(k, 10), n: per[k].n, c: per[k].c, score: sc});
+    sum += sc;
+    if (sc < minSc) minSc = sc;
+  }
+  subjList.sort(function(a2, b2){ return a2.id - b2.id; });
+  var avg = subjList.length ? sum / subjList.length : 0;
+  var pass = (avg >= 60 && minSc >= 40);
+
+  var res = {
+    avg: Math.round(avg * 10) / 10,
+    pass: pass,
+    right: right, wrong: wrong, un: un,
+    sec: cbt.sec,
+    at: Date.now(),
+    subj: subjList,
+    wrongIds: wrongList,
+    map: map,
+    title: cbt.title,
+    total: cbt.list.length
+  };
+  cbt.last = res;
+  resStore[cbt.setId] = {
+    avg: res.avg, pass: res.pass, at: res.at, sec: res.sec,
+    right: right, wrong: wrong, un: un,
+    subj: subjList, title: res.title, total: res.total
+  };
+  sSet(K2.r, resStore);
+  sSet(KEYS.w, wrongSet);
+  putTime();
+  stats.answered = (stats.answered || 0) + 0;
+  stats.sessions = (stats.sessions || 0) + 1;
+  if (!stats.best || res.avg > stats.best) stats.best = res.avg;
+  sSet(KEYS.s, stats);
+
+  renderRes(res);
+  $('res').className = 'res on';
+  $('sheet').className = 'sheet';
+}
+
+function renderRes(r){
+  var h = '';
+  h += '<div class="rbig"><div class="num">' + fmtScore(r.avg) + '<small>점</small></div>' +
+       '<div class="lb">전 과목 평균 · ' + escapeHtml(r.title) + ' ' + r.total + '문항</div>' +
+       '<div class="verdict ' + (r.pass ? 'pass' : 'fail') + '">' +
+       (r.pass ? '✅ 합격권' : '⚠️ 과락 또는 평균 미달') + '</div></div>';
+  h += '<div class="rcounts"><span>정답 <b>' + r.right + '</b></span><span>오답 <b>' + r.wrong + '</b></span>' +
+       '<span>미응답 <b>' + r.un + '</b></span><span>시간 <b>' + fmtTime(r.sec) + '</b></span></div>';
+  h += '<div class="srows">';
+  for (var i = 0; i < r.subj.length; i++){
+    var s = r.subj[i], nm = SUBJECTS[s.id - 1] || {short:'과목', tag:''};
+    h += '<div class="srow' + (s.score < 40 ? ' flunk' : '') + '">' +
+         '<span class="nm">' + nm.short + ' ' + escapeHtml(nm.tag) + '</span>' +
+         '<span class="bar"><i style="width:' + Math.round(s.score) + '%;background:var(--s' + s.id + ')"></i></span>' +
+         '<span class="sc">' + fmtScore(s.score) + '<em>' + s.c + ' / ' + s.n + '</em></span></div>';
+  }
+  h += '</div>';
+  h += '<div class="rcut">과목당 40점 이상, 전 과목 평균 60점 이상이면 합격권입니다. 과목당 20문항 기준으로 7문항 이하를 맞히면 과락입니다.</div>';
+
+  h += '<div class="ractions">' +
+       '<button class="btn" data-act="retry"' + (r.wrongIds.length ? '' : ' disabled') + '>오답만 다시</button>' +
+       '<button class="btn primary" data-act="cont">이어서 풀기</button></div>' +
+       '<div class="ractions" style="margin-top:8px">' +
+       '<button class="btn small" data-act="home" style="flex:1">다른 세트 고르기</button></div>';
+  h += '<div class="rhead">틀린 문제 · ' + r.wrongIds.length + '개</div>';
+  if (r.wrongIds.length){
+    h += '<div class="rlist2">';
+    for (var j = 0; j < r.wrongIds.length; j++){
+      var q = ALLQ[r.wrongIds[j]];
+      if (!q) continue;
+      var idx = -1;
+      for (var t = 0; t < cbt.list.length; t++) if (cbt.list[t].i === q.i){ idx = t; break; }
+      h += '<button class="rq" data-act="jump" data-i="' + idx + '"><span class="no">' + (idx + 1) + '</span>' +
+           '<span class="tx">' + escapeHtml(q.q) +
+           '<i>정답 ' + CIRCLED[q.k] + ' ' + escapeHtml(q.o[q.k]) + '</i></span></button>';
+    }
+    h += '</div>';
+  } else {
+    h += '<div class="rempty">틀린 문제가 없습니다. 이 세트는 완벽합니다.</div>';
+  }
+  $('resBody').innerHTML = h;
+}
+
+function closeRes(){ $('res').className = 'res'; }
+
+function retryWrong(){
+  var ids = (cbt.last && cbt.last.wrongIds) ? cbt.last.wrongIds : [];
+  var list = [];
+  for (var i = 0; i < ids.length; i++) if (ALLQ[ids[i]]) list.push(ALLQ[ids[i]]);
+  if (!list.length){ toast('다시 풀 오답이 없습니다.'); return; }
+  cbt.last = null;
+  openSession(list, 'retry');
+}
+
+/* ---------- 이벤트 ---------- */
+$('setList').addEventListener('click', function(e){
+  var b = closestEl(e.target, '.setcard');
+  if (!b) return;
+  startSet(b.getAttribute('data-set'));
+});
+$('modeList').addEventListener('click', function(e){
+  var b = closestEl(e.target, '.setcard');
+  if (!b) return;
+  startSet(b.getAttribute('data-set'));
+});
+$('cbtBody').addEventListener('click', function(e){
+  var b = closestEl(e.target, '.popt');
+  if (!b) return;
+  selectAnswer(parseInt(b.getAttribute('data-k'), 10));
+});
+$('cbtExp').addEventListener('click', toggleExp);
+$('cbtAns').addEventListener('click', toggleAns);
+$('cbtMark').addEventListener('click', toggleMark);
+$('cbtPrev').addEventListener('click', function(){ goQ(cbt.idx - 1); });
+$('cbtNext').addEventListener('click', function(){ goQ(cbt.idx + 1); });
+$('cbtClose').addEventListener('click', closeSession);
+$('cbtGridBtn').addEventListener('click', openSheet);
+$('sheetClose').addEventListener('click', closeSheet);
+$('sheet').addEventListener('click', function(e){
+  if (e.target === $('sheet')){ closeSheet(); return; }
+  var b = closestEl(e.target, '.gcell');
+  if (!b) return;
+  var i = parseInt(b.getAttribute('data-i'), 10);
+  closeSheet();
+  goQ(i);
+});
+$('cbtScoreBtn').addEventListener('click', doScore);
+$('resClose').addEventListener('click', closeRes);
+$('resGridBtn').addEventListener('click', openSheet);
+$('cbtTimer').addEventListener('click', function(){
+  cbt.paused = !cbt.paused;
+  $('cbtTimer').className = 'ptimer' + (cbt.paused ? ' paused' : '');
+  toast(cbt.paused ? '타이머를 멈췄습니다.' : '타이머를 다시 시작합니다.');
+});
+$('resBody').addEventListener('click', function(e){
+  var b = closestEl(e.target, '[data-act]');
+  if (!b) return;
+  var act = b.getAttribute('data-act');
+  if (act === 'jump'){
+    var i = parseInt(b.getAttribute('data-i'), 10);
+    if (i >= 0){ closeRes(); goQ(i); }
+  } else if (act === 'retry'){
+    closeRes();
+    retryWrong();
+  } else if (act === 'cont'){
+    closeRes();
+  } else if (act === 'home'){
+    closeRes();
+    closeSession();
+  }
+});
+/* ---------- 스와이프 이동 ---------- */
+(function(){
+  var el = $('cbtBody');
+  if (!el) return;
+  var sx = 0, sy = 0, moved = false, active = false;
+  el.addEventListener('touchstart', function(e){
+    if (!cbt.open || e.touches.length !== 1){ active = false; return; }
+    var t = e.touches[0];
+    sx = t.clientX; sy = t.clientY; moved = false; active = true;
+  }, {passive:true});
+  el.addEventListener('touchmove', function(e){
+    if (!active || e.touches.length !== 1) return;
+    var t = e.touches[0];
+    if (Math.abs(t.clientX - sx) > 12) moved = true;
+  }, {passive:true});
+  el.addEventListener('touchend', function(e){
+    if (!active) return;
+    active = false;
+    var t = e.changedTouches[0];
+    if (!t) return;
+    var dx = t.clientX - sx, dy = t.clientY - sy;
+    if (!moved || Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
+    if (dx < 0){
+      if (cbt.idx < cbt.list.length - 1){ cbt.anim = 'next'; goQ(cbt.idx + 1); }
+    } else {
+      if (cbt.idx > 0){ cbt.anim = 'prev'; goQ(cbt.idx - 1); }
+    }
+  }, {passive:true});
+})();
+
+/* ---------- 확대(핀치) 차단 ---------- */
+(function(){
+  var gz = ['gesturestart', 'gesturechange', 'gestureend'];
+  for (var i = 0; i < gz.length; i++){
+    document.addEventListener(gz[i], function(e){ e.preventDefault(); }, {passive:false});
+  }
+})();
+
+document.addEventListener('keydown', function(e){
+  if (!cbt.open) return;
+  if (e.key === 'Escape'){ if ($('res').className.indexOf('on') > -1) closeRes(); else closeSession(); return; }
+  if (e.key === 'ArrowLeft'){ e.preventDefault(); goQ(cbt.idx - 1); }
+  else if (e.key === 'ArrowRight'){ e.preventDefault(); goQ(cbt.idx + 1); }
+  else if (e.key === '1' || e.key === '2' || e.key === '3' || e.key === '4'){
+    e.preventDefault();
+    selectAnswer(parseInt(e.key, 10) - 1);
+  }
+});
 
 /* ---------- init ---------- */
 applyTheme(theme);
 $('fcChips').innerHTML = chipsHtml();
-$('quizChips').innerHTML = chipsHtml();
 rebuildDeck(true);
 renderCards();
-renderQuizSetup();
+renderSets();
 </script>
 </body>
 </html>
