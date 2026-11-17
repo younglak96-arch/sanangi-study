@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>소방설비기사(전기) 출퇴근 학습 · 2027</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+:root{
+  --bg:#0b1220;--surface:#141f30;--surface2:#1a2739;--line:rgba(255,255,255,.09);
+  --text:#e9eef7;--muted:#93a3b8;--accent:#ff7a4d;--accent-soft:rgba(255,122,77,.16);
+  --green:#34d399;--red:#f87171;--amber:#f5a524;
+  --header:rgba(11,18,32,.84);
+  --shadow:0 18px 40px -26px rgba(0,0,0,.95);
+  --s1:#fb923c;--s2:#60a5fa;--s3:#c084fc;--s4:#34d399;--s5:#f472b6;
+}
+body.light{
+  --bg:#eef2f7;--surface:#ffffff;--surface2:#f2f5fa;--line:rgba(16,32,56,.13);
+  --text:#132033;--muted:#56677c;--accent:#c2410c;--accent-soft:rgba(194,65,12,.10);
+  --green:#047857;--red:#dc2626;--amber:#b45309;
+  --header:rgba(247,249,252,.88);
+  --shadow:0 14px 32px -24px rgba(16,32,56,.45);
+  --s1:#c2410c;--s2:#2563eb;--s3:#7c3aed;--s4:#047857;--s5:#db2777;
+}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",system-ui,sans-serif;
+  font-size:17px;line-height:1.62;-webkit-text-size-adjust:100%;
+  transition:background .25s ease,color .25s ease;
+}
+button{font-family:inherit}
+.app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+
+/* header */
+header{position:sticky;top:0;z-index:30;background:var(--header);
+  -webkit-backdrop-filter:saturate(170%) blur(16px);backdrop-filter:saturate(170%) blur(16px);
+  border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 18px 10px}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand b{font-size:16.5px;letter-spacing:-.3px;line-height:1.25}
+.brand span{font-size:11.5px;color:var(--muted);letter-spacing:.01em}
+.iconbtn{flex:0 0 auto;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);color:var(--text);font-size:17px;line-height:1;
+  display:flex;align-items:center;justify-content:center;transition:transform .12s ease}
+.iconbtn:active{transform:scale(.94)}
+
+/* main */
+main{flex:1;padding:15px 18px calc(96px + env(safe-area-inset-bottom))}
+.view{display:none}
+.view.active{display:block;animation:fade .26s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .view.active{animation:none}
+  .fcard{transition:none}
+}
+
+/* tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;padding-bottom:env(safe-area-inset-bottom);
+  background:var(--header);-webkit-backdrop-filter:saturate(170%) blur(16px);backdrop-filter:saturate(170%) blur(16px);
+  border-top:1px solid var(--line)}
+.tabs-inner{max-width:480px;margin:0 auto;display:flex}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 4px 7px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:700;letter-spacing:-.1px}
+.tab .ic{font-size:19px;line-height:1;transition:transform .15s ease}
+.tab.active{color:var(--accent)}
+.tab.active .ic{transform:translateY(-1px) scale(1.06)}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 9px;margin:0}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  border-radius:999px;padding:6px 8px;font-size:12px;font-weight:700;white-space:nowrap;transition:background .15s,color .15s}
+.chip.active{background:var(--accent-soft);border-color:transparent;color:var(--text)}
+
+/* meters */
+.meter{height:6px;border-radius:99px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.meter>i{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s ease}
+.metaline{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:12px;color:var(--muted);margin:0 0 8px;font-weight:600}
+
+/* flashcard */
+.scene{perspective:1400px;margin-top:10px}
+.fcard{position:relative;width:100%;height:clamp(280px,46vh,400px);transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.3,.72,.2,1);cursor:pointer}
+.fcard.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:22px;border:1px solid var(--line);
+  background:linear-gradient(160deg,var(--surface2),var(--surface));
+  box-shadow:var(--shadow);padding:18px 19px 15px;display:flex;flex-direction:column;overflow:hidden;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden}
+.face.back{transform:rotateY(180deg);background:linear-gradient(160deg,var(--accent-soft),var(--surface))}
+.face-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:13px;flex:0 0 auto}
+.badge{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;
+  padding:5px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);
+  color:var(--muted);max-width:76%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--s1);flex:0 0 7px}
+.kicker{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.1em}
+.face-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:2px;
+  display:flex;flex-direction:column}
+.face-inner{width:100%;margin:auto 0}
+.face-body::-webkit-scrollbar{width:0}
+.qtext{margin:0;font-size:19.5px;line-height:1.55;font-weight:700;letter-spacing:-.3px;word-break:keep-all}
+.atext{margin:0;font-size:19.5px;line-height:1.55;font-weight:800;letter-spacing:-.3px;word-break:keep-all}
+.note{margin-top:13px;padding:11px 13px;border-radius:14px;background:var(--surface2);
+  border:1px solid var(--line);color:var(--muted);font-size:13.5px;line-height:1.6;word-break:keep-all}
+.face-bottom{flex:0 0 auto;margin-top:9px;font-size:11.5px;color:var(--muted);text-align:center;letter-spacing:.01em}
+
+/* buttons */
+.row{display:flex;align-items:center;gap:9px;margin-top:13px}
+.row.tight{gap:8px;margin-top:10px}
+.btn{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--text);
+  font-size:15px;font-weight:700;padding:13px 10px;border-radius:14px;transition:transform .12s ease,background .15s}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--accent);border-color:transparent;color:#fff}
+.btn.done{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.4);color:var(--green)}
+.btn.small{flex:0 0 auto;font-size:12.5px;padding:9px 12px;border-radius:11px;color:var(--muted)}
+.btn.small.on{background:var(--accent-soft);color:var(--text);border-color:transparent}
+.btn:disabled{opacity:.45}
+
+/* quiz */
+.qcard{border:1px solid var(--line);border-radius:20px;background:var(--surface);
+  padding:16px 16px 14px;box-shadow:var(--shadow)}
+.qmeta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}
+.qtype{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted)}
+.qnum{font-size:12px;font-weight:700;color:var(--muted)}
+.qtext2{margin:0;font-size:18px;line-height:1.55;font-weight:700;letter-spacing:-.25px;word-break:keep-all}
+.opts{display:flex;flex-direction:column;gap:9px;margin-top:15px}
+.opt{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;padding:12px 13px;
+  border-radius:14px;border:1px solid var(--line);background:var(--surface2);color:var(--text);
+  font-size:15px;line-height:1.5;font-weight:600;word-break:keep-all;transition:border-color .15s,background .15s}
+.opt .mark{flex:0 0 23px;height:23px;border-radius:50%;background:var(--surface);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;color:var(--muted);margin-top:1px}
+.opt.correct{border-color:rgba(52,211,153,.65);background:rgba(52,211,153,.14)}
+.opt.correct .mark{background:var(--green);color:#04150f;border-color:transparent}
+.opt.wrong{border-color:rgba(248,113,113,.65);background:rgba(248,113,113,.13)}
+.opt.wrong .mark{background:var(--red);color:#1b0505;border-color:transparent}
+.opt.ox .mark{font-size:14px}
+.opt.ox{justify-content:center;font-size:17px;font-weight:800;padding:15px 13px}
+.opt.ox .txt{flex:0 0 auto}
+.expl{margin-top:13px;padding:13px 14px;border-radius:14px;background:var(--accent-soft);
+  border:1px solid var(--line);font-size:14px;line-height:1.62;word-break:keep-all;animation:fade .2s ease both}
+.expl b{display:block;font-size:11.5px;letter-spacing:.08em;color:var(--muted);margin-bottom:5px}
+.expl.ok{background:rgba(52,211,153,.12)}
+.expl.no{background:rgba(248,113,113,.12)}
+
+/* quiz setup / result */
+.panel{border:1px solid var(--line);border-radius:18px;background:var(--surface);
+  padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+.panel h3{margin:0 0 4px;font-size:15.5px;letter-spacing:-.2px}
+.panel p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.6;word-break:keep-all}
+.panel .label{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin:16px 0 7px}
+.statgrid{display:flex;gap:8px;margin-top:14px}
+.stat{flex:1;border:1px solid var(--line);border-radius:13px;background:var(--surface2);padding:9px 6px;text-align:center}
+.stat b{display:block;font-size:17px;letter-spacing:-.3px}
+.stat span{font-size:10.5px;color:var(--muted);font-weight:600}
+.ring{width:136px;height:136px;border-radius:50%;margin:8px auto 12px;display:grid;place-items:center;
+  background:conic-gradient(var(--accent) calc(var(--p) * 1%), var(--surface2) 0)}
+.ring>div{width:106px;height:106px;border-radius:50%;background:var(--surface);
+  display:grid;place-items:center;text-align:center;line-height:1.15}
+.ring b{font-size:26px;letter-spacing:-.5px;display:block}
+.ring span{font-size:11px;color:var(--muted);font-weight:700}
+.rlist{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.rlist .ri{padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.5;color:var(--muted);word-break:keep-all}
+.rlist .ri b{color:var(--text);font-weight:700;display:block;font-size:13.5px}
+
+/* roadmap */
+.sect{margin:0 0 18px}
+.sect h2{font-size:15.5px;margin:0 0 9px;letter-spacing:-.25px}
+/* change list */
+.chg{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.chg:first-child{padding-top:0}
+.chg:last-child{border-bottom:0;padding-bottom:0}
+.chg-k{flex:0 0 68px;font-size:12px;font-weight:800;color:var(--muted);padding-top:1px}
+.chg-v{flex:1;font-size:13.5px;line-height:1.5;word-break:keep-all}
+.chg-v .old{color:var(--muted)}
+.chg-v .ar{color:var(--muted);margin:0 5px;font-weight:700}
+.chg-v b{font-weight:800}
+.table-wrap{display:none}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;line-height:1.45}
+th{color:var(--muted);font-size:11.5px;font-weight:800;letter-spacing:.02em}
+td:first-child{color:var(--muted);white-space:nowrap;font-weight:700;font-size:12px;padding-right:8px}
+tr:last-child td{border-bottom:0}
+td.hl{font-weight:700}
+.fine{font-size:11px;color:var(--muted);margin:11px 0 0;line-height:1.55}
+.subjrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.subjrow:last-child{border-bottom:0}
+.subjrow .nm{font-size:13.5px;font-weight:700;flex:1;letter-spacing:-.2px;word-break:keep-all}
+.subjrow .pc{font-size:11.5px;color:var(--muted);font-weight:700;flex:0 0 auto}
+.sbar{height:5px;border-radius:99px;background:var(--surface2);width:64px;flex:0 0 64px;overflow:hidden}
+.sbar>i{display:block;height:100%;border-radius:99px}
+.crit{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+.crit:last-child{border-bottom:0;padding-bottom:0}
+.crit:first-child{padding-top:0}
+.crit-k{flex:0 0 46px;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);padding-top:2px}
+.crit div{flex:1}
+.crit b{font-size:14px;letter-spacing:-.2px;word-break:keep-all}
+.crit p{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.55;word-break:keep-all}
+details{border:1px solid var(--line);border-radius:14px;background:var(--surface2);margin-bottom:8px;overflow:hidden}
+summary{padding:12px 14px;font-weight:700;font-size:14px;list-style:none;display:flex;gap:10px;
+  align-items:center;letter-spacing:-.2px;word-break:keep-all}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";margin-left:auto;color:var(--muted);font-weight:700;font-size:15px;flex:0 0 auto}
+details[open] summary:after{content:"–"}
+.wk{flex:0 0 34px;height:34px;border-radius:10px;background:var(--surface);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--accent)}
+.dbody{padding:0 14px 13px;font-size:13px;color:var(--muted);line-height:1.62;word-break:keep-all}
+.dbody b{color:var(--text);font-weight:700}
+.dbody .ln{display:flex;gap:8px;padding:5px 0}
+.dbody .ln em{font-style:normal;flex:0 0 42px;color:var(--accent);font-weight:800;font-size:11px;padding-top:2px}
+.dbody .ln div{flex:1}
+.duo{display:flex;gap:9px;margin-top:12px}
+.duo>div{flex:1;border:1px solid var(--line);border-radius:13px;padding:11px;background:var(--surface2)}
+.duo b{font-size:12px;display:block;margin-bottom:5px;letter-spacing:-.1px}
+.duo ul{margin:0;padding-left:15px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.duo li{margin:2px 0}
+.tiplist{margin:0;padding:0;list-style:none}
+.tiplist li{display:flex;gap:9px;padding:7px 0;font-size:13.5px;line-height:1.6;color:var(--muted);
+  border-bottom:1px solid var(--line);word-break:keep-all}
+.tiplist li:last-child{border-bottom:0}
+.tiplist li b{color:var(--text);font-weight:700}
+.tiplist .em{flex:0 0 auto;font-size:15px;line-height:1.4}
+.banner{border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:var(--accent-soft);
+  font-size:13px;line-height:1.6;color:var(--text);word-break:keep-all;margin-bottom:14px}
+.banner b{font-weight:800}
+.empty{text-align:center;padding:40px 12px;color:var(--muted);font-size:14px}
+.empty .big{font-size:34px;display:block;margin-bottom:10px}
+footer.foot{text-align:center;font-size:11px;color:var(--muted);line-height:1.6;padding:6px 0 4px;word-break:keep-all}
+@media (max-height:720px){
+  .fcard{height:clamp(236px,40vh,320px)}
+  .btn{padding:11px 10px;font-size:14.5px}
+  .row{margin-top:10px}
+  .row.tight{margin-top:8px}
+  main{padding-top:12px}
+}
+@media (max-width:360px){
+  body{font-size:16px}
+  .qtext,.atext{font-size:18px}
+  .chip{font-size:11.5px;padding:5px 7px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="hdr">
+      <div class="brand">
+        <b>소방설비기사(전기) 출퇴근 학습</b>
+        <span>2027 소방설비기사(전기분야) · 필기 4과목</span>
+      </div>
+      <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 암기카드 ============ -->
+    <section class="view active" id="viewCards">
+      <div class="metaline">
+        <span id="fcMasteredCount">0 / 0 외웠음</span>
+        <span id="fcPos">0 / 0</span>
+      </div>
+      <div class="meter"><i id="fcProgress"></i></div>
+      <div class="chips" id="fcChips"></div>
+
+      <div class="scene" id="fcScene">
+        <div class="fcard" id="fcCard">
+          <div class="face front">
+            <div class="face-top">
+              <span class="badge"><i class="dot" id="fcDot"></i><span id="fcSubj">1과목</span></span>
+              <span class="kicker">문제</span>
+            </div>
+            <div class="face-body"><div class="face-inner"><p class="qtext" id="fcQ"></p></div></div>
+            <div class="face-bottom">카드를 탭하면 정답이 보입니다</div>
+          </div>
+          <div class="face back">
+            <div class="face-top">
+              <span class="badge"><i class="dot" id="fcDot2"></i><span id="fcSubj2">1과목</span></span>
+              <span class="kicker">정답</span>
+            </div>
+            <div class="face-body"><div class="face-inner">
+                <p class="atext" id="fcA"></p>
+                <div class="note" id="fcNote"></div>
+              </div></div>
+            <div class="face-bottom">다시 탭하면 문제로 돌아갑니다</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty" id="fcEmpty" style="display:none">
+        <span class="big">🎉</span>
+        이 범위의 카드를 모두 외웠습니다.<br>전체 카드를 다시 돌아보세요.
+        <div class="row"><button class="btn primary" id="btnShowAll">전체 카드 보기</button></div>
+      </div>
+
+      <div class="row" id="fcNav">
+        <button class="btn" id="btnPrev" aria-label="이전 카드">← 이전</button>
+        <button class="btn" id="btnFlip">뒤집기</button>
+        <button class="btn" id="btnNext" aria-label="다음 카드">다음 →</button>
+      </div>
+      <div class="row tight">
+        <button class="btn" id="btnMaster">외웠음 표시</button>
+      </div>
+      <div class="row tight">
+        <button class="btn small" id="btnShuffle">순서 섞기</button>
+        <button class="btn small" id="btnOnlyUnmastered">안 외운 것만</button>
+      </div>
+      <footer class="foot" id="fcFoot"></footer>
+    </section>
+
+    <!-- ============ 출퇴근 퀴즈 ============ -->
+    <section class="view" id="viewQuiz">
+      <div id="quizSetup">
+        <div class="panel">
+          <h3>출퇴근 퀴즈</h3>
+          <p>필기와 같은 4지선다·O/X 문제입니다. 답을 고르면 바로 채점하고 해설을 보여줘요. 계산 문제도 섞여 있습니다.</p>
+          <div class="label">과목</div>
+          <div class="chips" id="quizChips"></div>
+          <div class="label">문제 수</div>
+          <div class="row tight" style="margin-top:0">
+            <button class="btn small on" data-size="10">10문항</button>
+            <button class="btn small" data-size="20">20문항</button>
+            <button class="btn small" data-size="0">전체</button>
+          </div>
+          <div class="row" style="margin-top:16px">
+            <button class="btn primary" id="btnStartQuiz">퀴즈 시작</button>
+          </div>
+          <div class="row tight">
+            <button class="btn" id="btnWrongOnly" disabled>틀린 문제만 다시 풀기</button>
+          </div>
+          <div class="statgrid">
+            <div class="stat"><b id="stTotal">0</b><span>전체 문제</span></div>
+            <div class="stat"><b id="stDone">0</b><span>지금까지 푼 문제</span></div>
+            <div class="stat"><b id="stBest">-</b><span>최고 점수</span></div>
+          </div>
+        </div>
+        <div class="banner">💡 <b>오는 길 20분 루틴</b> — 10문항 풀고, 틀린 문제만 한 번 더. 정답률이 80%를 넘으면 20문항으로 늘려 과목당 30분을 맞춰보세요.</div>
+      </div>
+
+      <div id="quizPlay" style="display:none">
+        <div class="metaline">
+          <span id="qpLabel">1 / 10</span>
+          <span id="qpScore">정답 0</span>
+        </div>
+        <div class="meter"><i id="qpProgress"></i></div>
+        <div class="qcard" style="margin-top:12px">
+          <div class="qmeta">
+            <span class="badge"><i class="dot" id="qpDot"></i><span id="qpSubj">1과목</span></span>
+            <span class="qtype" id="qpType">4지선다</span>
+          </div>
+          <p class="qtext2" id="qpQ"></p>
+          <div class="opts" id="qpOpts"></div>
+          <div id="qpExpl"></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="qpNext" disabled>다음 문제</button>
+        </div>
+        <div class="row tight">
+          <button class="btn small" id="qpQuit">퀴즈 그만두기</button>
+        </div>
+      </div>
+
+      <div id="quizResult" style="display:none">
+        <div class="panel">
+          <div class="ring" id="qrRing" style="--p:0"><div><b id="qrScore">0점</b><span id="qrSub">정답 0 / 0</span></div></div>
+          <p id="qrMsg" style="text-align:center;font-size:14px"></p>
+          <div class="rlist" id="qrList"></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="btnRetryWrong">틀린 문제만 다시</button>
+        </div>
+        <div class="row tight">
+          <button class="btn" id="btnNewQuiz">새 퀴즈</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 로드맵 ============ -->
+    <section class="view" id="viewRoadmap">
+      <div class="banner"><b>소방설비기사(전기분야) 필기는 4과목 · 80문항 · 120분.</b><br>과목당 20문항 30분, 과목당 40점이 과락선입니다. 왕복 2시간 출퇴근으로 8주면 1회독이 끝납니다.</div>
+
+      <div class="sect">
+        <h2>시험 구조 한눈에</h2>
+        <div class="panel">
+          <div class="chg"><span class="chg-k">필기 과목</span><span class="chg-v"><b>4과목</b> <span class="old">소방원론 · 소방전기일반 · 소방관계법규 · 소방전기시설의 구조 및 원리</span></span></div>
+          <div class="chg"><span class="chg-k">문항·시간</span><span class="chg-v"><b>80문항 · 120분</b> <span class="old">(과목당 20문항 30분, 문항당 1.25점)</span></span></div>
+          <div class="chg"><span class="chg-k">시험 방식</span><span class="chg-v"><b>객관식 4지택일 · CBT</b> <span class="old">2026년부터 필기 CBT로 시행</span></span></div>
+          <div class="chg"><span class="chg-k">실기</span><span class="chg-v"><b>소방전기시설 설계 및 시공실무 · 필답형 3시간</b></span></div>
+          <div class="chg"><span class="chg-k">합격 기준</span><span class="chg-v">필기 과목당 40점 · 평균 60점 / 실기 60점 이상</span></div>
+          <p class="fine">근거: Q-Net 소방설비기사(전기분야) 시험정보·출제기준(2026.1.1~2027.12.31), 소방시설법령 분법 시행(2022.12.1). 회차별 일정과 세부 기준은 Q-Net 공고가 최종입니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>4과목 한눈에 (각 20문항 · 25점)</h2>
+        <div class="panel">
+          <div class="subjrow"><span class="dot" style="background:var(--s1)"></span><span class="nm">1과목 소방원론</span><span class="sbar"><i style="width:100%;background:var(--s1)"></i></span><span class="pc">20문항</span></div>
+          <div class="subjrow"><span class="dot" style="background:var(--s2)"></span><span class="nm">2과목 소방전기일반</span><span class="sbar"><i style="width:100%;background:var(--s2)"></i></span><span class="pc">20문항</span></div>
+          <div class="subjrow"><span class="dot" style="background:var(--s3)"></span><span class="nm">3과목 소방관계법규</span><span class="sbar"><i style="width:100%;background:var(--s3)"></i></span><span class="pc">20문항</span></div>
+          <div class="subjrow"><span class="dot" style="background:var(--s4)"></span><span class="nm">4과목 소방전기시설의 구조 및 원리</span><span class="sbar"><i style="width:100%;background:var(--s4)"></i></span><span class="pc">20문항</span></div>
+          <p class="fine">소방원론과 소방관계법규는 기계분야와 공통이고, 소방전기일반·소방전기시설은 전기분야 전용입니다. 과목마다 8문항 이상은 맞혀야 과락을 피합니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>합격 기준</h2>
+        <div class="panel">
+          <div class="crit">
+            <span class="crit-k">필기</span>
+            <div><b>과목당 40점 이상 · 전 과목 평균 60점 이상</b>
+              <p>4과목 × 20문항, 120분. 한 과목이라도 40점 미만이면 평균과 관계없이 과락입니다. 8문항을 맞히면 40점입니다.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">실기</span>
+            <div><b>필답형 100점 중 60점 이상</b>
+              <p>100% 주관식 필답형, 3시간. 계산(가닥수·감지기 개수·전압강하)과 서술(NFTC 수치)이 함께 나옵니다.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">유효</span>
+            <div><b>필기 합격 후 2년간 실기 응시 가능</b>
+              <p>필기 합격일부터 2년이 지나면 필기부터 다시 봐야 합니다.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>실기(전기분야)는 무엇을 보나</h2>
+        <div class="panel">
+          <div class="crit">
+            <span class="crit-k">가닥수</span>
+            <div><b>P형 발신기 기본 6가닥 + 전화선 = 7가닥</b>
+              <p>지구선·지구공통선·응답선·경종선·표시등선·경종표시등공통선. 경계구역이 늘면 지구선이 1가닥씩, 지구선 7개마다 공통선이 1가닥씩 늘어납니다.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">배치</span>
+            <div><b>감지기 개수 = 감지구역 면적 ÷ 감지면적(올림)</b>
+              <p>연기감지기 1·2종은 4m 미만 150㎡, 4~20m 75㎡마다. 복도는 보행거리 30m, 계단은 수직거리 15m마다.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">결선</span>
+            <div><b>계통도·결선도 그리기</b>
+              <p>수신기–중계기–감지기–발신기–경종 배선, 유도등 3선식(공통·충전·점등), 비상콘센트 L·N·E.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">시퀀스</span>
+            <div><b>자기유지·인터록·타이머, 유도전동기 기동</b>
+              <p>a접점·b접점으로 회로를 그리고 동작을 글로 설명하는 문제가 매년 나옵니다.</p></div>
+          </div>
+          <div class="crit">
+            <span class="crit-k">서술</span>
+            <div><b>NFTC 수치 서술</b>
+              <p>경계구역 600㎡·50m, 음압 90dB, 유도등 20분·60분, 비상콘센트 1.5kVA·10개·50m, 무선통신보조 30분.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>8주 출퇴근 플랜 (왕복 2시간)</h2>
+        <div class="panel" style="padding:13px">
+          <details open>
+            <summary><span class="wk">1주</span>소방원론 ① 연소와 소화</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>연소 3요소·4요소, 소화 4원리, 연소 형태 5가지 카드를 소리 내어 2회독.</div></div>
+              <div class="ln"><em>오는 길</em><div>소방원론 퀴즈 10문항 → 틀린 문제 해설을 다음 역에서 다시 읽기.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">2주</span>소방원론 ② 화재와 방화</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>플래시오버·백드래프트, 화재의 종류 A·B·C·D, 인화점·연소점·발화점, 화재하중 계산.</div></div>
+              <div class="ln"><em>오는 길</em><div>원론 퀴즈 10문항. LPG는 바닥, LNG는 천장을 입으로 설명해보기.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">3주</span>소방전기일반 ① 회로</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>옴의 법칙, 저항·콘덴서 직병렬, 전력·전력량, 줄의 법칙, 키르히호프. 계산은 손으로 한 번씩.</div></div>
+              <div class="ln"><em>오는 길</em><div>전기 퀴즈 10문항. 계산 문제는 식을 먼저 쓰고 답을 확인.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">4주</span>소방전기일반 ② 교류와 기기</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>리액턴스·임피던스·공진, 역률, 3상 결선, 변압기 권수비와 손실, 유도전동기 슬립.</div></div>
+              <div class="ln"><em>오는 길</em><div>전기 퀴즈 10문항. 슬립·권수비는 숫자를 바꿔 다시 계산.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">5주</span>소방전기일반 ③ 시퀀스와 논리</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>a·b접점, 자기유지·인터록, 논리 게이트와 불 대수, 플립플롭, 정류회로.</div></div>
+              <div class="ln"><em>오는 길</em><div>시퀀스 문제 10문항. 회로를 말로 설명할 수 있으면 실기 서술도 됩니다.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">6주</span>소방관계법규</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>2022.12.1 분법(화재예방법·소방시설법), 5대 설비 분류, 자체점검 주기(연 1회·반기 1회·60일), 소방안전관리자 30일과 등급.</div></div>
+              <div class="ln"><em>오는 길</em><div>법규 퀴즈 10문항. 숫자는 카드에 적어 지하철에서 다시 확인.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">7주</span>소방전기시설 ① 자동화재탐지설비</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>경계구역 600㎡·50m, 감지기 면적표와 부착높이, 발신기 25m·0.8~1.5m, 종단저항, 배선·절연저항.</div></div>
+              <div class="ln"><em>오는 길</em><div>4과목 퀴즈 10문항 + 감지기 개수 계산 3문제.</div></div>
+            </div>
+          </details>
+          <details>
+            <summary><span class="wk">8주</span>소방전기시설 ② 경보·피난 + 실전</summary>
+            <div class="dbody">
+              <div class="ln"><em>가는 길</em><div>경종 90dB, 비상방송 3W·10초, 누전경보기 60A, 유도등 1.5m·1m·20m와 20분·60분, 비상콘센트 1.5kVA·50m, 무선통신보조 50Ω·30분.</div></div>
+              <div class="ln"><em>오는 길</em><div>4과목 퀴즈 10문항 → 틀린 문제만 다시 풀기로 전체 오답 한 바퀴.</div></div>
+            </div>
+          </details>
+          <p class="fine">주말에는 그 주 카드를 전부 다시 넘기고, 20문항을 시간 재고 풀어보세요. 실제 시험은 과목당 30분입니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>하루 2시간 쓰는 법</h2>
+        <div class="panel">
+          <div class="duo">
+            <div>
+              <b style="color:var(--accent)">가는 길 60분 · 입력</b>
+              <ul>
+                <li>암기카드 25장 (25분)</li>
+                <li>같은 카드 한 번 더 (15분)</li>
+                <li>어제 틀린 문제 10개 (20분)</li>
+              </ul>
+            </div>
+            <div>
+              <b style="color:var(--green)">오는 길 60분 · 출력</b>
+              <ul>
+                <li>오늘 과목 퀴즈 10문항 (15분)</li>
+                <li>해설 정독 (20분)</li>
+                <li>틀린 문제만 다시 (15분)</li>
+                <li>계산 문제 손으로 2개 (10분)</li>
+              </ul>
+            </div>
+          </div>
+          <p class="fine">아침에 외운 것을 저녁에 꺼내 쓰는 것이 가장 오래 남습니다. 소방전기일반은 계산, 4과목은 숫자 암기로 성격이 다르니 같은 날 번갈아 보세요.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>아이폰에서 쓰는 법</h2>
+        <div class="panel">
+          <ul class="tiplist">
+            <li><span class="em">📶</span><div><b>데이터 없이도 동작합니다.</b> 외부 연결이 없는 한 개의 파일이라 지하철 터널에서도 그대로 열립니다.</div></li>
+            <li><span class="em">📱</span><div><b>Safari에서 열어 주세요.</b> 공유 → '홈 화면에 추가'를 누르면 앱처럼 전체 화면으로 쓸 수 있고, '외웠음' 표시도 안전하게 저장됩니다.</div></li>
+            <li><span class="em">💾</span><div><b>외운 카드·틀린 문제는 이 기기에만 저장</b>됩니다(브라우저 저장소). 산업안전기사 앱과 저장 공간이 겹치지 않습니다.</div></li>
+            <li><span class="em">🌗</span><div><b>밝기 전환</b>은 오른쪽 위 버튼. 지하철 실내에서는 밝은 화면이 눈이 편합니다.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>일정 (예상)</h2>
+        <div class="panel">
+          <p>소방설비기사 필기는 2026년부터 CBT로 시행되고 있습니다. 2027년 회차 일정과 원서접수 기간은 Q-Net 공고로 확정되니, 접수 시작 전에 꼭 확인하세요. 지금 8주 플랜을 시작하면 접수 시점에 1회독이 끝나 있습니다.</p>
+          <p class="fine" style="margin-top:10px">소방설비산업기사(전기분야)도 같은 4과목 체계라 이 앱으로 함께 대비할 수 있습니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>다른 자격증으로 갈아타기</h2>
+        <div class="panel">
+          <p>산업안전기사(2027년 개편 5과목)를 함께 준비한다면 같은 방식으로 만든 학습앱이 있습니다.</p>
+          <div class="row" style="margin-top:12px">
+            <a class="btn" href="../" style="text-align:center;text-decoration:none;display:block">← 산업안전기사 학습앱</a>
+          </div>
+        </div>
+      </div>
+
+      <footer class="foot">
+        학습용 요약 자료입니다. 법령·화재안전기준 수치는 개정될 수 있으니<br>응시 전 Q-Net 공고와 국가법령정보센터 원문으로 확인하세요.
+      </footer>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <div class="tabs-inner">
+      <button class="tab active" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
+      <button class="tab" data-tab="quiz"><span class="ic">✅</span>출퇴근 퀴즈</button>
+      <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
+    </div>
+  </nav>
+</div>
+
+<script>
+var CARDS = [
+{i:'a1',s:1,q:'연소의 3요소는?',a:'가연물 · 산소공급원 · 점화원',n:'불꽃을 내며 타는 연소는 여기에 연쇄반응을 더해 4요소라고 합니다. 소화는 이 중 하나를 없애는 일입니다.'},
+{i:'a2',s:1,q:'소화의 4원리와 각각의 예는?',a:'제거소화 · 냉각소화 · 질식소화 · 억제소화',n:'제거는 가연물을 치우는 것, 냉각은 물, 질식은 이산화탄소·포, 억제는 할론·분말처럼 연쇄반응을 끊는 화학적 소화입니다.'},
+{i:'a3',s:1,q:'연소의 형태 5가지를 들면?',a:'확산연소 · 예혼합연소 · 증발연소 · 분해연소 · 표면연소(자기연소)',n:'가스는 확산·예혼합, 액체는 증발, 고체는 분해·표면연소입니다. 셀룰로이드·니트로셀룰로오스는 산소 없이도 타는 자기연소를 합니다.'},
+{i:'a4',s:1,q:'인화점 · 연소점 · 발화점의 차이는?',a:'인화점은 불꽃으로 불이 붙는 최저온도, 연소점은 불꽃 없이도 연소가 계속되는 최저온도, 발화점은 점화원 없이 스스로 타오르는 온도',n:'보통 인화점 < 연소점 < 발화점 순서입니다. 인화점은 위험물 분류와 소방 위험성 판단의 기준이 됩니다.'},
+{i:'a5',s:1,q:'화재의 종류 A · B · C · D급은 각각 무엇인가?',a:'A급 일반화재(목재·종이·섬유) · B급 유류화재(기름·가스) · C급 전기화재 · D급 금속화재',n:'A급에는 물이 가장 효과적이지만 B·C급에 물을 쓰면 유출·감전 위험이 큽니다. D급은 금속화재 전용 약제를 씁니다.'},
+{i:'a6',s:1,q:'플래시오버와 백드래프트의 차이는?',a:'플래시오버는 실내 가연물이 일시에 착화해 화재가 급격히 확대되는 현상, 백드래프트는 산소가 부족한 밀폐공간에 공기가 들어와 미연소가스가 폭발적으로 타는 현상',n:'백드래프트는 문을 열 때 잘 일어납니다. 둘 다 진입 전에 온도와 연기 상태를 확인해야 하는 이유입니다.'},
+{i:'a7',s:1,q:'건물 화재의 진행 과정 4단계는?',a:'발화 → 성장 → 최성기 → 감퇴(실화)',n:'최성기는 온도가 가장 높고 연기가 많아 소방활동이 가장 어려운 시기입니다.'},
+{i:'a8',s:1,q:'연기의 위험성 4가지는?',a:'질식(일산화탄소·이산화탄소) · 가시거리 감소 · 고온 · 부식성과 독성',n:'화재 사망의 대부분은 불꽃이 아니라 연기와 유독가스에 의한 질식입니다.'},
+{i:'a9',s:1,q:'이산화탄소 소화약제의 소화작용과 특징은?',a:'질식작용과 냉각작용 / 잔류물이 없고 전기 절연성이 좋다',n:'전기실·정밀기기에 적합합니다. 다만 밀폐공간에서는 질식 위험이 있어 퇴피 확인이 필요합니다.'},
+{i:'a10',s:1,q:'분말소화약제 제1~4종의 주성분은?',a:'제1종 중탄산나트륨(BC) · 제2종 중탄산칼륨(BC) · 제3종 제1인산암모늄(ABC) · 제4종 중탄산칼륨+요소(BC)',n:'A급 일반화재까지 소화하는 것은 제3종뿐입니다. 시험은 이 차이를 자주 묻습니다.'},
+{i:'a11',s:1,q:'물의 소화효과와, 물을 쓰면 안 되는 곳은?',a:'냉각작용 / 전기화재 · 금속화재 · 기름(유류) 화재',n:'물은 비열과 증발잠열이 커 냉각 효과가 큽니다. 전기에는 감전, 유류에는 화재 확산의 위험이 있습니다.'},
+{i:'a12',s:1,q:'포소화약제의 소화작용과 종류는?',a:'질식작용(가연물 표면 차단)과 냉각작용 / 단백포 · 합성포 · 수성막포 · 알코올형포',n:'수성막포는 유류 표면에 수막을 만들어 재점화를 막습니다. 알코올형포는 알코올류 화재에 씁니다.'},
+{i:'a13',s:1,q:'할로겐화합물 소화약제의 주된 소화작용은?',a:'연쇄반응 억제(화학적 소화)',n:'질식·냉각보다 화학적 억제가 주된 작용입니다. 할론은 오존층 파괴 문제로 사용이 제한됩니다.'},
+{i:'a14',s:1,q:'방화구획의 목적은?',a:'화재와 연기의 확산을 막고 피난·소화에 필요한 시간을 확보',n:'바닥·벽·천장을 내화구조로 구획하고, 배관이 지나는 관통부도 방화처리합니다.'},
+{i:'a15',s:1,q:'화재하중을 구하는 식은?',a:'(가연물의 연소열 총량) ÷ (바닥면적 × 목재 1kg의 연소열 4,500kcal)',n:'단위는 kg/㎡입니다. 값이 클수록 화재가 크고 오래 이어져 소화가 어렵습니다.'},
+{i:'a16',s:1,q:'자연발화의 원인이 되는 열의 종류는?',a:'산화열 · 분해열 · 흡착열 · 미생물 발효열 등이 축적된 열',n:'열이 생기는 속도보다 발산이 느려지면 발화합니다. 기름 묻은 걸레, 짚단, 퇴비 더미가 대표적입니다.'},
+{i:'a17',s:1,q:'LPG와 도시가스(LNG)는 누출 시 어디에 체류하나?',a:'LPG는 공기보다 무거워 바닥에, LNG는 가벼워 천장에 체류',n:'그래서 LPG는 낮은 곳을, LNG는 높은 곳을 환기해야 합니다.'},
+{i:'a18',s:1,q:'폭발의 종류 3가지는?',a:'물리적 폭발 · 화학적 폭발 · 핵폭발',n:'물리적 폭발은 용기 파열 같은 상변화, 화학적 폭발은 연소·분해 반응에 의한 것입니다.'},
+{i:'a19',s:1,q:'가연성 가스의 폭발범위(폭발한계)란?',a:'폭발하한계(LEL)와 폭발상한계(UEL) 사이의 농도 범위',n:'범위가 넓고 하한이 낮을수록 위험합니다. 위험도는 (UEL − LEL) ÷ LEL 로 비교합니다.'},
+{i:'a20',s:1,q:'건축물을 내화구조로 하는 이유는?',a:'화재 시 구조부가 쉽게 무너지지 않아 피난과 소화활동 시간을 확보할 수 있다',n:'내화구조는 화재 후에도 구조 안전을 유지하도록 재료와 두께를 정한 구조입니다.'},
+{i:'a21',s:1,q:'실내 화재에서 연기는 어떻게 이동하나?',a:'천장을 타고 퍼진 뒤 개구부·계단·승강로를 통해 수직으로 확산',n:'계단과 승강로는 굴뚝 효과로 연기가 매우 빠르게 오릅니다. 그래서 계단실 방연이 중요합니다.'},
+{i:'a22',s:1,q:'특별피난계단이 일반 피난계단과 다른 점은?',a:'부속실(전실)을 두어 연기가 계단실로 들어오지 않게 한다',n:'부속실에는 제연설비를 두고, 피난 시 문을 닫아 연기를 막습니다.'},
+
+{i:'b1',s:2,q:'옴의 법칙을 세 가지 형태로 쓰면?',a:'V = I R, I = V ÷ R, R = V ÷ I',n:'전압 V[V], 전류 I[A], 저항 R[Ω]. 회로 계산 문제의 출발점입니다.'},
+{i:'b2',s:2,q:'저항의 직렬·병렬 합성저항은?',a:'직렬 R = R1 + R2, 병렬 1/R = 1/R1 + 1/R2',n:'병렬 합성저항은 가장 작은 저항보다도 작아집니다. 두 개일 때는 R1R2 ÷ (R1+R2)로 계산합니다.'},
+{i:'b3',s:2,q:'콘덴서의 직렬·병렬 합성용량은?',a:'직렬 1/C = 1/C1 + 1/C2, 병렬 C = C1 + C2',n:'저항과 반대입니다. 콘덴서는 병렬로 연결할수록 용량이 커집니다.'},
+{i:'b4',s:2,q:'전력과 전력량을 구하는 식은?',a:'전력 P = VI = I²R = V²/R [W], 전력량 W = P × t [Wh]',n:'전력은 순간의 일률, 전력량은 시간을 곱한 사용량입니다. 전기요금은 전력량으로 매깁니다.'},
+{i:'b5',s:2,q:'줄의 법칙으로 발생열량을 구하면?',a:'H = 0.24 I²Rt [cal]',n:'I²Rt는 [J] 단위의 열량입니다. 0.24를 곱하면 칼로리(cal)가 됩니다.'},
+{i:'b6',s:2,q:'키르히호프의 전류법칙과 전압법칙은?',a:'전류법칙 - 한 점에 들어오는 전류의 합과 나가는 전류의 합은 같다 / 전압법칙 - 폐회로의 전압강하 합은 기전력의 합과 같다',n:'복잡한 회로를 풀 때 옴의 법칙과 함께 쓰는 기본 법칙입니다.'},
+{i:'b7',s:2,q:'패러데이의 전자기유도 법칙은?',a:'e = −N (dΦ ÷ dt)',n:'코일을 지나는 자속의 변화가 기전력을 만듭니다. 마이너스 부호는 렌츠의 법칙입니다.'},
+{i:'b8',s:2,q:'렌츠의 법칙이란?',a:'유도 전류는 자속의 변화를 방해하는 방향으로 흐른다',n:'자석을 코일에 가까이하면 밀어내는 방향, 멀리하면 끌어당기는 방향으로 유도 전류가 흐릅니다.'},
+{i:'b9',s:2,q:'유도 리액턴스와 용량 리액턴스의 식은?',a:'X_L = 2πfL, X_C = 1 ÷ (2πfC)',n:'주파수가 높아지면 코일은 전류를 더 막고, 콘덴서는 더 잘 통과시킵니다.'},
+{i:'b10',s:2,q:'RLC 직렬회로의 임피던스와 공진주파수는?',a:'Z = √(R² + (X_L − X_C)²), 공진주파수 f0 = 1 ÷ (2π√(LC))',n:'공진하면 X_L = X_C 가 되어 Z = R로 최소가 되고 전류가 최대가 됩니다.'},
+{i:'b11',s:2,q:'역률을 나타내는 식과 개선 방법은?',a:'cosθ = P ÷ (VI) / 콘덴서(진상용)를 병렬로 설치',n:'역률이 낮으면 같은 전력에 전류가 커져 선로 손실과 전압강하가 늘어납니다.'},
+{i:'b12',s:2,q:'3상 교류의 전력과 결선별 전압·전류 관계는?',a:'P = √3 V I cosθ / Y결선은 선전압 = √3 × 상전압, Δ결선은 선전류 = √3 × 상전류',n:'Y결선은 상전압이 낮아 절연에 유리하고, Δ결선은 큰 전류를 흘릴 수 있습니다.'},
+{i:'b13',s:2,q:'변압기의 권수비로 전압과 전류의 관계는?',a:'a = N1 ÷ N2 = V1 ÷ V2 = I2 ÷ I1',n:'권수가 많은 쪽이 고전압이며 전류는 반대로 작아집니다. 이상변압기에서 1차와 2차의 전력은 같습니다.'},
+{i:'b14',s:2,q:'변압기의 유도기전력 식은?',a:'E = 4.44 f N Φ [V]',n:'주파수·권수·최대자속에 비례합니다. 4.44는 사인파의 실효값 계수입니다.'},
+{i:'b15',s:2,q:'변압기 손실의 종류와 최대 효율 조건은?',a:'철손(히스테리시스손·와전류손) + 동손(권선 저항손) / 철손 = 동손일 때 효율이 최대',n:'철손은 부하와 관계없이 일정하고, 동손은 전류의 제곱에 비례해 부하에 따라 달라집니다.'},
+{i:'b16',s:2,q:'유도전동기의 슬립과 동기속도는?',a:'s = (Ns − N) ÷ Ns, Ns = 120f ÷ P',n:'슬립이 0이면 회전자가 동기속도와 같아져 유도 전류가 생기지 않아 토크가 없습니다.'},
+{i:'b17',s:2,q:'직류 전동기의 역기전력은?',a:'E = V − I R_a',n:'역기전력이 생기면서 전류를 스스로 줄입니다. 기동 직후에는 역기전력이 없어 큰 전류가 흐르므로 기동저항을 씁니다.'},
+{i:'b18',s:2,q:'자기유지 회로는 어떻게 만드나?',a:'누름버튼과 릴레이의 보조 a접점을 병렬로 연결',n:'버튼에서 손을 떼도 코일 전류가 계속 흘러 동작이 유지됩니다.'},
+{i:'b19',s:2,q:'인터록 회로는 무엇으로 만드나?',a:'상대 회로 코일 앞에 상대 동작의 b접점을 직렬로 넣는다',n:'두 기기가 동시에 동작하면 안 될 때 씁니다. 정회전·역회전 회로가 대표적입니다.'},
+{i:'b20',s:2,q:'a접점과 b접점의 동작은?',a:'a접점은 상시 열려 있다가 동작하면 닫히고, b접점은 상시 닫혀 있다가 동작하면 열린다',n:'시퀀스 도면에서 접점 기호를 읽는 기본입니다. b접점은 논리 NOT에 해당합니다.'},
+{i:'b21',s:2,q:'AND · OR · NOT 게이트의 출력은?',a:'AND는 모두 1일 때 1, OR는 하나라도 1이면 1, NOT은 입력을 반전',n:'a접점 직렬은 AND, 병렬은 OR, b접점은 NOT으로 시퀀스 회로와 그대로 대응합니다.'},
+{i:'b22',s:2,q:'NAND 게이트와 NOR 게이트란?',a:'NAND는 AND의 반전, NOR는 OR의 반전',n:'NAND는 모든 논리회로를 만들 수 있어 범용 게이트라고 합니다.'},
+{i:'b23',s:2,q:'불 대수의 기본 정리와 드모르간의 정리는?',a:'A + A = A, A · A = A, A + A′ = 1, A · A′ = 0 / (A + B)′ = A′ · B′, (A · B)′ = A′ + B′',n:'드모르간은 AND와 OR를 서로 바꾸고 각 항을 반전시키는 법칙입니다.'},
+{i:'b24',s:2,q:'플립플롭의 종류 4가지는?',a:'RS · JK · D · T 플립플롭',n:'1비트를 기억하는 순서논리회로입니다. JK는 RS의 금지 입력 문제를 해결한 것입니다.'},
+{i:'b25',s:2,q:'반파와 전파 정류회로의 차이는?',a:'반파는 다이오드 1개로 반주기만 정류, 전파는 다이오드 4개(브리지)로 양쪽 반주기를 정류',n:'전파가 리플이 작아 직류에 가깝습니다. 평활 콘덴서를 붙이면 맥동이 줄어듭니다.'},
+{i:'b26',s:2,q:'서미스터(NTC)의 특성과 쓰임은?',a:'온도가 올라가면 저항이 내려가는 부특성 소자',n:'온도 검출과 보상에 쓰입니다. 감지기의 정온식·차동식 회로에도 온도 특성 소자가 들어갑니다.'},
+{i:'b27',s:2,q:'전류계와 전압계는 어떻게 연결하고, 측정범위는 무엇으로 넓히나?',a:'전류계는 회로에 직렬, 전압계는 부하에 병렬 / 전류계는 분류기(병렬), 전압계는 배율기(직렬)',n:'직렬·병렬을 바꾸면 계기가 타 버리므로 실기에서도 자주 확인합니다.'},
+{i:'b28',s:2,q:'전압강하를 구하는 식은?',a:'단상 2선식 e = 35.6 L I ÷ (1000 A), 3상 3선식 e = 17.8 L I ÷ (1000 A)',n:'L은 전선 길이[m], A는 단면적[㎟]입니다. 전선이 길고 가늘고 전류가 클수록 전압강하가 커집니다.'},
+{i:'b29',s:2,q:'접지공사의 종류별 접지저항 값은?',a:'제1종 10Ω · 제2종 4Ω · 제3종 100Ω · 특별제3종 10Ω',n:'고압·특고압은 제1종, 저압 일반은 제3종, 습윤한 저압 장소는 특별제3종으로 기억합니다.'},
+
+{i:'c1',s:3,q:'2022년 12월 1일 소방 법령이 어떻게 바뀌었나?',a:'화재예방, 소방시설 설치·유지 및 안전관리에 관한 법률이 화재의 예방 및 안전관리에 관한 법률(화재예방법)과 소방시설 설치 및 관리에 관한 법률(소방시설법)로 분리되었다',n:'소방안전관리자·소방안전교육·화재예방은 화재예방법, 소방시설의 설치·자체점검·소방용품은 소방시설법이 맡습니다.'},
+{i:'c2',s:3,q:'소방시설의 5대 분류는?',a:'소화설비 · 경보설비 · 피난구조설비 · 소화용수설비 · 소화활동설비',n:'자동화재탐지설비는 경보설비, 유도등·비상조명등은 피난구조설비, 연결송수관·비상콘센트·무선통신보조설비는 소화활동설비입니다.'},
+{i:'c3',s:3,q:'소방시설등 자체점검의 두 가지 구분은?',a:'작동점검과 종합점검',n:'작동점검은 인위적으로 조작해 작동 여부를 보고, 종합점검은 주요 구성부품의 구조기준까지 확인합니다.'},
+{i:'c4',s:3,q:'작동점검은 언제 실시하나?',a:'연 1회 이상. 종합점검 대상은 종합점검을 받은 달부터 6개월이 되는 달에 실시',n:'종합점검 대상이 아닌 대상물은 사용승인일이 속하는 달의 말일까지 실시합니다.'},
+{i:'c5',s:3,q:'종합점검의 횟수와 최초점검 시기는?',a:'연 1회 이상. 특급 소방안전관리대상물은 반기에 1회 이상 / 소방시설이 새로 설치되면 사용승인일부터 60일 이내 최초점검',n:'소방안전관리가 우수한 대상물은 3년 범위에서 종합점검을 면제받을 수 있습니다.'},
+{i:'c6',s:3,q:'자체점검 결과는 언제까지 누구에게 보고하나?',a:'점검이 끝난 날부터 15일 이내에 소방본부장 또는 소방서장에게 보고, 보고서는 2년간 보관',n:'관리업자는 점검이 끝난 날부터 10일 이내에 관계인에게 결과 보고서를 제출합니다.'},
+{i:'c7',s:3,q:'소방안전관리자는 어느 법에 따라 언제까지 선임하나?',a:'화재예방법 제24조에 따라, 대통령령으로 정하는 날부터 30일 이내',n:'선임 대상은 소방안전관리대상물이며, 등급은 특급·1급·2급·3급으로 나뉩니다.'},
+{i:'c8',s:3,q:'소방안전관리대상물 등급 기준은?',a:'특급 - 30층 이상 또는 높이 120m 이상(아파트는 50층·200m) / 1급 - 연면적 1만5천㎡ 이상 등 / 2급 - 옥내소화전·스프링클러 설치 대상 등 / 3급 - 자동화재탐지설비·간이스프링클러 설치 대상',n:'등급에 따라 필요한 자격과 선임 인원이 달라집니다.'},
+{i:'c9',s:3,q:'소방안전관리보조자를 두어야 하는 대상은?',a:'300세대 이상 아파트, 연면적 1만5천㎡ 이상 특정소방대상물, 기숙사·의료·노유자·수련·숙박시설 등',n:'소방안전관리자의 업무를 보조하며, 정해진 날부터 30일 이내에 선임합니다.'},
+{i:'c10',s:3,q:'소방안전관리 업무의 지도·감독을 하지 않으면?',a:'300만원 이하의 과태료',n:'화재예방법 제52조. 관계인은 소방안전관리자가 업무를 성실히 수행하도록 지도·감독해야 합니다.'},
+{i:'c11',s:3,q:'소방시설공사업법이 정하는 것은?',a:'소방시설공사업·소방시설감리업의 등록, 기술인력과 시설 기준, 공사 및 감리 기준',n:'등록 관청은 시·도지사입니다. 등록한 업자만 소방시설공사를 시공할 수 있습니다.'},
+{i:'c12',s:3,q:'위험물안전관리법상 위험물 6류는?',a:'1류 산화성고체 · 2류 가연성고체 · 3류 자연발화성 및 금수성 · 4류 인화성액체 · 5류 자기반응성 · 6류 산화성액체',n:'지정수량 이상 저장·취급하면 위험물안전관리자를 선임하고 예방규정을 작성해야 합니다.'},
+{i:'c13',s:3,q:'다중이용업소의 안전관리에 관한 특별법의 목적은?',a:'불특정 다수인이 이용하는 업소의 화재예방과 피난 안전을 확보',n:'소방시설 설치·유지, 소방안전교육, 소방시설 완비증명 등이 핵심입니다.'},
+{i:'c14',s:3,q:'소방기본법상 소방의 임무는?',a:'화재의 예방·경계·진압, 인명구조, 구급 및 그 밖의 재난 대응',n:'화재를 끄는 일뿐 아니라 예방과 구조·구급까지 포함합니다.'},
+{i:'c15',s:3,q:'소방신호의 종류는?',a:'경계 · 발화 · 진화 · 종포',n:'화재가 커질 우려가 있으면 경계, 불이 났으면 발화, 진화되면 종포(해제) 신호를 냅니다.'},
+{i:'c16',s:3,q:'소방특별조사는 누가, 무엇을 위해 하나?',a:'소방청장·소방본부장·소방서장이 화재예방과 안전관리를 위해 실시',n:'소방시설법에 근거합니다. 조사 결과에 따라 개수·이전·사용금지 명령 등을 할 수 있습니다.'},
+{i:'c17',s:3,q:'소방용품의 형식승인과 제품검사란?',a:'소방청장이 정한 기술기준에 적합한지 형식승인을 받고, 생산된 제품은 제품검사를 받아야 판매·설치할 수 있다',n:'감지기·경종·유도등 등은 형식승인 제품이 아니면 설치할 수 없습니다.'},
+{i:'c18',s:3,q:'소방시설법상 관계인의 기본 의무는?',a:'소방시설을 설치하고 유지·관리하며, 자체점검을 실시하고 결과를 보고한다',n:'관계인은 소유자·관리자·점유자를 말합니다.'},
+{i:'c19',s:3,q:'특정소방대상물이란?',a:'소방시설을 설치·유지·관리해야 하는 건축물·시설 등으로, 용도별로 분류된 대상물',n:'용도와 규모에 따라 설치해야 할 소방시설이 시행령 별표로 정해집니다.'},
+{i:'c20',s:3,q:'화재예방법이 주로 정하는 내용은?',a:'소방안전관리자·보조자 선임, 소방안전교육, 화재위험평가, 화재예방강화지구 등 화재의 예방',n:'시설의 설치·점검은 소방시설법, 사람과 예방 활동은 화재예방법으로 나눠 기억합니다.'},
+{i:'c21',s:3,q:'소화설비에 해당하는 것을 들면?',a:'소화기, 옥내소화전설비, 스프링클러설비, 물분무·포·이산화탄소·분말소화설비 등',n:'불을 끄는 설비가 소화설비, 알리는 설비가 경보설비입니다.'},
+
+{i:'d1',s:4,q:'하나의 경계구역은 어떻게 정하나?',a:'면적 600㎡ 이하, 한 변의 길이 50m 이하. 주된 출입구에서 내부 전체가 보이면 1,000㎡까지 가능',n:'500㎡ 이하 범위에서는 2개 층을 하나의 경계구역으로 할 수 있습니다.'},
+{i:'d2',s:4,q:'계단·경사로의 경계구역은?',a:'높이 45m 이하마다 별도 경계구역으로 설정',n:'지하층의 계단과 경사로는 별도 경계구역으로 해야 합니다(지하 1개 층 제외).'},
+{i:'d3',s:4,q:'부착높이 8m 이상 15m 미만에 쓸 수 있는 감지기는?',a:'차동식 분포형, 이온화식 1·2종, 광전식 1·2종, 연기복합형, 불꽃감지기',n:'스포트형 열감지기는 8m 미만까지만 쓸 수 있습니다. 15~20m는 연기감지기 1종 등으로 좁혀집니다.'},
+{i:'d4',s:4,q:'연기감지기 1·2종의 감지면적은?',a:'부착높이 4m 미만은 150㎡마다, 4m 이상 20m 미만은 75㎡마다 1개 이상',n:'3종은 4m 미만에서만 50㎡마다 설치합니다. 실(감지구역)마다 따로 계산해 올림합니다.'},
+{i:'d5',s:4,q:'연기감지기의 복도·계단 설치 간격은?',a:'복도·통로는 보행거리 30m마다(3종 20m), 계단·경사로는 수직거리 15m마다(3종 10m)',n:'구부러진 모퉁이에도 추가로 설치합니다.'},
+{i:'d6',s:4,q:'감지기의 이격거리 기준은?',a:'벽 또는 보로부터 0.6m 이상, 실내 공기유입구로부터 1.5m 이상 떨어뜨린다',n:'스포트형 감지기는 45도 이상 경사되지 않게 부착합니다.'},
+{i:'d7',s:4,q:'감지기 회로의 절연저항과 전로저항 기준은?',a:'절연저항 0.1MΩ 이상(직류 250V 절연저항계), 전로저항 50Ω 이하',n:'회로 끝 감지기에 걸리는 전압은 감지기 정격전압의 80% 이상이어야 합니다.'},
+{i:'d8',s:4,q:'종단저항은 어디에, 왜 설치하나?',a:'감지기 회로의 끝부분에 설치해 회로의 도통을 감시한다',n:'전용함을 두면 바닥에서 1.5m 이내에 설치하고, 종단감지기에 달면 별도 표시를 합니다.'},
+{i:'d9',s:4,q:'P형 수신기의 한 공통선에 접속할 수 있는 경계구역 수는?',a:'7개 이하',n:'8개부터는 공통선을 1가닥 추가합니다. 실기 가닥수 산정의 핵심 숫자입니다.'},
+{i:'d10',s:4,q:'발신기의 설치 기준은?',a:'층마다 설치하고 각 부분에서 발신기까지 수평거리 25m 이하, 조작스위치 높이 0.8m 이상 1.5m 이하',n:'복도나 구획된 실의 보행거리가 40m 이상이면 발신기를 추가합니다.'},
+{i:'d11',s:4,q:'비상경보설비 음향장치의 음압 기준은?',a:'음향장치 중심에서 1m 떨어진 곳의 음압이 90dB 이상',n:'정격전압의 80%에서도 경보할 수 있어야 하고, 층마다 수평거리 25m 이하로 설치합니다.'},
+{i:'d12',s:4,q:'비상방송설비 확성기의 기준은?',a:'음성입력 3W 이상(실내 설치 1W 이상), 층마다 수평거리 25m 이하, 조작부 스위치 높이 0.8~1.5m',n:'기동장치 신호를 받은 뒤 10초 이내에 자동으로 방송이 시작되어야 하고, 음량조정기 배선은 3선식입니다.'},
+{i:'d13',s:4,q:'11층 이상 건물에서 우선경보를 해야 하는 범위는?',a:'2층 이상에서 발화하면 발화층과 직상 4개층, 1층에서 발화하면 발화층·직상 4개층·지하층',n:'지하층에서 발화하면 발화층·직상층·그 밖의 지하층에 경보합니다. 공동주택은 16층 이상에 적용합니다.'},
+{i:'d14',s:4,q:'누전경보기의 등급 기준은?',a:'경계전로의 정격전류가 60A를 초과하면 1급, 60A 이하면 1급 또는 2급',n:'전원은 분전반에서 전용회로로 하고 15A 이하 과전류차단기(배선용은 20A 이하)를 씁니다.'},
+{i:'d15',s:4,q:'유도등의 종류를 들면?',a:'피난구유도등, 통로유도등(복도·거실·계단통로유도등), 객석유도등',n:'용도별로 설치해야 하는 유도등의 종류가 정해져 있습니다.'},
+{i:'d16',s:4,q:'피난구유도등의 설치 높이는?',a:'피난구 바닥으로부터 1.5m 이상, 출입구에 인접하게',n:'피난구 위치를 위에서도 알 수 있게 출입구 인근 천장에도 수직 방향으로 추가 설치합니다(입체형 제외).'},
+{i:'d17',s:4,q:'통로유도등의 높이와 간격은?',a:'복도통로유도등은 1m 이하, 계단통로유도등은 1m 이하(계단참마다), 거실통로유도등은 1.5m 이상',n:'복도와 거실은 보행거리 20m마다 설치합니다. 계단은 1개 층에 계단참이 2개 이상이면 2개 계단참마다 설치합니다.'},
+{i:'d18',s:4,q:'유도등의 조도 기준은?',a:'통로유도등 1lx 이상, 계단통로유도등 0.5lx 이상, 객석유도등 0.2lx 이상',n:'유도등 형식승인 및 제품검사 기술기준의 값입니다. 비상조명등은 바닥에서 1lx 이상입니다.'},
+{i:'d19',s:4,q:'유도등 비상전원의 용량 기준은?',a:'20분 이상 유효하게 작동. 지하층을 제외한 층수가 11층 이상인 층, 지하상가 등은 60분 이상',n:'비상조명등도 같은 20분·60분 기준을 씁니다.'},
+{i:'d20',s:4,q:'유도등의 3선식 배선은 세 가닥이 무엇인가?',a:'공통선 · 충전선 · 점등선',n:'평상시에는 충전선으로 비상전원을 충전하고, 화재신호를 받으면 점등선으로 자동 점등합니다.'},
+{i:'d21',s:4,q:'비상조명등의 조도와 예비전원 기준은?',a:'설치 장소 각 부분의 바닥에서 1lx 이상, 20분 이상 작동(11층 이상 등은 60분 이상)',n:'휴대용 비상조명등의 배터리도 20분 이상 사용할 수 있어야 합니다.'},
+{i:'d22',s:4,q:'비상콘센트설비의 전원회로 기준은?',a:'단상교류 220V, 공급용량 1.5kVA 이상, 각 층에 2회로 이상, 전용회로 하나에 비상콘센트 10개 이하',n:'전원회로는 주배전반에서 전용회로로 끌어옵니다.'},
+{i:'d23',s:4,q:'비상콘센트의 설치 위치 기준은?',a:'바닥에서 0.8m 이상 1.5m 이하, 계단 출입구에서 5m 이내, 각 부분까지 수평거리 50m 이하(지하상가·지하 3,000㎡ 이상은 25m)',n:'보호함 상부에는 적색 표시등을 답니다.'},
+{i:'d24',s:4,q:'비상콘센트설비의 절연저항 기준은?',a:'전원부와 외함 사이를 500V 절연저항계로 측정해 20MΩ 이상',n:'감지기 회로의 0.1MΩ과 헷갈리지 않게 구분합니다.'},
+{i:'d25',s:4,q:'무선통신보조설비를 구성하는 것은?',a:'누설동축케이블 · 안테나 · 분배기 · 증폭기 · 무선중계기 · 옥외안테나',n:'임피던스는 50Ω, 케이블은 4m 이내마다 고정하고 고압 전로에서 1.5m 이상 떨어뜨립니다.'},
+{i:'d26',s:4,q:'무선통신보조설비 증폭기의 비상전원 용량은?',a:'30분 이상 유효하게 작동할 수 있는 용량',n:'유도등·비상콘센트는 20분, 무선통신보조설비는 30분으로 구분해 외웁니다.'},
+{i:'d27',s:4,q:'감지기를 원리별로 나누면?',a:'이온화식 · 광전식(연기), 차동식 · 정온식(열), 불꽃감지기(자외선·적외선)',n:'이온화식은 미량의 연기 입자, 광전식은 연기에 의한 빛의 산란을 이용합니다.'},
+{i:'d28',s:4,q:'중계기는 언제 설치하나?',a:'수신기에서 직접 감지기 회로의 도통시험을 하지 않는 경우 수신기와 감지기 사이에 설치',n:'중계기를 두면 수신기 회로의 전압강하와 배선량을 줄일 수 있습니다.'},
+{i:'d29',s:4,q:'자동화재탐지설비의 배선 기준은?',a:'전원회로는 내화배선, 감지기 회로는 내화배선 또는 내열배선. 다른 전선과 별도의 관·덕트에 설치',n:'60V 미만 약전류회로로서 전압이 같으면 예외로 함께 넣을 수 있습니다.'},
+{i:'d30',s:4,q:'단독경보형감지기는 어떻게 설치하나?',a:'각 실마다 설치하되, 바닥면적이 150㎡를 초과하면 150㎡마다 1개 이상',n:'계단실은 최상층 계단실 천장에 설치합니다. 건전지형은 주기적으로 교환합니다.'},
+{i:'d31',s:4,q:'감지기를 설치하지 않을 수 있는 장소는?',a:'천장·반자 높이 20m 이상, 부식성 가스 체류, 목욕실·샤워실, 먼지·수증기가 많은 장소 등',n:'주방처럼 평소 연기가 나는 곳에는 연기감지기를 피하고 적응성 있는 감지기를 씁니다.'},
+{i:'d32',s:4,q:'실기에서 쓰는 P형 발신기 기본 가닥수는?',a:'지구선 + 지구공통선 + 응답선 + 전화선 + 경종선 + 표시등선 + 경종·표시등 공통선 = 7가닥(전화선 제외 6가닥)',n:'경계구역이 늘면 지구선이 1가닥씩 늘고, 지구선 7개마다 공통선이 1가닥 추가됩니다.'}
+];
+var QUIZ = [
+{i:'q1',s:1,t:'mc',q:'연소의 3요소에 해당하지 않는 것은?',o:['가연물','산소공급원','점화원','연쇄반응'],k:3,e:'연쇄반응은 불꽃연소의 4번째 요소입니다. 3요소는 가연물·산소공급원·점화원입니다.'},
+{i:'q2',s:1,t:'mc',q:'소화의 4원리 중 가연물 자체를 없애는 것은?',o:['제거소화','냉각소화','질식소화','억제소화'],k:0,e:'제거소화는 가연물을 치우거나 없애는 방법입니다. 냉각은 물, 질식은 산소 차단, 억제는 연쇄반응 차단입니다.'},
+{i:'q3',s:1,t:'mc',q:'종이와 목재가 타는 화재는 몇 급인가?',o:['A급','B급','C급','D급'],k:0,e:'A급 일반화재입니다. B급은 유류, C급은 전기, D급은 금속 화재입니다.'},
+{i:'q4',s:1,t:'ox',q:'이산화탄소 소화약제는 잔류물이 없어 전기실과 정밀기기에 적합하다.',o:['O','X'],k:0,e:'맞습니다. 질식·냉각작용을 하며 잔류물이 없고 절연성이 좋습니다. 다만 밀폐공간에서는 질식에 주의합니다.'},
+{i:'q5',s:1,t:'mc',q:'인화점·연소점·발화점을 순서대로 옳게 나열한 것은?',o:['발화점 < 연소점 < 인화점','인화점 < 연소점 < 발화점','연소점 < 인화점 < 발화점','인화점 < 발화점 < 연소점'],k:1,e:'보통 인화점이 가장 낮고 발화점이 가장 높습니다. 인화점은 불꽃으로 불이 붙는 최저온도입니다.'},
+{i:'q6',s:1,t:'mc',q:'산소가 부족한 밀폐실에 공기가 유입될 때 폭발적으로 연소하는 현상은?',o:['플래시오버','백드래프트','롤오버','블로우백'],k:1,e:'백드래프트입니다. 플래시오버는 실내 가연물이 일시에 착화해 화재가 급격히 확대되는 현상입니다.'},
+{i:'q7',s:1,t:'mc',q:'A급 화재까지 소화할 수 있는 분말소화약제는?',o:['제1종','제2종','제3종','제4종'],k:2,e:'제3종(제1인산암모늄)만 A·B·C급에 모두 사용합니다. 제1·2·4종은 B·C급용입니다.'},
+{i:'q8',s:1,t:'mc',q:'화재하중을 구할 때 나누는 값은?',o:['바닥면적 × 4,500kcal','가연물 총중량','연소시간','실내 부피'],k:0,e:'화재하중 = 가연물의 연소열 총량 ÷ (바닥면적 × 목재 1kg의 연소열 4,500kcal)이며 단위는 kg/㎡입니다.'},
+{i:'q9',s:1,t:'ox',q:'LPG는 공기보다 무거워 누출 시 바닥에 체류한다.',o:['O','X'],k:0,e:'맞습니다. LPG는 바닥, 도시가스(LNG)는 천장에 체류하므로 환기 위치가 다릅니다.'},
+{i:'q10',s:1,t:'mc',q:'폭발범위에 대한 설명으로 옳은 것은?',o:['하한보다 낮은 농도에서 폭발한다','상한보다 높은 농도에서 폭발한다','하한과 상한 사이의 농도에서 폭발한다','농도와 관계없이 항상 폭발한다'],k:2,e:'폭발하한계와 폭발상한계 사이에서만 연소·폭발합니다.'},
+{i:'q11',s:1,t:'mc',q:'화재 사망의 가장 큰 원인은?',o:['화염에 의한 화상','연기와 유독가스에 의한 질식','건물 붕괴','감전'],k:1,e:'일산화탄소 중독과 질식이 대부분입니다. 그래서 피난 시 자세를 낮추고 젖은 수건을 사용합니다.'},
+{i:'q12',s:1,t:'ox',q:'할로겐화합물 소화약제의 주된 소화작용은 질식작용이다.',o:['O','X'],k:1,e:'아닙니다. 연쇄반응을 끊는 화학적 억제작용이 주된 원리입니다.'},
+
+{i:'q13',s:2,t:'mc',q:'저항 20Ω에 12V를 가했을 때 흐르는 전류는?',o:['0.6A','1.2A','2.4A','240A'],k:0,e:'I = V ÷ R = 12 ÷ 20 = 0.6A입니다.'},
+{i:'q14',s:2,t:'mc',q:'100Ω과 300Ω을 병렬로 연결하면 합성저항은?',o:['400Ω','200Ω','75Ω','25Ω'],k:2,e:'(100 × 300) ÷ (100 + 300) = 30,000 ÷ 400 = 75Ω입니다. 병렬은 가장 작은 저항보다 작아집니다.'},
+{i:'q15',s:2,t:'mc',q:'220V 전원에 저항 44Ω의 부하를 연결하면 소비전력은?',o:['5W','110W','1,100W','4,840W'],k:2,e:'P = V² ÷ R = 220 × 220 ÷ 44 = 1,100W입니다.'},
+{i:'q16',s:2,t:'mc',q:'단상 2선식 회로에서 전선 길이 40m, 단면적 6㎟, 전류 10A일 때 전압강하는 약 얼마인가?',o:['0.24V','2.37V','23.7V','237V'],k:1,e:'e = 35.6 × 40 × 10 ÷ (1000 × 6) = 14,240 ÷ 6,000 = 약 2.37V입니다.'},
+{i:'q17',s:2,t:'mc',q:'60Hz, 4극 3상 유도전동기의 동기속도는?',o:['900rpm','1,200rpm','1,800rpm','3,600rpm'],k:2,e:'Ns = 120f ÷ P = 120 × 60 ÷ 4 = 1,800rpm입니다.'},
+{i:'q18',s:2,t:'mc',q:'동기속도 1,800rpm인 유도전동기가 1,740rpm으로 회전할 때 슬립은?',o:['약 3.3%','약 6.7%','약 10%','약 33%'],k:0,e:'s = (1,800 − 1,740) ÷ 1,800 = 60 ÷ 1,800 = 약 3.3%입니다.'},
+{i:'q19',s:2,t:'mc',q:'권수비가 3,000 : 200인 변압기 1차에 6,600V를 가하면 2차 전압은?',o:['220V','440V','660V','1,100V'],k:1,e:'권수비 15이므로 6,600 ÷ 15 = 440V입니다.'},
+{i:'q20',s:2,t:'mc',q:'RLC 직렬회로가 공진할 때의 상태로 옳은 것은?',o:['임피던스가 최대가 된다','전류가 최소가 된다','임피던스가 R과 같아져 전류가 최대가 된다','전압이 0이 된다'],k:2,e:'공진하면 X_L = X_C 가 되어 Z = R이 되고 전류가 최대가 됩니다.'},
+{i:'q21',s:2,t:'mc',q:'3상 교류의 전력을 구하는 식은?',o:['P = V I cosθ','P = √3 V I cosθ','P = 2 V I cosθ','P = 3 V I sinθ'],k:1,e:'Y결선과 Δ결선 모두 P = √3 V I cosθ로 계산합니다.'},
+{i:'q22',s:2,t:'mc',q:'변압기 효율이 최대가 되는 조건은?',o:['철손 = 동손','철손 = 0','동손 = 0','전부하의 1/4에서 운전'],k:0,e:'철손과 동손이 같을 때 효율이 최대가 됩니다. 철손은 부하와 무관하고 동손은 전류의 제곱에 비례합니다.'},
+{i:'q23',s:2,t:'mc',q:'자기유지 회로를 만들 때 사용하는 접점은?',o:['보조 a접점을 버튼과 직렬','보조 a접점을 버튼과 병렬','b접점을 버튼과 병렬','타이머 접점을 직렬'],k:1,e:'버튼과 보조 a접점을 병렬로 연결하면 버튼에서 손을 떼도 코일 전류가 계속 흐릅니다.'},
+{i:'q24',s:2,t:'mc',q:'인터록 회로에 사용하는 접점은?',o:['상대 코일 앞의 b접점','상대 코일 앞의 a접점','자기 코일 앞의 a접점','타이머의 순시접점'],k:0,e:'상대 회로가 동작하면 b접점이 열려 이쪽 회로가 동작하지 못하게 합니다.'},
+{i:'q25',s:2,t:'ox',q:'전류계는 회로에 직렬로, 전압계는 부하에 병렬로 연결한다.',o:['O','X'],k:0,e:'맞습니다. 전류계를 병렬로 연결하면 큰 전류가 흘러 계기가 손상됩니다.'},
+{i:'q26',s:2,t:'mc',q:'AND 게이트의 출력이 1이 되는 경우는?',o:['입력이 모두 1일 때','입력 중 하나라도 1일 때','입력이 모두 0일 때','입력이 서로 다를 때'],k:0,e:'AND는 모든 입력이 1일 때만 1입니다. 시퀀스의 직렬 접점과 같습니다.'},
+{i:'q27',s:2,t:'mc',q:'제3종 접지공사의 접지저항 기준은?',o:['10Ω 이하','4Ω 이하','100Ω 이하','20MΩ 이하'],k:2,e:'제1종 10Ω, 제2종 4Ω, 제3종 100Ω, 특별제3종 10Ω입니다.'},
+{i:'q28',s:2,t:'ox',q:'서미스터(NTC)는 온도가 올라가면 저항이 내려간다.',o:['O','X'],k:0,e:'맞습니다. 부특성 소자로 온도 검출과 보상에 쓰입니다.'},
+{i:'q29',s:2,t:'mc',q:'전력량을 나타내는 단위는?',o:['W','Wh','A','Ω'],k:1,e:'전력은 W(와트), 전력량은 시간을 곱한 Wh(와트시)입니다.'},
+
+{i:'q30',s:3,t:'mc',q:'2022년 12월 1일부터 소방안전관리자 선임과 소방안전교육을 규정하는 법은?',o:['소방기본법','화재의 예방 및 안전관리에 관한 법률','소방시설 설치 및 관리에 관한 법률','위험물안전관리법'],k:1,e:'화재예방법이 소방안전관리자·보조자, 소방안전교육, 화재예방을 맡습니다. 소방시설법은 시설의 설치·점검입니다.'},
+{i:'q31',s:3,t:'mc',q:'다음 중 경보설비에 해당하는 것은?',o:['자동화재탐지설비','유도등','비상콘센트설비','연결송수관설비'],k:0,e:'자동화재탐지설비·비상경보설비·비상방송설비·누전경보기는 경보설비입니다. 유도등은 피난구조설비입니다.'},
+{i:'q32',s:3,t:'mc',q:'자체점검 중 작동점검의 실시 횟수는?',o:['연 1회 이상','연 2회 이상','2년에 1회','월 1회'],k:0,e:'작동점검은 연 1회 이상이며, 종합점검 대상은 종합점검을 받은 달부터 6개월이 되는 달에 실시합니다.'},
+{i:'q33',s:3,t:'mc',q:'종합점검을 반기에 1회 이상 실시해야 하는 대상은?',o:['특급 소방안전관리대상물','3급 소방안전관리대상물','아파트 전체','위험물 제조소'],k:0,e:'종합점검은 연 1회 이상이 원칙이고, 특급 소방안전관리대상물만 반기에 1회 이상입니다.'},
+{i:'q34',s:3,t:'mc',q:'소방시설이 새로 설치된 경우 최초 종합점검은 언제까지 실시하나?',o:['사용승인일부터 30일 이내','사용승인일부터 60일 이내','사용승인일이 속한 달의 말일','다음 연도 사용승인일'],k:1,e:'건축물을 사용할 수 있게 된 날부터 60일 이내에 최초 종합점검을 실시합니다.'},
+{i:'q35',s:3,t:'mc',q:'자체점검 결과는 점검이 끝난 날부터 며칠 이내에 소방서장에게 보고하나?',o:['5일','10일','15일','30일'],k:2,e:'관계인은 15일 이내에 보고하고, 보고서는 2년간 보관합니다. 관리업자가 관계인에게 제출하는 기한은 10일입니다.'},
+{i:'q36',s:3,t:'mc',q:'소방안전관리자는 정해진 날부터 며칠 이내에 선임해야 하나?',o:['14일','30일','60일','90일'],k:1,e:'화재예방법에 따라 30일 이내에 선임하고, 선임 사실을 신고합니다.'},
+{i:'q37',s:3,t:'mc',q:'소방안전관리보조자를 두어야 하는 아파트는?',o:['100세대 이상','200세대 이상','300세대 이상','500세대 이상'],k:2,e:'300세대 이상 아파트와 연면적 1만5천㎡ 이상 특정소방대상물 등이 대상입니다.'},
+{i:'q38',s:3,t:'mc',q:'소방기본법상 소방신호 4가지에 해당하지 않는 것은?',o:['경계','발화','진화','대피'],k:3,e:'소방신호는 경계·발화·진화·종포입니다.'},
+{i:'q39',s:3,t:'mc',q:'소방안전관리 업무의 지도·감독을 게을리한 관계인에게 부과되는 과태료는?',o:['100만원 이하','300만원 이하','500만원 이하','1,000만원 이하'],k:1,e:'화재예방법 제52조에 따라 300만원 이하의 과태료가 부과됩니다.'},
+{i:'q40',s:3,t:'ox',q:'소방시설공사업을 하려면 시·도지사에게 등록해야 한다.',o:['O','X'],k:0,e:'맞습니다. 소방시설공사업법에 따라 시·도지사에게 등록하고 기술인력과 시설 기준을 갖추어야 합니다.'},
+{i:'q41',s:3,t:'ox',q:'소방용품은 형식승인을 받지 않아도 제품검사만 통과하면 설치할 수 있다.',o:['O','X'],k:1,e:'아닙니다. 형식승인과 제품검사를 모두 거친 제품만 판매·설치할 수 있습니다.'},
+
+{i:'q42',s:4,t:'mc',q:'바닥면적 660㎡인 실에 연기감지기 1종(부착높이 4m 미만)을 설치할 때 필요한 최소 개수는?',o:['3개','4개','5개','6개'],k:2,e:'660 ÷ 150 = 4.4이므로 올림해 5개입니다. 감지구역마다 따로 계산해 올림합니다.'},
+{i:'q43',s:4,t:'mc',q:'보행거리 85m인 복도에 연기감지기(1종)를 설치할 때 최소 개수는?',o:['2개','3개','4개','5개'],k:1,e:'복도는 보행거리 30m마다 1개이므로 85 ÷ 30 = 2.83, 올림해 3개입니다.'},
+{i:'q44',s:4,t:'mc',q:'하나의 경계구역 면적 기준은?',o:['200㎡ 이하','400㎡ 이하','600㎡ 이하','1,000㎡ 이하'],k:2,e:'600㎡ 이하이면서 한 변의 길이가 50m 이하입니다. 주된 출입구에서 내부 전체가 보이면 1,000㎡까지 가능합니다.'},
+{i:'q45',s:4,t:'mc',q:'바닥면적 1,300㎡(한 변 40m)인 층의 최소 경계구역 수는?',o:['1개','2개','3개','4개'],k:2,e:'1,300 ÷ 600 = 2.17이므로 올림해 3개입니다.'},
+{i:'q46',s:4,t:'mc',q:'비상경보설비 음향장치의 음압 기준은?',o:['1m에서 60dB 이상','1m에서 90dB 이상','3m에서 90dB 이상','1m에서 120dB 이상'],k:1,e:'음향장치 중심에서 1m 떨어진 곳에서 90dB 이상이어야 합니다.'},
+{i:'q47',s:4,t:'mc',q:'비상방송설비 확성기의 음성입력 기준은?',o:['1W 이상(실내 0.5W)','3W 이상(실내 1W)','5W 이상(실내 3W)','10W 이상'],k:1,e:'확성기 음성입력은 3W 이상, 실내에 설치하는 것은 1W 이상입니다.'},
+{i:'q48',s:4,t:'mc',q:'피난구유도등의 설치 높이는?',o:['바닥에서 1m 이하','바닥에서 1.5m 이상','바닥에서 2m 이상','천장에만 설치'],k:1,e:'피난구 바닥에서 1.5m 이상으로 출입구에 인접하게 설치합니다.'},
+{i:'q49',s:4,t:'mc',q:'11층 이상 건물 유도등의 비상전원 용량은?',o:['5분 이상','10분 이상','20분 이상','60분 이상'],k:3,e:'일반은 20분 이상이지만 11층 이상 층과 지하상가 등은 60분 이상입니다.'},
+{i:'q50',s:4,t:'mc',q:'비상콘센트설비 전원회로 하나에 설치할 수 있는 비상콘센트 수는?',o:['5개 이하','10개 이하','15개 이하','제한 없음'],k:1,e:'전용회로 하나에 10개 이하입니다. 공급용량은 1.5kVA 이상, 각 층 2회로 이상입니다.'},
+{i:'q51',s:4,t:'mc',q:'비상콘센트설비의 절연저항 기준은?',o:['0.1MΩ 이상','1MΩ 이상','5MΩ 이상','20MΩ 이상'],k:3,e:'전원부와 외함 사이를 500V 절연저항계로 측정해 20MΩ 이상입니다.'},
+{i:'q52',s:4,t:'mc',q:'무선통신보조설비 증폭기의 비상전원은 몇 분 이상 작동해야 하나?',o:['10분','20분','30분','60분'],k:2,e:'무선통신보조설비는 30분 이상입니다. 유도등·비상콘센트의 20분과 구분합니다.'},
+{i:'q53',s:4,t:'mc',q:'P형 수신기의 한 공통선에 접속할 수 있는 경계구역 수는?',o:['5개','7개','10개','15개'],k:1,e:'7개 이하입니다. 8개부터는 공통선을 1가닥 추가합니다.'},
+{i:'q54',s:4,t:'mc',q:'감지기 회로의 전로저항 기준은?',o:['5Ω 이하','50Ω 이하','500Ω 이하','5kΩ 이하'],k:1,e:'전로저항은 50Ω 이하, 절연저항은 0.1MΩ 이상입니다.'},
+{i:'q55',s:4,t:'ox',q:'감지기는 벽이나 보로부터 0.6m 이상 떨어뜨려 설치한다.',o:['O','X'],k:0,e:'맞습니다. 공기유입구로부터는 1.5m 이상 떨어뜨립니다.'},
+{i:'q56',s:4,t:'ox',q:'유도등의 3선식 배선은 공통선·충전선·점등선 세 가닥이다.',o:['O','X'],k:0,e:'맞습니다. 평상시 충전하고, 화재신호를 받으면 점등선으로 자동 점등합니다.'}
+];
+var SUBJECTS = [
+  {id:1, short:'1과목', tag:'소방원론', name:'소방원론'},
+  {id:2, short:'2과목', tag:'소방전기일반', name:'소방전기일반'},
+  {id:3, short:'3과목', tag:'소방관계법규', name:'소방관계법규'},
+  {id:4, short:'4과목', tag:'소방전기시설', name:'소방전기시설의 구조 및 원리'}
+];
+var KEYS = {m:'sobang_mastered_v1', w:'sobang_wrong_v1', s:'sobang_stats_v1', t:'sobang_theme_v1'};
+
+var memoryFallback = {};
+
+function sGet(k, d){
+  try {
+    var v = window.localStorage.getItem(k);
+    if (v === null || v === undefined) return d;
+    return JSON.parse(v);
+  } catch (e) {
+    return (k in memoryFallback) ? memoryFallback[k] : d;
+  }
+}
+function sSet(k, v){
+  try { window.localStorage.setItem(k, JSON.stringify(v)); }
+  catch (e) { memoryFallback[k] = v; }
+}
+function $(id){ return document.getElementById(id); }
+function closestEl(el, sel){
+  while (el && el !== document){
+    if (el.nodeType === 1 && el.matches && el.matches(sel)) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+function escapeHtml(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function shuffleArr(a){
+  for (var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function findQuiz(id){
+  for (var i = 0; i < QUIZ.length; i++) if (QUIZ[i].i === id) return QUIZ[i];
+  return null;
+}
+
+/* ---------- theme ---------- */
+var theme = sGet(KEYS.t, 'dark');
+function applyTheme(t){
+  if (t === 'light'){
+    document.body.classList.add('light');
+    $('themeBtn').textContent = '\u2600\uFE0F';
+  } else {
+    document.body.classList.remove('light');
+    $('themeBtn').textContent = '\uD83C\uDF19';
+  }
+  var mc = document.querySelector('meta[name="theme-color"]');
+  if (mc) mc.setAttribute('content', t === 'light' ? '#eef2f7' : '#0b1220');
+}
+$('themeBtn').addEventListener('click', function(){
+  theme = (theme === 'light') ? 'dark' : 'light';
+  sSet(KEYS.t, theme);
+  applyTheme(theme);
+});
+
+/* ---------- tabs ---------- */
+var state = {tab:'cards'};
+function switchTab(name){
+  state.tab = name;
+  var views = {cards:'viewCards', quiz:'viewQuiz', roadmap:'viewRoadmap'};
+  for (var k in views){
+    var el = $(views[k]);
+    if (el) el.className = 'view' + (k === name ? ' active' : '');
+  }
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++){
+    var on = tabs[i].getAttribute('data-tab') === name;
+    tabs[i].className = 'tab' + (on ? ' active' : '');
+  }
+  if (name === 'quiz') renderQuizSetup();
+  window.scrollTo(0, 0);
+}
+var tabBtns = document.querySelectorAll('.tab');
+for (var ti = 0; ti < tabBtns.length; ti++){
+  tabBtns[ti].addEventListener('click', function(){
+    switchTab(this.getAttribute('data-tab'));
+  });
+}
+
+/* ---------- flashcards ---------- */
+var mastered = sGet(KEYS.m, {});
+var wrongSet = sGet(KEYS.w, {});
+var stats = sGet(KEYS.s, {sessions:0, answered:0, correct:0, best:0});
+
+var cs = {filter:0, idx:0, flipped:false, shuffle:false, onlyUnmastered:false, deck:[]};
+
+function chipsHtml(){
+  var h = '<button class="chip active" data-f="0">전체</button>';
+  for (var i = 0; i < SUBJECTS.length; i++){
+    h += '<button class="chip" data-f="' + SUBJECTS[i].id + '">' + SUBJECTS[i].short + '</button>';
+  }
+  return h;
+}
+function cardsPool(){
+  var out = [];
+  for (var i = 0; i < CARDS.length; i++){
+    var c = CARDS[i];
+    if (cs.filter && c.s !== cs.filter) continue;
+    if (cs.onlyUnmastered && mastered[c.i]) continue;
+    out.push(c);
+  }
+  return out;
+}
+function rebuildDeck(reset){
+  var pool = cardsPool();
+  if (cs.shuffle) shuffleArr(pool);
+  cs.deck = pool;
+  if (reset || cs.idx >= pool.length) cs.idx = 0;
+  cs.flipped = false;
+}
+function masteredCount(){
+  var n = 0;
+  for (var k in mastered) if (mastered[k]) n++;
+  return n;
+}
+function renderCards(){
+  var n = cs.deck.length;
+  var mc = masteredCount();
+  $('fcMasteredCount').textContent = mc + ' / ' + CARDS.length + ' 외웠음';
+  $('fcProgress').style.width = Math.round(mc / CARDS.length * 100) + '%';
+  $('fcPos').textContent = n ? (cs.idx + 1) + ' / ' + n : '0 / 0';
+  $('fcScene').style.display = n ? '' : 'none';
+  $('fcNav').style.display = n ? '' : 'none';
+  $('fcEmpty').style.display = n ? 'none' : 'block';
+  $('btnShuffle').className = 'btn small' + (cs.shuffle ? ' on' : '');
+  $('btnOnlyUnmastered').className = 'btn small' + (cs.onlyUnmastered ? ' on' : '');
+  if (!n) return;
+  var c = cs.deck[cs.idx];
+  var s = SUBJECTS[c.s - 1];
+  var label = s.short + ' · ' + s.tag;
+  $('fcQ').textContent = c.q;
+  $('fcA').textContent = c.a;
+  $('fcNote').textContent = c.n;
+  $('fcDot').style.background = 'var(--s' + c.s + ')';
+  $('fcDot2').style.background = 'var(--s' + c.s + ')';
+  $('fcSubj').textContent = label;
+  $('fcSubj2').textContent = label;
+  $('fcCard').classList.toggle('flipped', cs.flipped);
+  var on = !!mastered[c.i];
+  var mb = $('btnMaster');
+  mb.textContent = on ? '외웠음 \u2713' : '외웠음 표시';
+  mb.className = 'btn' + (on ? ' done' : '');
+  var subjCount = 0;
+  for (var i = 0; i < CARDS.length; i++) if (CARDS[i].s === c.s) subjCount++;
+  $('fcFoot').textContent = s.name + ' \u00B7 ' + subjCount + '장 \u00B7 전체 ' + CARDS.length + '장';
+}
+function goCard(d){
+  if (!cs.deck.length) return;
+  cs.idx = (cs.idx + d + cs.deck.length) % cs.deck.length;
+  cs.flipped = false;
+  renderCards();
+}
+
+var swipeAt = 0;
+$('fcCard').addEventListener('click', function(){
+  if (Date.now() - swipeAt < 450) return;
+  cs.flipped = !cs.flipped;
+  renderCards();
+});
+(function(){
+  var tx = 0, ty = 0, down = false;
+  var card = $('fcCard');
+  card.addEventListener('touchstart', function(e){
+    var t = e.changedTouches[0]; tx = t.clientX; ty = t.clientY; down = true;
+  }, {passive:true});
+  card.addEventListener('touchend', function(e){
+    if (!down) return;
+    down = false;
+    var t = e.changedTouches[0];
+    var dx = t.clientX - tx, dy = t.clientY - ty;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.6){
+      swipeAt = Date.now();
+      goCard(dx < 0 ? 1 : -1);
+    }
+  }, {passive:true});
+})();
+
+$('btnFlip').addEventListener('click', function(){ cs.flipped = !cs.flipped; renderCards(); });
+$('btnPrev').addEventListener('click', function(){ goCard(-1); });
+$('btnNext').addEventListener('click', function(){ goCard(1); });
+$('btnMaster').addEventListener('click', function(){
+  if (!cs.deck.length) return;
+  var c = cs.deck[cs.idx];
+  if (mastered[c.i]) delete mastered[c.i];
+  else mastered[c.i] = true;
+  sSet(KEYS.m, mastered);
+  if (cs.onlyUnmastered) rebuildDeck(false);
+  renderCards();
+});
+$('btnShuffle').addEventListener('click', function(){
+  cs.shuffle = !cs.shuffle;
+  rebuildDeck(true);
+  renderCards();
+});
+$('btnOnlyUnmastered').addEventListener('click', function(){
+  cs.onlyUnmastered = !cs.onlyUnmastered;
+  rebuildDeck(true);
+  renderCards();
+});
+$('btnShowAll').addEventListener('click', function(){
+  cs.onlyUnmastered = false;
+  cs.filter = 0;
+  setChips('fcChips', 0);
+  rebuildDeck(true);
+  renderCards();
+});
+function setChips(containerId, f){
+  var chips = $(containerId).querySelectorAll('.chip');
+  for (var i = 0; i < chips.length; i++){
+    var v = parseInt(chips[i].getAttribute('data-f'), 10);
+    chips[i].className = 'chip' + (v === f ? ' active' : '');
+  }
+}
+$('fcChips').addEventListener('click', function(e){
+  var chip = closestEl(e.target, '.chip');
+  if (!chip) return;
+  cs.filter = parseInt(chip.getAttribute('data-f'), 10);
+  setChips('fcChips', cs.filter);
+  rebuildDeck(true);
+  renderCards();
+});
+
+document.addEventListener('keydown', function(e){
+  if (state.tab !== 'cards') return;
+  if (e.key === 'ArrowRight'){ e.preventDefault(); goCard(1); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); goCard(-1); }
+  else if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); cs.flipped = !cs.flipped; renderCards(); }
+});
+
+/* ---------- quiz ---------- */
+var qz = {active:false, list:[], idx:0, answered:false, chosen:-1, correct:0, wrongIds:[], size:10, filter:0};
+
+function quizPool(){
+  var out = [];
+  for (var i = 0; i < QUIZ.length; i++){
+    if (!qz.filter || QUIZ[i].s === qz.filter) out.push(QUIZ[i]);
+  }
+  return out;
+}
+function wrongCount(pool){
+  var n = 0;
+  for (var i = 0; i < pool.length; i++) if (wrongSet[pool[i].i]) n++;
+  return n;
+}
+function renderQuizSetup(){
+  var pool = quizPool();
+  $('stTotal').textContent = pool.length;
+  $('stDone').textContent = stats.answered;
+  $('stBest').textContent = stats.best ? stats.best + '점' : '-';
+  var w = wrongCount(pool);
+  var wb = $('btnWrongOnly');
+  wb.disabled = (w === 0);
+  wb.textContent = w ? '틀린 문제만 다시 풀기 (' + w + ')' : '틀린 문제만 다시 풀기';
+  var sb = document.querySelectorAll('[data-size]');
+  for (var i = 0; i < sb.length; i++){
+    var v = parseInt(sb[i].getAttribute('data-size'), 10);
+    sb[i].className = 'btn small' + (v === qz.size ? ' on' : '');
+  }
+}
+function showQuizPane(name){
+  $('quizSetup').style.display = (name === 'setup') ? 'block' : 'none';
+  $('quizPlay').style.display = (name === 'play') ? 'block' : 'none';
+  $('quizResult').style.display = (name === 'result') ? 'block' : 'none';
+}
+function beginSession(list){
+  qz.list = list;
+  qz.idx = 0; qz.answered = false; qz.chosen = -1; qz.correct = 0; qz.wrongIds = [];
+  qz.active = true;
+  showQuizPane('play');
+  renderQuestion();
+  window.scrollTo(0, 0);
+}
+function startQuiz(scope){
+  var pool = quizPool();
+  if (scope === 'wrong') pool = pool.filter(function(q){ return !!wrongSet[q.i]; });
+  if (!pool.length) return;
+  pool = shuffleArr(pool.slice(0));
+  if (qz.size > 0 && pool.length > qz.size) pool = pool.slice(0, qz.size);
+  beginSession(pool);
+}
+function renderQuestion(){
+  var q = qz.list[qz.idx];
+  var total = qz.list.length;
+  $('qpLabel').textContent = (qz.idx + 1) + ' / ' + total;
+  $('qpScore').textContent = '정답 ' + qz.correct;
+  $('qpProgress').style.width = Math.round(qz.idx / total * 100) + '%';
+  var s = SUBJECTS[q.s - 1];
+  $('qpSubj').textContent = s.short + ' · ' + s.tag;
+  $('qpDot').style.background = 'var(--s' + q.s + ')';
+  $('qpType').textContent = (q.t === 'ox') ? 'O / X' : '4지선다';
+  $('qpQ').textContent = q.q;
+  var h = '';
+  for (var i = 0; i < q.o.length; i++){
+    var cls = 'opt' + (q.t === 'ox' ? ' ox' : '');
+    var mark = (q.t === 'ox') ? q.o[i] : String(i + 1);
+    var txt = (q.t === 'ox') ? (q.o[i] === 'O' ? '맞다' : '아니다') : q.o[i];
+    h += '<button class="' + cls + '" data-k="' + i + '"><span class="mark">' + mark + '</span><span class="txt">' + txt + '</span></button>';
+  }
+  $('qpOpts').innerHTML = h;
+  $('qpExpl').innerHTML = '';
+  var nb = $('qpNext');
+  nb.disabled = true;
+  nb.textContent = (qz.idx === total - 1) ? '결과 보기' : '다음 문제';
+  qz.answered = false;
+  qz.chosen = -1;
+}
+function answerQuiz(k){
+  if (qz.answered) return;
+  var q = qz.list[qz.idx];
+  qz.answered = true;
+  qz.chosen = k;
+  var ok = (k === q.k);
+  if (ok){ qz.correct++; delete wrongSet[q.i]; }
+  else { qz.wrongIds.push(q.i); wrongSet[q.i] = true; }
+  sSet(KEYS.w, wrongSet);
+  var opts = $('qpOpts').children;
+  for (var i = 0; i < opts.length; i++){
+    var oi = parseInt(opts[i].getAttribute('data-k'), 10);
+    var mark = opts[i].querySelector('.mark');
+    if (oi === q.k){ opts[i].className += ' correct'; if (mark) mark.textContent = '\u2713'; }
+    else if (oi === k){ opts[i].className += ' wrong'; if (mark) mark.textContent = '\u2715'; }
+  }
+  $('qpScore').textContent = '정답 ' + qz.correct;
+  var ansTxt = (q.t === 'ox') ? (q.o[q.k] === 'O' ? 'O(맞다)' : 'X(아니다)') : (q.k + 1) + '번 ' + q.o[q.k];
+  var head = ok ? '정답입니다' : '오답 \u00B7 정답은 ' + ansTxt;
+  $('qpExpl').innerHTML = '<div class="expl ' + (ok ? 'ok' : 'no') + '"><b>' + head + '</b>' + q.e + '</div>';
+  $('qpNext').disabled = false;
+}
+function finishQuiz(){
+  var total = qz.list.length;
+  var pct = total ? Math.round(qz.correct / total * 100) : 0;
+  $('qrRing').style.setProperty('--p', pct);
+  $('qrScore').textContent = pct + '점';
+  $('qrSub').textContent = '정답 ' + qz.correct + ' / ' + total;
+  var msg;
+  if (pct >= 80) msg = '아주 좋습니다. 이 페이스면 합격권입니다.';
+  else if (pct >= 60) msg = '합격선 근처입니다. 틀린 문제만 한 번 더 풀어보세요.';
+  else msg = '지금은 오답을 남기는 단계입니다. 해설을 한 번 더 읽어보세요.';
+  $('qrMsg').textContent = msg;
+  var h = '';
+  if (qz.wrongIds.length){
+    h = '<div style="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin-bottom:6px">틀린 문제 ' + qz.wrongIds.length + '개</div>';
+    for (var i = 0; i < qz.wrongIds.length; i++){
+      var q = findQuiz(qz.wrongIds[i]);
+      if (!q) continue;
+      var a = (q.t === 'ox') ? (q.o[q.k] === 'O' ? '정답 O (맞다)' : '정답 X (아니다)') : '정답 ' + (q.k + 1) + '번 \u00B7 ' + q.o[q.k];
+      h += '<div class="ri"><b>' + escapeHtml(q.q) + '</b>' + escapeHtml(a) + '</div>';
+    }
+  } else {
+    h = '<div class="ri">틀린 문제가 없습니다. 완벽합니다!</div>';
+  }
+  $('qrList').innerHTML = h;
+  $('btnRetryWrong').disabled = (qz.wrongIds.length === 0);
+  stats.sessions++;
+  stats.answered += total;
+  stats.correct += qz.correct;
+  if (pct > stats.best) stats.best = pct;
+  sSet(KEYS.s, stats);
+  qz.active = false;
+  showQuizPane('result');
+  window.scrollTo(0, 0);
+}
+
+$('qpOpts').addEventListener('click', function(e){
+  var b = closestEl(e.target, '.opt');
+  if (!b) return;
+  answerQuiz(parseInt(b.getAttribute('data-k'), 10));
+});
+$('qpNext').addEventListener('click', function(){
+  if (qz.idx < qz.list.length - 1){ qz.idx++; renderQuestion(); window.scrollTo(0, 0); }
+  else finishQuiz();
+});
+$('qpQuit').addEventListener('click', function(){
+  qz.active = false;
+  showQuizPane('setup');
+  renderQuizSetup();
+  window.scrollTo(0, 0);
+});
+$('btnStartQuiz').addEventListener('click', function(){ startQuiz('all'); });
+$('btnWrongOnly').addEventListener('click', function(){ startQuiz('wrong'); });
+$('btnNewQuiz').addEventListener('click', function(){
+  showQuizPane('setup');
+  renderQuizSetup();
+  window.scrollTo(0, 0);
+});
+$('btnRetryWrong').addEventListener('click', function(){
+  var pool = [];
+  for (var i = 0; i < qz.wrongIds.length; i++){
+    var q = findQuiz(qz.wrongIds[i]);
+    if (q) pool.push(q);
+  }
+  if (!pool.length) return;
+  beginSession(shuffleArr(pool));
+});
+$('quizChips').addEventListener('click', function(e){
+  var chip = closestEl(e.target, '.chip');
+  if (!chip) return;
+  qz.filter = parseInt(chip.getAttribute('data-f'), 10);
+  setChips('quizChips', qz.filter);
+  renderQuizSetup();
+});
+var sizeBtns = document.querySelectorAll('[data-size]');
+for (var si = 0; si < sizeBtns.length; si++){
+  sizeBtns[si].addEventListener('click', function(){
+    qz.size = parseInt(this.getAttribute('data-size'), 10);
+    renderQuizSetup();
+  });
+}
+
+/* ---------- init ---------- */
+applyTheme(theme);
+$('fcChips').innerHTML = chipsHtml();
+$('quizChips').innerHTML = chipsHtml();
+rebuildDeck(true);
+renderCards();
+renderQuizSetup();
+</script>
+</body>
+</html>
