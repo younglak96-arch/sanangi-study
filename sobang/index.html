@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
-<title>소방설비기사(전기) CBT 모의고사 · 2020~2026</title>
+<title>소방설비기사(전기) 출퇴근 학습 · 7개년 560문항 CBT</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -445,8 +445,8 @@ html,body{touch-action:manipulation}
   <header>
     <div class="hdr">
       <div class="brand">
-        <b>소방설비기사(전기) CBT</b>
-        <span>7개년 기출유형 모의고사 · 필기 4과목</span>
+        <b>소방설비기사(전기) 출퇴근 학습</b>
+        <span>7개년 560문항 CBT · 필기 4과목</span>
       </div>
       <button class="iconbtn" id="themeBtn" aria-label="화면 밝기 전환">🌙</button>
     </div>
@@ -506,6 +506,73 @@ html,body{touch-action:manipulation}
         <button class="btn small" id="btnOnlyUnmastered">안 외운 것만</button>
       </div>
       <footer class="foot" id="fcFoot"></footer>
+    </section>
+
+    <!-- ============ 출퇴근 퀴즈 ============ -->
+    <section class="view" id="viewCommute">
+      <div id="quizSetup">
+        <div class="panel">
+          <h3>출퇴근 퀴즈</h3>
+          <p>필기와 같은 4지선다·O/X 문제입니다. 답을 고르면 바로 채점하고 해설을 보여줘요. 계산 문제도 섞여 있습니다.</p>
+          <div class="label">과목</div>
+          <div class="chips" id="quizChips"></div>
+          <div class="label">문제 수</div>
+          <div class="row tight" style="margin-top:0">
+            <button class="btn small on" data-size="10">10문항</button>
+            <button class="btn small" data-size="20">20문항</button>
+            <button class="btn small" data-size="0">전체</button>
+          </div>
+          <div class="row" style="margin-top:16px">
+            <button class="btn primary" id="btnStartQuiz">퀴즈 시작</button>
+          </div>
+          <div class="row tight">
+            <button class="btn" id="btnWrongOnly" disabled>틀린 문제만 다시 풀기</button>
+          </div>
+          <div class="statgrid">
+            <div class="stat"><b id="stTotal">0</b><span>전체 문제</span></div>
+            <div class="stat"><b id="stDone">0</b><span>지금까지 푼 문제</span></div>
+            <div class="stat"><b id="stBest">-</b><span>최고 점수</span></div>
+          </div>
+        </div>
+        <div class="banner">💡 <b>오는 길 20분 루틴</b> — 10문항 풀고, 틀린 문제만 한 번 더. 정답률이 80%를 넘으면 20문항으로 늘려 과목당 30분을 맞춰보세요.</div>
+      </div>
+
+      <div id="quizPlay" style="display:none">
+        <div class="metaline">
+          <span id="qpLabel">1 / 10</span>
+          <span id="qpScore">정답 0</span>
+        </div>
+        <div class="meter"><i id="qpProgress"></i></div>
+        <div class="qcard" style="margin-top:12px">
+          <div class="qmeta">
+            <span class="badge"><i class="dot" id="qpDot"></i><span id="qpSubj">1과목</span></span>
+            <span class="qtype" id="qpType">4지선다</span>
+          </div>
+          <p class="qtext2" id="qpQ"></p>
+          <div class="opts" id="qpOpts"></div>
+          <div id="qpExpl"></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="qpNext" disabled>다음 문제</button>
+        </div>
+        <div class="row tight">
+          <button class="btn small" id="qpQuit">퀴즈 그만두기</button>
+        </div>
+      </div>
+
+      <div id="quizResult" style="display:none">
+        <div class="panel">
+          <div class="ring" id="qrRing" style="--p:0"><div><b id="qrScore">0점</b><span id="qrSub">정답 0 / 0</span></div></div>
+          <p id="qrMsg" style="text-align:center;font-size:14px"></p>
+          <div class="rlist" id="qrList"></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="btnRetryWrong">틀린 문제만 다시</button>
+        </div>
+        <div class="row tight">
+          <button class="btn" id="btnNewQuiz">새 퀴즈</button>
+        </div>
+      </div>
     </section>
 
     <!-- ============ 실전 모의고사 ============ -->
@@ -814,6 +881,7 @@ html,body{touch-action:manipulation}
   <nav class="tabs">
     <div class="tabs-inner">
       <button class="tab" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
+      <button class="tab" data-tab="commute"><span class="ic">✅</span>출퇴근 퀴즈</button>
       <button class="tab active" data-tab="quiz"><span class="ic">📝</span>모의고사</button>
       <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
     </div>
@@ -1060,7 +1128,7 @@ $('themeBtn').addEventListener('click', function(){
 var state = {tab:'quiz'};
 function switchTab(name){
   state.tab = name;
-  var views = {cards:'viewCards', quiz:'viewQuiz', roadmap:'viewRoadmap'};
+  var views = {cards:'viewCards', commute:'viewCommute', quiz:'viewQuiz', roadmap:'viewRoadmap'};
   for (var k in views){
     var el = $(views[k]);
     if (el) el.className = 'view' + (k === name ? ' active' : '');
@@ -1070,6 +1138,7 @@ function switchTab(name){
     var on = tabs[i].getAttribute('data-tab') === name;
     tabs[i].className = 'tab' + (on ? ' active' : '');
   }
+  if (name === 'commute') renderQuizSetup();
   if (name === 'quiz') renderSets();
   window.scrollTo(0, 0);
 }
@@ -1231,6 +1300,199 @@ document.addEventListener('keydown', function(e){
   if (e.key === 'ArrowRight'){ e.preventDefault(); goCard(1); }
   else if (e.key === 'ArrowLeft'){ e.preventDefault(); goCard(-1); }
   else if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); cs.flipped = !cs.flipped; renderCards(); }
+});
+
+/* ---------- 출퇴근 퀴즈 ---------- */
+var qz = {active:false, list:[], idx:0, answered:false, chosen:-1, correct:0, wrongIds:[], size:10, filter:0};
+var quizStats = sGet('sobang_quizstats_v1', {sessions:0, answered:0, correct:0, best:0});
+
+function quizPool(){
+  var out = [];
+  for (var i = 0; i < QUIZ.length; i++){
+    if (!qz.filter || QUIZ[i].s === qz.filter) out.push(QUIZ[i]);
+  }
+  return out;
+}
+function quizWrongCount(pool){
+  var n = 0;
+  for (var i = 0; i < pool.length; i++) if (wrongSet[pool[i].i]) n++;
+  return n;
+}
+function renderQuizSetup(){
+  var pool = quizPool();
+  $('stTotal').textContent = pool.length;
+  $('stDone').textContent = quizStats.answered || 0;
+  $('stBest').textContent = quizStats.best ? quizStats.best + '점' : '-';
+  var w = quizWrongCount(pool);
+  var wb = $('btnWrongOnly');
+  wb.disabled = (w === 0);
+  wb.textContent = w ? '틀린 문제만 다시 풀기 (' + w + ')' : '틀린 문제만 다시 풀기';
+  var sb = document.querySelectorAll('[data-size]');
+  for (var i = 0; i < sb.length; i++){
+    var v = parseInt(sb[i].getAttribute('data-size'), 10);
+    sb[i].className = 'btn small' + (v === qz.size ? ' on' : '');
+  }
+}
+function showQuizPane(name){
+  $('quizSetup').style.display = (name === 'setup') ? 'block' : 'none';
+  $('quizPlay').style.display = (name === 'play') ? 'block' : 'none';
+  $('quizResult').style.display = (name === 'result') ? 'block' : 'none';
+}
+function beginSession(list){
+  qz.list = list;
+  qz.idx = 0; qz.answered = false; qz.chosen = -1; qz.correct = 0; qz.wrongIds = [];
+  qz.active = true;
+  showQuizPane('play');
+  renderQuestion();
+  window.scrollTo(0, 0);
+}
+function startQuiz(scope){
+  var pool = quizPool();
+  if (scope === 'wrong') pool = pool.filter(function(q){ return !!wrongSet[q.i]; });
+  if (!pool.length) return;
+  pool = shuffleArr(pool.slice(0));
+  if (qz.size > 0 && pool.length > qz.size) pool = pool.slice(0, qz.size);
+  beginSession(pool);
+}
+function renderQuestion(){
+  var q = qz.list[qz.idx];
+  var total = qz.list.length;
+  $('qpLabel').textContent = (qz.idx + 1) + ' / ' + total;
+  $('qpScore').textContent = '정답 ' + qz.correct;
+  $('qpProgress').style.width = Math.round(qz.idx / total * 100) + '%';
+  var s = SUBJECTS[q.s - 1];
+  $('qpSubj').textContent = s.short + ' · ' + s.tag;
+  $('qpDot').style.background = 'var(--s' + q.s + ')';
+  $('qpType').textContent = (q.t === 'ox') ? 'O / X' : '4지선다';
+  $('qpQ').textContent = q.q;
+  var h = '';
+  for (var i = 0; i < q.o.length; i++){
+    var cls = 'opt' + (q.t === 'ox' ? ' ox' : '');
+    var mark = (q.t === 'ox') ? q.o[i] : String(i + 1);
+    var txt = (q.t === 'ox') ? (q.o[i] === 'O' ? '맞다' : '아니다') : q.o[i];
+    h += '<button class="' + cls + '" data-k="' + i + '"><span class="mark">' + mark + '</span><span class="txt">' + escapeHtml(txt) + '</span></button>';
+  }
+  $('qpOpts').innerHTML = h;
+  $('qpExpl').innerHTML = '';
+  var nb = $('qpNext');
+  nb.disabled = true;
+  nb.textContent = (qz.idx === total - 1) ? '결과 보기' : '다음 문제';
+  qz.answered = false;
+  qz.chosen = -1;
+}
+function answerQuiz(k){
+  if (qz.answered) return;
+  var q = qz.list[qz.idx];
+  qz.answered = true;
+  qz.chosen = k;
+  var ok = (k === q.k);
+  if (ok){ qz.correct++; delete wrongSet[q.i]; }
+  else { qz.wrongIds.push(q.i); wrongSet[q.i] = true; }
+  sSet(KEYS.w, wrongSet);
+  var opts = $('qpOpts').children;
+  for (var i = 0; i < opts.length; i++){
+    var oi = parseInt(opts[i].getAttribute('data-k'), 10);
+    var mark = opts[i].querySelector('.mark');
+    if (oi === q.k){ opts[i].className += ' correct'; if (mark) mark.textContent = '\u2713'; }
+    else if (oi === k){ opts[i].className += ' wrong'; if (mark) mark.textContent = '\u2715'; }
+  }
+  $('qpScore').textContent = '정답 ' + qz.correct;
+  var ansTxt = (q.t === 'ox') ? (q.o[q.k] === 'O' ? 'O(맞다)' : 'X(아니다)') : (q.k + 1) + '번 ' + q.o[q.k];
+  var head = ok ? '정답입니다' : '오답 \u00B7 정답은 ' + ansTxt;
+  $('qpExpl').innerHTML = '<div class="expl ' + (ok ? 'ok' : 'no') + '"><b>' + head + '</b>' + escapeHtml(q.e) + '</div>';
+  $('qpNext').disabled = false;
+}
+function finishQuiz(){
+  var total = qz.list.length;
+  var pct = total ? Math.round(qz.correct / total * 100) : 0;
+  $('qrRing').style.setProperty('--p', pct);
+  $('qrScore').textContent = pct + '점';
+  $('qrSub').textContent = '정답 ' + qz.correct + ' / ' + total;
+  var msg;
+  if (pct >= 80) msg = '아주 좋습니다. 이 페이스면 합격권입니다.';
+  else if (pct >= 60) msg = '합격선 근처입니다. 틀린 문제만 한 번 더 풀어보세요.';
+  else msg = '지금은 오답을 남기는 단계입니다. 해설을 한 번 더 읽어보세요.';
+  $('qrMsg').textContent = msg;
+  var h = '';
+  if (qz.wrongIds.length){
+    h = '<div style="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin-bottom:6px">틀린 문제 ' + qz.wrongIds.length + '개</div>';
+    for (var i = 0; i < qz.wrongIds.length; i++){
+      var q = findQuiz(qz.wrongIds[i]);
+      if (!q) continue;
+      var a = (q.t === 'ox') ? (q.o[q.k] === 'O' ? '정답 O (맞다)' : '정답 X (아니다)') : '정답 ' + (q.k + 1) + '번 \u00B7 ' + q.o[q.k];
+      h += '<div class="ri"><b>' + escapeHtml(q.q) + '</b>' + escapeHtml(a) + '</div>';
+    }
+  } else {
+    h = '<div class="ri">틀린 문제가 없습니다. 완벽합니다!</div>';
+  }
+  $('qrList').innerHTML = h;
+  $('btnRetryWrong').disabled = (qz.wrongIds.length === 0);
+  quizStats.sessions++;
+  quizStats.answered += total;
+  quizStats.correct += qz.correct;
+  if (pct > quizStats.best) quizStats.best = pct;
+  sSet('sobang_quizstats_v1', quizStats);
+  qz.active = false;
+  showQuizPane('result');
+  window.scrollTo(0, 0);
+}
+
+$('qpOpts').addEventListener('click', function(e){
+  var b = closestEl(e.target, '.opt');
+  if (!b) return;
+  answerQuiz(parseInt(b.getAttribute('data-k'), 10));
+});
+$('qpNext').addEventListener('click', function(){
+  if (qz.idx < qz.list.length - 1){ qz.idx++; renderQuestion(); window.scrollTo(0, 0); }
+  else finishQuiz();
+});
+$('qpQuit').addEventListener('click', function(){
+  qz.active = false;
+  showQuizPane('setup');
+  renderQuizSetup();
+  window.scrollTo(0, 0);
+});
+$('btnStartQuiz').addEventListener('click', function(){ startQuiz('all'); });
+$('btnWrongOnly').addEventListener('click', function(){ startQuiz('wrong'); });
+$('btnNewQuiz').addEventListener('click', function(){
+  showQuizPane('setup');
+  renderQuizSetup();
+  window.scrollTo(0, 0);
+});
+$('btnRetryWrong').addEventListener('click', function(){
+  var pool = [];
+  for (var i = 0; i < qz.wrongIds.length; i++){
+    var q = findQuiz(qz.wrongIds[i]);
+    if (q) pool.push(q);
+  }
+  if (!pool.length) return;
+  beginSession(shuffleArr(pool));
+});
+$('quizChips').addEventListener('click', function(e){
+  var chip = closestEl(e.target, '.chip');
+  if (!chip) return;
+  qz.filter = parseInt(chip.getAttribute('data-f'), 10);
+  setChips('quizChips', qz.filter);
+  renderQuizSetup();
+});
+(function(){
+  var sizeBtns = document.querySelectorAll('[data-size]');
+  for (var si = 0; si < sizeBtns.length; si++){
+    sizeBtns[si].addEventListener('click', function(){
+      qz.size = parseInt(this.getAttribute('data-size'), 10);
+      renderQuizSetup();
+    });
+  }
+})();
+
+document.addEventListener('keydown', function(e){
+  if (state.tab !== 'commute' || !qz.active) return;
+  if (e.key === 'Enter'){ if (!$('qpNext').disabled){ e.preventDefault(); $('qpNext').click(); } }
+  else if (e.key === '1' || e.key === '2' || e.key === '3' || e.key === '4'){
+    var k = parseInt(e.key, 10) - 1;
+    var opts = $('qpOpts').children;
+    if (k < opts.length){ e.preventDefault(); answerQuiz(k); }
+  }
 });
 
 var BANK_S1 = [
@@ -2394,8 +2656,10 @@ document.addEventListener('keydown', function(e){
 /* ---------- init ---------- */
 applyTheme(theme);
 $('fcChips').innerHTML = chipsHtml();
+$('quizChips').innerHTML = chipsHtml();
 rebuildDeck(true);
 renderCards();
+renderQuizSetup();
 renderSets();
 </script>
 </body>
