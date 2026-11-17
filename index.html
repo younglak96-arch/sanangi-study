@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
-<title>산업안전기사 학습 · 4지선다 150문항 + 기출 OX 360</title>
+<title>산업안전기사 학습 · 계산 35 + OX 360 + 4지선다 150</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -698,6 +698,272 @@ body.fs-3 .kicker{font-size:10.5px}
   html.ht-cards .diagram svg{max-height:calc(84px * var(--cf,1))}
 }
 
+/* ================= v6: 계산 문제 풀기 (공식 탭) ================= */
+.cbar-top{display:flex;align-items:center;gap:8px;margin:0 0 9px}
+.csum{flex:1;min-width:0;font-size:11.5px;font-weight:700;color:var(--muted);
+  letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-variant-numeric:tabular-nums}
+.csum b{color:var(--text);font-weight:800}
+.cmeter{display:block;height:6px;border-radius:99px;background:var(--surface2);
+  border:1px solid var(--line);overflow:hidden;margin:0 0 12px}
+.cmeter>b{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s ease}
+
+/* 과목 카드 (전체 + 1~5과목) */
+.csc{display:block;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:17px;background:var(--surface);color:var(--text);
+  padding:12px 14px 0;margin:0 0 9px;overflow:hidden;box-shadow:var(--shadow);
+  transition:transform .12s ease,border-color .15s}
+.csc:last-child{margin-bottom:2px}
+.csc:active{transform:scale(.993)}
+body:not(.light) .csc{background:var(--surface2)}
+.csc.all{border-color:rgba(91,141,239,.42)}
+body.light .csc.all{border-color:rgba(37,99,235,.32)}
+.csc.done{border-color:rgba(52,211,153,.4)}
+.csc-top{display:flex;align-items:center;gap:7px;min-width:0}
+.csc-dot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:var(--s1)}
+.csc-nm{flex:0 0 auto;font-size:15.5px;font-weight:800;letter-spacing:-.35px}
+.csc-ct{flex:0 0 auto;font-size:11.5px;font-weight:700;color:var(--muted);
+  font-variant-numeric:tabular-nums;letter-spacing:-.1px}
+.csc-badge{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;
+  font-size:10.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+  border-radius:999px;padding:4px 8px;letter-spacing:-.2px;white-space:nowrap}
+.csc-sbj{display:block;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--muted);
+  letter-spacing:-.15px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csc-mt{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;
+  font-weight:700;color:var(--muted);letter-spacing:-.15px;font-variant-numeric:tabular-nums}
+.csc-mt b{color:var(--text);font-weight:800}
+.csc-bar{display:block;height:5px;border-radius:99px;background:var(--surface2);
+  margin-top:7px;overflow:hidden;border:1px solid var(--line)}
+body:not(.light) .csc-bar{background:rgba(0,0,0,.28)}
+.csc-bar b{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);
+  transition:width .3s ease}
+.csc-go{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin:11px -14px 0;padding:11px 15px;background:var(--accent-soft);
+  border-top:1px solid var(--line);font-size:14px;font-weight:800;letter-spacing:-.3px;
+  color:var(--accent)}
+body:not(.light) .csc-go{background:rgba(91,141,239,.18)}
+.csc.done .csc-go{color:var(--text);background:var(--surface2)}
+body:not(.light) .csc.done .csc-go{background:rgba(0,0,0,.18)}
+.csc-go em{font-style:normal;font-size:16px;font-weight:700;line-height:1;opacity:.85}
+
+/* ---------- 계산 문제 플레이어 ---------- */
+.cp{position:fixed;inset:0;z-index:125;display:none;justify-content:center;background:var(--bg)}
+.cp.on{display:flex}
+.cpshell{width:100%;max-width:480px;height:100%;display:flex;flex-direction:column;
+  background:var(--bg);position:relative;overflow:hidden;padding-top:env(safe-area-inset-top)}
+.cpbar{flex:0 0 auto;display:flex;align-items:center;gap:11px;padding:10px 14px 12px}
+.cpquit{flex:0 0 auto;border:0;border-radius:11px;background:var(--surface2);color:var(--text);
+  font-size:12.5px;font-weight:800;padding:9px 12px;letter-spacing:-.2px}
+.cpquit:active{transform:scale(.96)}
+.cphd{flex:1;min-width:0}
+.cphd-row{display:flex;align-items:baseline;gap:8px}
+.cphd-nm{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--muted);
+  letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cphd-pos{flex:0 0 auto;font-size:11.5px;font-weight:800;color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.cppbar{display:block;height:3px;border-radius:99px;background:var(--surface2);
+  margin-top:7px;overflow:hidden}
+.cppbar b{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);
+  transition:width .25s ease}
+
+.cpbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;padding:2px 14px 12px}
+.cpcard{border-radius:20px;border:1px solid var(--line);background:var(--surface);
+  padding:15px 16px 14px;box-shadow:var(--shadow)}
+body:not(.light) .cpcard{background:var(--surface2)}
+.cpcard-top{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.cptopic{flex:1;min-width:0;font-size:11.5px;font-weight:800;color:var(--accent);
+  letter-spacing:-.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cpsbj{flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:3px 8px;letter-spacing:-.2px}
+.cpq{margin:0 0 13px;font-size:calc(16.5px * var(--fs));line-height:1.58;font-weight:700;
+  letter-spacing:-.35px;word-break:keep-all;color:var(--text)}
+
+.cpopts{display:flex;flex-direction:column;gap:8px}
+.copt{display:flex;align-items:flex-start;gap:9px;width:100%;text-align:left;
+  border:1px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:13px;padding:11px 12px;font-size:calc(13.5px * var(--fs));line-height:1.55;
+  font-weight:600;letter-spacing:-.2px;word-break:keep-all;
+  transition:background .15s,border-color .15s,transform .11s}
+.copt:active{transform:scale(.99)}
+.copt .no{flex:0 0 22px;height:22px;border-radius:50%;background:var(--surface2);
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.copt .tx{flex:1;min-width:0}
+.copt.right{border-color:rgba(52,211,153,.6);background:rgba(52,211,153,.13)}
+.copt.right .no{background:var(--green);border-color:transparent;color:#06251a}
+.copt.miss{border-color:rgba(248,113,113,.55);background:rgba(248,113,113,.12)}
+.copt.miss .no{background:var(--red);border-color:transparent;color:#2a0b0b}
+.copt.dim{opacity:.5}
+.copt[aria-disabled="true"]{pointer-events:none}
+
+.cpres{margin-top:11px}
+.cpres:empty{display:none}
+.cpexp{border:1px solid var(--line);border-radius:14px;background:var(--surface2);
+  padding:12px 13px;animation:fade .18s ease both}
+.cpexp-hd{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;
+  letter-spacing:-.2px;margin-bottom:8px}
+.cpexp.ok .cpexp-hd{color:var(--green)}
+.cpexp.no .cpexp-hd{color:var(--red)}
+.cpstep{display:flex;gap:8px;padding:6px 0;border-top:1px dashed var(--line);
+  font-size:calc(12.5px * var(--fs));line-height:1.6;word-break:keep-all}
+.cpstep:first-of-type{border-top:0}
+.cpstep i{flex:0 0 40px;font-style:normal;font-size:11px;font-weight:800;color:var(--accent);
+  letter-spacing:-.2px;padding-top:2px}
+.cpstep.f i{color:var(--text)}
+.cpstep.z i{color:var(--green)}
+.cpstep p{margin:0;flex:1;min-width:0;color:var(--muted)}
+.cpstep.f p{color:var(--text);font-weight:700}
+.cpstep.z p{color:var(--text);font-weight:800;font-size:calc(13.5px * var(--fs))}
+.cpnote{margin:9px 0 0;padding-top:9px;border-top:1px solid var(--line);
+  font-size:calc(11.5px * var(--fs));line-height:1.62;color:var(--amber);word-break:keep-all}
+.cpnote b{font-weight:800}
+
+.cpbot{flex:0 0 auto;padding:0 14px calc(12px + env(safe-area-inset-bottom))}
+.cpnext{display:none;width:100%;border:0;border-radius:15px;background:var(--accent);
+  color:#fff;font-size:15px;font-weight:800;padding:15px;letter-spacing:-.2px}
+.cpnext.on{display:block;animation:fade .16s ease both}
+.cpnext:active{transform:scale(.99)}
+
+/* 완료 화면 */
+.cpfinish{position:absolute;inset:0;padding-top:env(safe-area-inset-top);
+  display:none;flex-direction:column;overflow:hidden;background:var(--bg)}
+.cpfinish.on{display:flex}
+.cpfin-in{flex:0 1 auto;min-height:0;margin:auto 0;padding:16px 16px 8px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cpfin-hd{text-align:center;padding:6px 0 4px}
+.cpfin-em{font-size:34px;line-height:1}
+.cpfin-sc{font-size:34px;font-weight:800;letter-spacing:-1px;margin:8px 0 2px;
+  font-variant-numeric:tabular-nums}
+.cpfin-sub{font-size:12.5px;font-weight:700;color:var(--muted)}
+.cpfin-msg{text-align:center;font-size:13px;color:var(--muted);line-height:1.6;
+  margin:12px 0 14px;word-break:keep-all}
+.cpfin-list{margin:0 0 12px}
+.cpfin-it{border:1px solid var(--line);border-radius:13px;background:var(--surface);
+  padding:11px 12px;margin-bottom:8px}
+body:not(.light) .cpfin-it{background:var(--surface2)}
+.cpfin-n{font-size:11px;font-weight:800;color:var(--accent);margin:0 0 3px}
+.cpfin-q{font-size:12.5px;font-weight:700;line-height:1.5;margin:0 0 5px;word-break:keep-all}
+.cpfin-f{font-size:12px;font-weight:800;color:var(--text);margin:0 0 3px;word-break:keep-all}
+.cpfin-e{font-size:11.5px;color:var(--muted);line-height:1.55;margin:0;word-break:keep-all}
+.cpfin-btns{display:flex;gap:9px;padding:0 16px calc(14px + env(safe-area-inset-bottom))}
+.cpfin-btns .btn{flex:1;white-space:nowrap}
+.cpfin-btns .btn.cpfin-wr{font-size:13px;letter-spacing:-.4px}
+.cpfine{margin:0 0 8px;text-align:center;font-size:11.5px;color:var(--muted)}
+
+/* ================= v6: 로드맵 — 학습 플랜 + 내 목표·진도 ================= */
+
+/* 주차별 체크박스 */
+#planWeeks summary{flex-wrap:nowrap}
+#planWeeks summary:after{margin-left:7px}
+.wkp{flex:0 0 auto;margin-left:auto;font-size:10.5px;font-weight:800;color:var(--muted);
+  background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:3px 7px;letter-spacing:-.2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wkp.full{color:var(--green);border-color:rgba(52,211,153,.45);background:rgba(52,211,153,.12)}
+.wtasks{margin:9px 0 0;padding:9px 0 0;border-top:1px dashed var(--line)}
+.wtasks-hd{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;
+  letter-spacing:.06em;color:var(--muted);margin:0 0 6px}
+.wtask{display:flex;align-items:flex-start;gap:9px;padding:6px 0;cursor:pointer}
+.wtask .ckb{flex:0 0 20px;width:20px;height:20px;margin:1px 0 0;appearance:none;
+  -webkit-appearance:none;border:1.5px solid var(--line);border-radius:6px;
+  background:var(--surface);position:relative;transition:background .14s,border-color .14s}
+.wtask .ckb:checked{background:var(--accent);border-color:transparent}
+.wtask .ckb:checked:after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.wtask .ckb:active{transform:scale(.94)}
+.wtask-tx{flex:1;min-width:0;font-size:12.5px;line-height:1.5;color:var(--text);
+  font-weight:600;letter-spacing:-.2px;word-break:keep-all}
+.wtask .ckb:checked + .wtask-tx{color:var(--muted);text-decoration:line-through;
+  text-decoration-color:rgba(147,163,184,.6)}
+
+/* 8주 플랜 진행률 */
+.plsum{border:1px solid var(--line);border-radius:14px;background:var(--surface);
+  padding:11px 12px;margin:0 0 12px}
+.plsum-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  font-size:12px;font-weight:800;color:var(--text);letter-spacing:-.2px;margin-bottom:7px}
+.plsum-top span{font-size:11.5px;font-weight:800;color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.plsum-top span b{color:var(--accent);font-weight:800}
+.plsum .meter{display:block;height:6px}
+.plsum .meter b{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s ease}
+
+/* 5개월 타임라인 */
+.tl{position:relative;margin:0;padding:0}
+.tlrow{display:flex;gap:11px;padding:0 0 13px;position:relative}
+.tlrow:last-child{padding-bottom:0}
+.tlrow:before{content:"";position:absolute;left:6px;top:16px;bottom:-2px;width:2px;
+  background:var(--line)}
+.tlrow:last-child:before{display:none}
+.tldot{flex:0 0 14px;width:14px;height:14px;border-radius:50%;margin-top:3px;
+  border:2px solid var(--accent);background:var(--bg);z-index:1}
+.tlrow.done .tldot{background:var(--green);border-color:var(--green)}
+.tlrow.now .tldot{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.tlbd{flex:1;min-width:0}
+.tlwhen{font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.01em;
+  margin:0 0 2px;font-variant-numeric:tabular-nums}
+.tlwhat{font-size:13.5px;font-weight:800;color:var(--text);margin:0 0 3px;letter-spacing:-.25px}
+.tlhow{font-size:12px;color:var(--muted);line-height:1.58;margin:0;word-break:keep-all}
+
+/* ---- 내 목표·진도 ---- */
+.gsum{border:1px solid var(--line);border-radius:18px;background:var(--surface);
+  padding:14px 15px 13px;margin:0 0 16px;box-shadow:var(--shadow)}
+body:not(.light) .gsum{background:var(--surface2)}
+.gsum-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 9px}
+.gsum-top span{font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:-.2px}
+.gsum-top b{font-size:27px;font-weight:800;letter-spacing:-1px;color:var(--text);
+  font-variant-numeric:tabular-nums;line-height:1}
+.gmeter{display:block;height:9px;border-radius:99px;background:var(--surface2);
+  border:1px solid var(--line);overflow:hidden;margin:0 0 8px}
+body:not(.light) .gmeter{background:rgba(0,0,0,.3)}
+.gmeter>b{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--green));transition:width .32s ease}
+.gsum-sub{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:11.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.gsum-sub b{color:var(--text);font-weight:800}
+
+.gpanel{padding:6px 12px}
+.gs-it{display:flex;align-items:flex-start;gap:10px;padding:11px 0;
+  border-top:1px solid var(--line);cursor:pointer}
+.gs-it:first-child{border-top:0}
+.gs-it .ckb{flex:0 0 21px;width:21px;height:21px;margin:1px 0 0;appearance:none;
+  -webkit-appearance:none;border:1.5px solid var(--line);border-radius:7px;
+  background:var(--surface2);position:relative;transition:background .14s,border-color .14s}
+.gs-it .ckb:checked{background:var(--accent);border-color:transparent}
+.gs-it .ckb:checked:after{content:"";position:absolute;left:5px;top:2px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.gs-bd{flex:1;min-width:0}
+.gs-tx{display:block;font-size:13.5px;font-weight:700;color:var(--text);letter-spacing:-.25px;
+  line-height:1.45;word-break:keep-all;margin:0}
+.gs-sub{display:block;font-size:11.5px;color:var(--muted);margin:3px 0 0;line-height:1.5;word-break:keep-all}
+.gs-tag{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:var(--accent);
+  background:var(--accent-soft);border-radius:999px;padding:2px 7px;letter-spacing:-.1px;
+  vertical-align:1px}
+.gs-it.done .gs-tx{color:var(--muted);text-decoration:line-through;
+  text-decoration-color:rgba(147,163,184,.55)}
+.gdel{flex:0 0 auto;border:0;background:transparent;color:var(--muted);font-size:14px;
+  line-height:1;padding:3px 2px;opacity:.7}
+.gdel:active{opacity:1;color:var(--red)}
+
+.gadd{padding:2px 0 4px}
+.gadd input{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--surface2);
+  color:var(--text);font-size:14px;font-family:inherit;padding:12px 13px;letter-spacing:-.2px}
+.gadd input::placeholder{color:var(--muted);opacity:.8}
+.gadd input:focus{outline:none;border-color:var(--accent)}
+.gadd-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.gsel{flex:1;min-width:0;position:relative}
+.gsel:after{content:"▾";position:absolute;right:11px;top:50%;transform:translateY(-50%);
+  font-size:11px;color:var(--muted);pointer-events:none}
+.gadd select{width:100%;border:1px solid var(--line);border-radius:11px;
+  background:var(--surface2);color:var(--text);font-size:12.5px;font-family:inherit;
+  font-weight:700;padding:10px 26px 10px 11px;letter-spacing:-.2px;
+  appearance:none;-webkit-appearance:none}
+.gadd .btn{flex:0 0 auto;padding:11px 18px;border-radius:11px;font-size:13px;color:#fff;
+  background:var(--accent);border-color:transparent}
+.gempty{text-align:center;color:var(--muted);font-size:12px;line-height:1.65;padding:14px 4px 8px}
+.gtip{margin:9px 0 0;font-size:11px;color:var(--muted);line-height:1.55;word-break:keep-all}
+
 </style>
 </head>
 <body>
@@ -706,7 +972,7 @@ body.fs-3 .kicker{font-size:10.5px}
     <div class="hdr">
       <div class="brand">
         <b>산업안전기사 학습</b>
-        <span>4지선다 150문항 · 기출 OX 360지문</span>
+        <span>기출 OX 360 · 계산 35 · 4지선다 150</span>
       </div>
       <div class="hdract">
         <button class="iconbtn fbtn" id="fontBtn" aria-label="글자 크기 조절"><b>가</b><i id="fontBtnNum">1</i></button>
@@ -851,6 +1117,12 @@ body.fs-3 .kicker{font-size:10.5px}
 
     <!-- ============ 로드맵 ============ -->
     <section class="view" id="viewRoadmap">
+      <div class="qseg" id="rSeg" role="tablist" aria-label="로드맵 보기">
+        <button class="qseg-b active" data-rm="plan" role="tab" aria-selected="true"><span class="em">📅</span> 학습 플랜</button>
+        <button class="qseg-b" data-rm="goal" role="tab" aria-selected="false"><span class="em">🎯</span> 내 목표·진도</button>
+      </div>
+
+      <div id="planHome">
       <div class="banner"><b>2027년 1월 1일부터 필기는 5과목·100문항·150분.</b><br>전기설비와 화학설비가 한 과목으로 합쳐집니다. 지금부터 8주면 이동 시간만으로 1회독이 끝납니다.</div>
 
       <div class="sect">
@@ -899,8 +1171,54 @@ body.fs-3 .kicker{font-size:10.5px}
       </div>
 
       <div class="sect">
-        <h2>8주 학습 플랜 (하루 2시간)</h2>
+        <h2>5개월 로드맵 · 2027년 1회 합격</h2>
+        <div class="panel">
+          <div class="tl">
+            <div class="tlrow" data-from="2026-11" data-to="2026-12">
+              <span class="tldot"></span>
+              <div class="tlbd">
+                <p class="tlwhen">2026.11 ~ 2026.12 · 2개월</p>
+                <p class="tlwhat">기초 다지기 · 1회독</p>
+                <p class="tlhow">암기카드 84장 → 기출 OX 360지문 → 4지선다 150문항 → 공식 54개와 계산 35문항. 아래 8주 플랜을 그대로 따라가면 12월 말에 1회독이 끝납니다.</p>
+              </div>
+            </div>
+            <div class="tlrow" data-from="2027-01" data-to="2027-01">
+              <span class="tldot"></span>
+              <div class="tlbd">
+                <p class="tlwhen">2027.1월 · 서류와 접수</p>
+                <p class="tlwhat">학점인정 신청 · 원서접수</p>
+                <p class="tlhow">학점은행제 학점인정 신청으로 응시 자격 학점을 확정하고, Q-Net에서 2027년 제1회 필기 원서를 접수합니다. 접수 기간은 공고로 확정되니 1월 초에 확인하세요.</p>
+              </div>
+            </div>
+            <div class="tlrow" data-from="2027-02" data-to="2027-02">
+              <span class="tldot"></span>
+              <div class="tlbd">
+                <p class="tlwhen">2027.2월 · 필기</p>
+                <p class="tlwhat">5과목 100문항 · 150분</p>
+                <p class="tlhow">과목당 20문항, 과목당 40점 이상 · 평균 60점 이상. 1월에는 새 과목을 늘리지 말고 CBT와 오답만 돌립니다.</p>
+              </div>
+            </div>
+            <div class="tlrow" data-from="2027-03" data-to="2027-04">
+              <span class="tldot"></span>
+              <div class="tlbd">
+                <p class="tlwhen">2027.3 ~ 2027.4 · 실기</p>
+                <p class="tlwhat">필답 55 + 작업 45 · 60점 이상</p>
+                <p class="tlhow">필기 합격 후 2년간 실기 응시가 가능합니다. 필답 90분(서술형)과 작업형(영상 보고 위험요인·대책)을 각각 준비하세요.</p>
+              </div>
+            </div>
+          </div>
+          <p class="fine">2027년 시험 일정은 Q-Net 공고가 최종입니다. 예년 기준 제1회 필기는 1월 중순 원서접수 → 2월경 시험, 실기는 3~4월에 치러졌습니다.</p>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2>8주 학습 플랜 (하루 2시간) · 주차별 체크</h2>
         <div class="panel" style="padding:13px">
+          <div class="plsum">
+            <div class="plsum-top">8주 플랜 진행률<span id="planPct"><b>0</b>/32 · 0%</span></div>
+            <i class="meter"><b id="planBar"></b></i>
+          </div>
+          <div id="planWeeks">
           <details open>
             <summary><span class="wk">1주</span>1과목 · 안전관리론 기초</summary>
             <div class="dbody">
@@ -957,6 +1275,7 @@ body.fs-3 .kicker{font-size:10.5px}
               <div class="ln"><em>2회차</em><div>5과목 퀴즈 10문항 → '틀린 문제만 다시 풀기'로 전체 오답 한 바퀴.</div></div>
             </div>
           </details>
+          </div>
           <p class="fine">주말에는 그 주 카드를 전부 다시 넘기고, 20문항을 시간 재고 풀어보세요. 실제 시험은 과목당 30분(20문항)입니다.</p>
         </div>
       </div>
@@ -1009,6 +1328,41 @@ body.fs-3 .kicker{font-size:10.5px}
       <footer class="foot">
         학습용 요약 자료입니다. 법령 수치·시험 일정은 개정될 수 있으니<br>응시 전 Q-Net 공고와 법령 원문으로 확인하세요.
       </footer>
+      </div>
+
+      <div id="goalHome" style="display:none">
+        <div class="gsum">
+          <div class="gsum-top"><span>전체 목표 달성률</span><b id="goalPct">0%</b></div>
+          <i class="gmeter"><b id="goalBar"></b></i>
+          <div class="gsum-sub">
+            <span id="goalDone">완료 <b>0</b> / 전체 <b>6</b></span>
+            <span id="goalPlanMini">8주 플랜 <b>0/32</b> · 0%</span>
+          </div>
+        </div>
+
+        <div class="sect">
+          <h2>기본 마일스톤</h2>
+          <div class="panel gpanel"><div id="msList"></div></div>
+        </div>
+
+        <div class="sect">
+          <h2>나만의 목표</h2>
+          <div class="panel gpanel">
+            <div class="gadd">
+              <input id="goalInput" type="text" maxlength="40" autocomplete="off"
+                     placeholder="예: 실기 필답 10개년 기출 1회독">
+              <div class="gadd-row">
+                <div class="gsel"><select id="goalTag" aria-label="목표 태그"></select></div>
+                <button class="btn primary small" id="goalAdd">추가</button>
+              </div>
+            </div>
+            <div id="myList"></div>
+            <p class="gtip">체크하면 위 달성률에 바로 반영됩니다. 목표는 이 기기 브라우저에만 저장되고, ✕를 누르면 지워집니다.</p>
+          </div>
+        </div>
+
+        <footer class="foot">목표와 체크 상태는 이 기기에만 저장됩니다.<br>기기를 바꾸면 새로 체크해 주세요.</footer>
+      </div>
     </section>
 
     <!-- ============ CBT ============ -->
@@ -1034,6 +1388,12 @@ body.fs-3 .kicker{font-size:10.5px}
 
     <!-- ============ 계산 공식집 ============ -->
     <section class="view" id="viewFormula">
+      <div class="qseg" id="fSeg" role="tablist" aria-label="공식 탭 보기">
+        <button class="qseg-b active" data-fm="fml" role="tab" aria-selected="true"><span class="em">📖</span> 공식집 (54)</button>
+        <button class="qseg-b" data-fm="calc" role="tab" aria-selected="false"><span class="em">🧮</span> 계산 문제 풀기 (35)</button>
+      </div>
+
+      <div id="fmlHome">
       <div class="metaline">
         <span id="fmlCount">0개 공식</span>
         <span>계산문제 대비</span>
@@ -1041,8 +1401,16 @@ body.fs-3 .kicker{font-size:10.5px}
       <div class="chips" id="fmlChips"></div>
       <input class="fsearch" id="fmlSearch" type="search" placeholder="공식·기호로 찾기 (예: 도수율, MTBF)">
       <div id="fmlList"></div>
+      </div>
+
+      <div id="calcHome" style="display:none">
+        <div class="cbar-top"><span class="csum" id="calcSum"></span></div>
+        <i class="cmeter"><b id="calcBar"></b></i>
+        <div id="calcList"></div>
+      </div>
+
       <footer class="foot">
-        수식은 산업안전기사 필기 기출 계산문제 기준입니다.<br>법령 수치·기준값은 개정될 수 있으니 응시 전 원문으로 확인하세요.
+        수식은 산업안전기사 필기 기출 계산문제 기준입니다. 계산 문제는 공식 → 대입 순서로 풀이가 열립니다.<br>법령 수치·기준값은 개정될 수 있으니 응시 전 원문으로 확인하세요.
       </footer>
     </section>
   </main>
@@ -1112,6 +1480,54 @@ body.fs-3 .kicker{font-size:10.5px}
       <p class="oxsh-lead">지문 오른쪽 북마크(🔖)를 누르면 여기에 모입니다. 헷갈리는 지문만 모아 한 번에 돌려보세요.</p>
       <div id="oxShList"></div>
       <button class="btn primary oxsh-go" id="oxShPlay">저장한 문제 풀기</button>
+    </div>
+  </div>
+
+  <!-- ============ 계산 문제 플레이어 ============ -->
+  <div class="cp" id="calcP" role="dialog" aria-modal="true" aria-label="계산 문제 풀이">
+    <div class="cpshell">
+      <div class="cpbar">
+        <button class="cpquit" id="calcQuit">종료</button>
+        <div class="cphd">
+          <div class="cphd-row">
+            <span class="cphd-nm" id="calcTopTitle">1과목 7문항</span>
+            <span class="cphd-pos" id="calcPos">1 / 7</span>
+          </div>
+          <i class="cppbar"><b id="calcPBar"></b></i>
+        </div>
+      </div>
+
+      <div class="cpbody" id="calcBody">
+        <div class="cpcard">
+          <div class="cpcard-top">
+            <span class="cptopic" id="calcTopic">도수율</span>
+            <span class="cpsbj" id="calcSbj">1과목</span>
+          </div>
+          <p class="cpq" id="calcQ"></p>
+          <div class="cpopts" id="calcOpts"></div>
+          <div class="cpres" id="calcRes"></div>
+        </div>
+      </div>
+
+      <div class="cpbot" id="calcBot">
+        <button class="cpnext" id="calcNext">다음 문제</button>
+      </div>
+
+      <div class="cpfinish" id="calcFin">
+        <div class="cpfin-in">
+          <div class="cpfin-hd">
+            <div class="cpfin-em" id="calcFinEm"></div>
+            <div class="cpfin-sc" id="calcFinSc"></div>
+            <div class="cpfin-sub" id="calcFinSub"></div>
+          </div>
+          <p class="cpfin-msg" id="calcFinMsg"></p>
+          <div class="cpfin-list" id="calcFinList"></div>
+        </div>
+        <div class="cpfin-btns">
+          <button class="btn" id="calcFinRetry">한 번 더</button>
+          <button class="btn primary" id="calcFinClose">목록으로</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1590,7 +2006,8 @@ function switchTab(name){
   }
   if (name === 'quiz'){ renderQuizSetup(); renderOxHome(); }
   if (name === 'cbt') cbtSetup();
-  if (name === 'formula') renderFormulas();
+  if (name === 'roadmap') renderRoadmap();
+  if (name === 'formula'){ renderFormulas(); renderCalcHome(); }
   window.scrollTo(0, 0);
 }
 var tabBtns = document.querySelectorAll('.tab');
@@ -2905,7 +3322,7 @@ var qxMode = sGet(OXK.mode, 'ox');
 function setQMode(m){
   qxMode = (m === 'mc') ? 'mc' : 'ox';
   sSet(OXK.mode, qxMode);
-  var bs = document.querySelectorAll('.qseg-b');
+  var bs = document.querySelectorAll('#qSeg .qseg-b');
   for (var i = 0; i < bs.length; i++){
     var on = bs[i].getAttribute('data-mode') === qxMode;
     bs[i].className = 'qseg-b' + (on ? ' active' : '');
@@ -3298,6 +3715,658 @@ function quizChipsInit(){
     renderQuizSetup();
   });
 }
+
+var CALC = [
+{id:'c1',s:1,n:'도수율 (FR)',q:'근로자 250명인 사업장에서 1일 8시간, 연간 300일을 근무하였다. 1년간 재해가 30건 발생했을 때 도수율은?',o:['25','50','500','5.0'],k:1,f:'도수율 FR = 재해건수 ÷ 연근로시간수 × 1,000,000',st:[['공식','FR = 재해건수 ÷ 연근로시간수 × 1,000,000'],['대입','연근로시간수 = 250명 × 8시간 × 300일 = 600,000시간'],['계산','30 ÷ 600,000 × 1,000,000 = 0.00005 × 1,000,000'],['정답','FR = 50 (근로시간 100만 시간당 재해 50건)']],e:'배수는 100만. 강도율의 1,000과 바꿔 쓰면 자릿수가 1,000배 틀어집니다.'},
+{id:'c2',s:1,n:'강도율 (SR)',q:'연간 근로손실일수가 4,800일이고 연근로시간수가 800,000시간일 때 강도율은?',o:['60','0.6','6.0','4.8'],k:2,f:'강도율 SR = 근로손실일수 ÷ 연근로시간수 × 1,000',st:[['공식','SR = 근로손실일수 ÷ 연근로시간수 × 1,000'],['대입','4,800 ÷ 800,000 × 1,000'],['계산','4,800 ÷ 800,000 = 0.006 → × 1,000'],['정답','SR = 6.0 (근로시간 1,000시간당 손실 6일)']],e:'분자에는 근로손실일수만. 휴업일수가 따로 주어져도 환산(×300/365)한 값을 씁니다.'},
+{id:'c3',s:1,n:'연천인율',q:'연평균 근로자 500명인 사업장에서 1년간 재해자 15명이 발생했을 때 연천인율은?',o:['30','3','300','15'],k:0,f:'연천인율 = 연간 재해자수 ÷ 연평균 근로자수 × 1,000',st:[['공식','연천인율 = 재해자수 ÷ 연평균 근로자수 × 1,000'],['대입','15 ÷ 500 × 1,000'],['계산','15 ÷ 500 = 0.03 → × 1,000'],['정답','30 (근로자 1,000명당 연간 30명)']],e:'분자는 사람 수(재해자), 도수율의 분자는 사건 수(재해). 한 사고로 2명이 다치면 재해자 2 · 재해 1입니다.'},
+{id:'c4',s:1,n:'종합재해지수 (FSI)',q:'도수율 16, 강도율 9인 사업장의 종합재해지수(FSI)는?',o:['12.5','25','12','144'],k:2,f:'FSI = √(도수율 × 강도율)',st:[['공식','FSI = √(도수율 × 강도율)'],['대입','√(16 × 9) = √144'],['계산','√144 = 12'],['정답','FSI = 12']],e:'더해서 2로 나누는 산술평균이 아니라 곱한 뒤 제곱근(기하평균). 144가 보기에 있으면 √를 잊은 것입니다.'},
+{id:'c5',s:1,n:'시몬즈 재해코스트',q:'시몬즈 방식으로 재해코스트를 계산한다. 보험코스트가 요양급여 300만 원·휴업급여 200만 원이고, 비보험코스트가 휴업손실 400만 원·통원손실 100만 원·응급조치비 50만 원·무상해사고 손실 150만 원일 때 총코스트는?',o:['500만 원','700만 원','1,050만 원','1,200만 원'],k:3,f:'총코스트 = 보험코스트 + 비보험코스트',st:[['공식','총코스트 = 보험코스트 + 비보험코스트'],['보험','요양 300 + 휴업 200 = 500만 원'],['비보험','휴업손실 400 + 통원 100 + 응급조치 50 + 무상해 150 = 700만 원'],['정답','500 + 700 = 1,200만 원']],e:'산재보험으로 지급되는 요양·휴업·장해급여는 보험코스트, 생산 중단·기계 손실·무상해사고는 비보험코스트입니다.'},
+{id:'c6',s:1,n:'근로손실일수 환산',q:'사망 1명, 4급 장해 1명, 휴업일수 365일이 발생했을 때 근로손실일수는? (사망 7,500일 · 4급 5,500일 기준)',o:['13,300일','13,365일','13,000일','12,300일'],k:0,f:'근로손실일수 = 사망·장해 환산일수 + 휴업일수 × 300/365',st:[['공식','사망 7,500일, 4급 5,500일, 일시전노동불능 = 휴업일수 × 300 ÷ 365'],['대입','7,500 + 5,500 + (365 × 300 ÷ 365)'],['계산','365 × 300 ÷ 365 = 300일'],['정답','13,000 + 300 = 13,300일']],e:'휴업일수는 그대로 더하지 않고 300/365로 환산. 13,365일은 환산을 빼먹은 함정입니다.'},
+{id:'c7',s:1,n:'하인리히 재해코스트',q:'하인리히 방식에서 직접비가 800만 원일 때 총손실비는?',o:['3,200만 원','4,000만 원','1,000만 원','2,400만 원'],k:1,f:'직접비 : 간접비 = 1 : 4, 총손실비 = 직접비 × 5',st:[['공식','직접비 : 간접비 = 1 : 4 → 간접비 = 직접비 × 4'],['대입','간접비 = 800만 × 4 = 3,200만 원'],['계산','총손실비 = 직접비 + 간접비 = 800 + 3,200'],['정답','4,000만 원 (= 직접비 × 5)']],e:'"간접비가 직접비의 4배", "총손실비는 직접비의 5배". 4와 5를 바꿔 쓰는 함정이 많습니다.'},
+{id:'c8',s:2,n:'작업대사율 (RMR)',q:'작업 시 에너지소비량 4,800kcal, 안정 시 1,500kcal, 기초대사량 1,000kcal일 때 작업대사율(RMR)은?',o:['48%','230%','330%','480%'],k:2,f:'RMR = (작업 시 소비량 − 안정 시 소비량) ÷ 기초대사량 × 100',st:[['공식','RMR = (작업 시 소비량 − 안정 시 소비량) ÷ 기초대사량 × 100'],['대입','(4,800 − 1,500) ÷ 1,000 × 100'],['계산','3,300 ÷ 1,000 = 3.3 → × 100'],['정답','330%']],e:'분모는 기초대사량, 빼는 값은 안정 시 소비량. RMR 4 이하 경작업, 7 이상 중작업으로 구분합니다.'},
+{id:'c9',s:2,n:'들기지수 (LI)',q:'작업물의 무게가 24kg이고 권장무게한계(RWL)가 20kg일 때 들기지수(LI)와 판정은?',o:['1.2 — 1.0을 넘으므로 위험','0.83 — 1.0 이하이므로 안전','1.0 — 경계값으로 안전','4.0 — 즉시 개선'],k:0,f:'LI = 작업물 무게 ÷ RWL',st:[['공식','LI = 작업물 무게 ÷ RWL'],['대입','24 ÷ 20'],['계산','1.2'],['정답','LI 1.2 → 1.0 초과로 위험(개선 대상)']],e:'무게를 RWL로 나눕니다. 거꾸로 나눠 0.83이 나오면 방향을 반대로 외운 것입니다.'},
+{id:'c10',s:2,n:'소음 허용노출시간 (5dB 교환율)',q:'90dB(A)에서 8시간이 허용될 때, 100dB(A) 작업장의 1일 허용노출시간은?',o:['4시간','2시간','1시간','8시간'],k:1,f:'T = 8 ÷ 2^((L − 90) ÷ 5)',st:[['공식','T = 8 ÷ 2^((L − 90) ÷ 5)'],['대입','(100 − 90) ÷ 5 = 2 → T = 8 ÷ 2²'],['계산','2² = 4 → 8 ÷ 4'],['정답','2시간']],e:'5dB마다 허용시간이 절반: 90dB 8시간 → 95dB 4시간 → 100dB 2시간 → 105dB 1시간.'},
+{id:'c11',s:2,n:'WBGT (옥외·태양광)',q:'태양광이 있는 옥외 작업장에서 자연습구온도 24℃, 흑구온도 38℃, 건구온도 30℃일 때 WBGT는?',o:['26.6','28.2','24.4','27.4'],k:3,f:'옥외(태양광 있음): WBGT = 0.7Tw + 0.2Tg + 0.1Ta',st:[['공식','WBGT = 0.7Tw + 0.2Tg + 0.1Ta (옥외·태양광 있음)'],['대입','0.7×24 + 0.2×38 + 0.1×30'],['계산','16.8 + 7.6 + 3.0'],['정답','27.4']],e:'옥외식에만 건구온도(Ta)가 0.1로 들어갑니다. 28.2는 옥내식(0.7Tw + 0.3Tg)으로 계산한 함정.'},
+{id:'c12',s:2,n:'신뢰도 (직렬 · 병렬)',q:'신뢰도 0.9인 부품 2개로 시스템을 만들 때, 예비 부품을 1개 더 두어 병렬(여분)로 구성한 시스템의 신뢰도는?',o:['0.99','0.81','0.18','0.90'],k:0,f:'병렬(여분): Rp = 1 − (1 − R1)(1 − R2),  직렬: Rs = R1 × R2',st:[['공식','직렬 Rs = R1 × R2 · 병렬 Rp = 1 − (1 − R1)(1 − R2)'],['직렬이라면','0.9 × 0.9 = 0.81 — 보기 ②는 직렬로 계산한 함정'],['대입','1 − (1 − 0.9)(1 − 0.9) = 1 − 0.1 × 0.1'],['정답','1 − 0.01 = 0.99']],e:'직렬은 값이 작아지고(0.81), 병렬은 커집니다(0.99). 부품이 모두 살아야 하면 직렬, 하나만 살아도 되면 병렬.'},
+{id:'c13',s:2,n:'가용도 (Availability)',q:'어떤 설비의 MTBF가 950시간, MTTR이 50시간일 때 가용도는?',o:['90%','95%','105%','19%'],k:1,f:'A = MTBF ÷ (MTBF + MTTR)',st:[['공식','A = MTBF ÷ (MTBF + MTTR)'],['대입','950 ÷ (950 + 50)'],['계산','950 ÷ 1,000 = 0.95'],['정답','95%']],e:'분모에 MTTR을 더해야 합니다. MTBF로만 나누면 항상 1(100%)이 되는 함정에 빠집니다.'},
+{id:'c14',s:2,n:'FTA 게이트 확률',q:'FTA에서 사상 A(발생확률 0.1)와 사상 B(0.2)가 OR 게이트로 연결된 정상사상의 발생확률은?',o:['0.28','0.30','0.02','0.72'],k:0,f:'OR: P = 1 − (1 − P1)(1 − P2),  AND: P = P1 × P2',st:[['공식','OR 게이트: P = 1 − (1 − P1)(1 − P2)'],['대입','1 − (1 − 0.1)(1 − 0.2) = 1 − 0.9 × 0.8'],['계산','0.9 × 0.8 = 0.72 → 1 − 0.72'],['정답','0.28']],e:'0.30은 0.1 + 0.2로 더한 근사값, 0.02는 AND로 계산한 값입니다. OR은 하나만 발생해도 사고.'},
+{id:'c15',s:3,n:'광전자식 안전거리',q:'프레스에 광전자식 방호장치를 설치한다. 전기적 지연시간 40ms, 기계적 지연시간 120ms일 때 위험점에서 광축까지의 안전거리는?',o:['160mm','192mm','256mm','320mm'],k:2,f:'S = 1.6 × (Tℓ + Ts)',st:[['공식','S = 1.6 × (Tℓ + Ts)  — 1.6은 손의 접근 속도(mm/ms)'],['대입','Tℓ + Ts = 40 + 120 = 160ms'],['계산','1.6 × 160'],['정답','256mm']],e:'시간 단위가 ms입니다. 초로 바꿔 넣으면 0.256mm가 되는 함정.'},
+{id:'c16',s:3,n:'연삭숫돌 원주속도',q:'지름 250mm인 연삭숫돌이 1,440rpm으로 회전할 때 원주속도는? (π = 3.1416)',o:['18.8m/s','37.7m/s','9.4m/s','1.13m/s'],k:0,f:'V = π × D × N ÷ 60,000',st:[['공식','V = π × D × N ÷ 60,000  (D: mm, N: rpm → m/s)'],['대입','3.1416 × 250 × 1,440 ÷ 60,000'],['계산','250 × 1,440 = 360,000 → × 3.1416 = 1,130,973 → ÷ 60,000'],['정답','18.85 ≒ 18.8m/s']],e:'분모 60,000은 mm·rpm을 m/s로 바꾸는 값. m/min을 물으면 1,000으로 나눕니다.'},
+{id:'c17',s:3,n:'줄걸이 장력',q:'무게 20kN의 화물을 와이어로프 2가닥으로 2점 매달기 하고, 각 로프가 수직선에서 30° 벌어졌다. 로프 1가닥에 걸리는 장력은? (cos30° = 0.866)',o:['10.0kN','8.7kN','20.0kN','11.5kN'],k:3,f:'T = W ÷ (n × cosθ)',st:[['공식','T = W ÷ (n × cosθ)  — n: 로프 수, θ: 수직선에서 벌어진 각'],['대입','20 ÷ (2 × 0.866)'],['계산','2 × 0.866 = 1.732 → 20 ÷ 1.732'],['정답','11.55 ≒ 11.5kN (수직으로 매달 때 10kN보다 큼)']],e:'θ가 커질수록 장력이 급격히 커집니다. 벌어진 각을 잊고 W/n으로만 나누면 10kN이 되는 함정.'},
+{id:'c18',s:3,n:'양수조작식 안전거리',q:'클러치 물림개소 1개소, 매분 회전수 60rpm인 프레스의 양수조작식 방호장치 안전거리는?',o:['1,600mm','2,400mm','960mm','3,600mm'],k:1,f:'Dm = 1.6 × Tm,  Tm = (1 ÷ 물림개소수 + 1/2) × (60,000 ÷ 회전수)',st:[['공식','Tm = (1 ÷ 물림개소수 + 1/2) × (60,000 ÷ 매분 회전수), Dm = 1.6 × Tm'],['대입','Tm = (1 ÷ 1 + 0.5) × (60,000 ÷ 60) = 1.5 × 1,000'],['계산','Tm = 1,500ms → Dm = 1.6 × 1,500'],['정답','2,400mm']],e:'괄호 안 1/2을 빼먹으면 1,600mm가 되어 위험한 답이 됩니다.'},
+{id:'c19',s:3,n:'벨트 길이',q:'지름 100mm와 300mm인 두 풀리의 중심거리가 500mm일 때 벨트 길이는? (π = 3.14)',o:['1,600mm','1,628mm','1,648mm','1,828mm'],k:2,f:'L = 2C + π(D1 + D2)/2 + (D2 − D1)² ÷ (4C)',st:[['공식','L = 2C + π(D1 + D2)/2 + (D2 − D1)² ÷ (4C)'],['대입','2×500 + 3.14×400/2 + (200)² ÷ (4×500)'],['계산','1,000 + 628 + 20'],['정답','1,648mm']],e:'마지막 항은 지름 차의 제곱을 4C로 나눕니다. 차를 그대로 더하면 1,828mm가 되는 함정.'},
+{id:'c20',s:3,n:'보일러 열효율',q:'증기 발생량 1,000kg/h, 증기 엔탈피 660kcal/kg, 급수 엔탈피 60kcal/kg, 연료 사용량 150kg/h, 연료 발열량 5,000kcal/kg일 때 보일러 열효율은?',o:['80%','75%','60%','88%'],k:0,f:'열효율 = 발생열량 ÷ 공급열량 × 100',st:[['공식','열효율 = (증기량 × (증기 엔탈피 − 급수 엔탈피)) ÷ (연료량 × 발열량) × 100'],['대입','1,000 × (660 − 60) = 600,000kcal/h · 150 × 5,000 = 750,000kcal/h'],['계산','600,000 ÷ 750,000 = 0.8'],['정답','80%']],e:'급수 엔탈피를 빼는 것을 잊으면 88%가 됩니다. 분모는 연료가 낸 총열량.'},
+{id:'c21',s:3,n:'기어 중심거리',q:'모듈 4, 잇수 20과 40인 두 표준 평기어가 맞물릴 때 중심거리는?',o:['60mm','180mm','240mm','120mm'],k:3,f:'D = m × Z,  중심거리 = m(Z1 + Z2) ÷ 2',st:[['공식','피치원 지름 D = 모듈 × 잇수, 중심거리 = (D1 + D2) ÷ 2'],['대입','D1 = 4×20 = 80mm, D2 = 4×40 = 160mm'],['계산','(80 + 160) ÷ 2'],['정답','120mm = 4 × (20 + 40) ÷ 2']],e:'중심거리는 두 피치원 지름의 합의 절반. 지름을 그냥 더한 240mm가 함정입니다.'},
+{id:'c22',s:4,n:'옴의 법칙 · 전력',q:'220V 전원에 저항 22Ω의 전열기를 연결했을 때 소비전력은?',o:['10W','2,200W','4,840W','22,000W'],k:1,f:'V = I × R,  P = V × I = I²R = V² ÷ R',st:[['공식','I = V ÷ R,  P = V × I'],['대입','I = 220 ÷ 22 = 10A'],['계산','P = 220 × 10'],['정답','2,200W (V²÷R = 220²÷22 = 2,200W로 확인)']],e:'전력식 세 가지는 같은 값. 저항을 모르면 V²/R, 전류를 모르면 I²R로 골라 씁니다.'},
+{id:'c23',s:4,n:'3상 전력',q:'선간전압 380V, 선전류 25A, 역률 0.8인 3상 유도전동기의 소비전력은? (√3 = 1.732)',o:['7.6kW','9.5kW','13.2kW','22.8kW'],k:2,f:'P = √3 × V × I × cosθ',st:[['공식','P = √3 × V × I × cosθ  (3상)'],['대입','1.732 × 380 × 25 × 0.8'],['계산','1.732 × 380 = 658.2 → × 25 = 16,454 → × 0.8 = 13,163W'],['정답','약 13.2kW']],e:'√3을 빼면 7.6kW(단상 계산)가 됩니다. 3상에서 √3은 반드시 들어갑니다.'},
+{id:'c24',s:4,n:'정전기 전압 (V = Q/C)',q:'정전용량 200pF인 물체에 2μC의 전하가 대전되었을 때 발생하는 정전기 전압은?',o:['400V','1kV','100kV','10kV'],k:3,f:'V = Q ÷ C',st:[['공식','V = Q ÷ C'],['대입','Q = 2μC = 2×10⁻⁶C, C = 200pF = 200×10⁻¹²F'],['계산','2×10⁻⁶ ÷ 200×10⁻¹² = 2×10⁻⁶ ÷ 2×10⁻¹⁰'],['정답','10,000V = 10kV']],e:'pF(10⁻¹²)와 μC(10⁻⁶)의 자릿수를 맞추는 것이 핵심. 거리 d가 멀수록 C가 작아져 전압은 커집니다.'},
+{id:'c25',s:4,n:'정전기 방전 에너지',q:'정전용량 200pF인 인체가 10kV로 대전되었을 때 방전 에너지는?',o:['10mJ','5mJ','1mJ','100mJ'],k:0,f:'E = ½ × C × V²',st:[['공식','E = ½ × C × V²'],['대입','0.5 × 200×10⁻¹²F × (10,000V)²'],['계산','(10,000)² = 1×10⁸ → 0.5 × 2×10⁻¹⁰ × 1×10⁸'],['정답','0.01J = 10mJ']],e:'전압이 2배면 에너지는 4배(제곱). 최소착화에너지와 비교해 폭발 위험을 판단합니다.'},
+{id:'c26',s:4,n:'폭발하한계 (르샤틀리에)',q:'메탄 70%(폭발하한계 5%), 프로판 30%(폭발하한계 2.1%)로 된 혼합가스의 폭발하한계는?',o:['2.1%','3.5%','5.0%','7.1%'],k:1,f:'L = 100 ÷ (V1/L1 + V2/L2 + …)',st:[['공식','L = 100 ÷ (V1/L1 + V2/L2)  — V: 부피%, L: 각 성분의 하한계'],['대입','100 ÷ (70/5 + 30/2.1)'],['계산','14 + 14.29 = 28.29'],['정답','100 ÷ 28.29 ≒ 3.5%']],e:'분자 100을 잊으면 0.35%가 됩니다. 상한계도 같은 식으로 계산합니다.'},
+{id:'c27',s:4,n:'폭발 위험도',q:'폭발하한계 2.0vol%, 폭발상한계 11.0vol%인 가스의 위험도는?',o:['4.5','5.5','0.82','9.0'],k:0,f:'위험도 = (폭발상한계 − 폭발하한계) ÷ 폭발하한계',st:[['공식','위험도 = (UFL − LFL) ÷ LFL'],['대입','(11.0 − 2.0) ÷ 2.0'],['계산','9.0 ÷ 2.0'],['정답','4.5 (값이 클수록 위험)']],e:'분모는 하한계. 상한계로 나누면 0.82가 되어 위험도를 거꾸로 읽게 됩니다.'},
+{id:'c28',s:4,n:'심실세동전류',q:'통전시간이 4초일 때 심실세동을 일으키는 전류값은? (I = 116/√t)',o:['29mA','116mA','58mA','232mA'],k:2,f:'I = 116 ÷ √t',st:[['공식','I = 116 ÷ √t  (mA, t: 초)'],['대입','√4 = 2 → I = 116 ÷ 2'],['계산','116 ÷ 2 = 58'],['정답','58mA']],e:'통전시간이 길수록 위험한 전류는 작아집니다(반비례). √t를 빼고 116으로 두면 116mA가 되는 함정.'},
+{id:'c29',s:5,n:'거푸집 측압',q:'콘크리트 단위중량 24kN/m³, 타설 높이 3.5m일 때 거푸집에 작용하는 측압은?',o:['42kN/m²','84kN/m²','68kN/m²','120kN/m²'],k:1,f:'P = γ × H',st:[['공식','P = γ × H  (γ: 단위중량, H: 타설 높이)'],['대입','24 × 3.5'],['계산','84'],['정답','84kN/m²']],e:'측압은 타설 높이에 비례. 굳기 시작하면 더 이상 커지지 않고, 타설 속도가 빠를수록 커집니다.'},
+{id:'c30',s:5,n:'지반 허용지지력 (안전율 3)',q:'극한지지력이 360kN/m²인 지반의 허용지지력은? (얕은 기초 통상 안전율 3)',o:['180kN/m²','360kN/m²','60kN/m²','120kN/m²'],k:3,f:'허용지지력 = 극한지지력 ÷ 3',st:[['공식','허용지지력 = 극한지지력 ÷ 안전율(3)'],['대입','360 ÷ 3'],['계산','120'],['정답','120kN/m²']],e:'안전율은 곱하는 값이 아니라 나누는 값. 180은 안전율을 2로 쓴 오답입니다.'},
+{id:'c31',s:5,n:'달비계 와이어로프 안전계수',q:'달비계용 와이어로프의 절단하중이 90kN, 최대사용하중이 8kN일 때 안전계수와 적합 여부는?',o:['11.25 — 기준 10 이상이므로 적합','11.25 — 기준 12 이상이므로 부적합','6.0 — 기준 6 이상이므로 적합','1.13 — 기준 1 이상이므로 적합'],k:0,f:'안전계수 = 절단하중 ÷ 최대사용하중 (달비계 10 이상)',st:[['공식','안전계수 = 절단하중 ÷ 최대사용하중'],['대입','90 ÷ 8'],['계산','11.25'],['정답','달비계 기준 10 이상 → 적합']],e:'일반 양중기는 6 이상, 사람이 매달리는 달비계·곤돌라는 10 이상. 기준값을 구분하는 문제가 자주 나옵니다.'},
+{id:'c32',s:5,n:'콘크리트 압축강도',q:'지름 150mm, 높이 300mm 공시체가 424kN에서 파괴되었다. 압축강도는? (π = 3.1416)',o:['12MPa','48MPa','24MPa','3MPa'],k:2,f:'압축강도 = 최대하중 ÷ 단면적,  단면적 = πD² ÷ 4',st:[['공식','f = P ÷ A,  A = πD² ÷ 4'],['대입','A = 3.1416 × 150² ÷ 4 = 17,671mm², P = 424,000N'],['계산','424,000 ÷ 17,671 ≒ 24.0'],['정답','24MPa (재령 28일 기준)']],e:'mm²당 N이 MPa. 지름을 반지름으로 착각하거나 단면적을 πD²로 두면 4배 차이가 납니다.'},
+{id:'c33',s:5,n:'랭킨 토압',q:'내부마찰각 30°, 흙의 단위중량 18kN/m³, 굴착 깊이 4m일 때 Rankine의 주동토압은? (sin30° = 0.5)',o:['48kN/m','96kN/m','144kN/m','24kN/m'],k:0,f:'Ka = (1 − sinφ) ÷ (1 + sinφ),  Pa = ½ × γ × H² × Ka',st:[['공식','Ka = (1 − sinφ) ÷ (1 + sinφ), Pa = ½γH²Ka'],['대입','Ka = (1 − 0.5) ÷ (1 + 0.5) = 0.333, Pa = 0.5 × 18 × 4² × 0.333'],['계산','0.5 × 18 × 16 = 144 → × 0.333'],['정답','48kN/m']],e:'토압은 깊이의 제곱에 비례 — 깊이가 2배면 토압은 4배. Ka(1/3)를 빼면 144가 됩니다.'},
+{id:'c34',s:5,n:'동바리 설계하중',q:'거푸집 동바리에 고정하중 42kN, 적재하중 8kN, 충격하중 5kN이 작용할 때 설계하중은?',o:['42kN','50kN','63kN','55kN'],k:3,f:'설계하중 = 고정하중 + 적재하중 + 충격하중',st:[['공식','설계하중 = 고정하중 + 적재하중 + 충격하중'],['대입','42 + 8 + 5'],['계산','55'],['정답','55kN']],e:'콘크리트·거푸집 무게는 고정하중, 작업원·공구는 적재하중, 타설 충격은 충격하중으로 나눠 더합니다.'},
+{id:'c35',s:5,n:'사면 안전율',q:'어떤 사면의 저항(지지) 모멘트가 12,600kN·m, 활동모멘트가 8,400kN·m일 때 사면 안전율과 판정은?',o:['0.67 — 불안정','1.5 — 기준 1.5 이상으로 안정','2.5 — 과다 설계','3.0 — 기준 3 이상으로 안정'],k:1,f:'안전율 = 저항 모멘트 ÷ 활동 모멘트 (통상 1.5 이상)',st:[['공식','Fs = 저항 모멘트 ÷ 활동 모멘트'],['대입','12,600 ÷ 8,400'],['계산','1.5'],['정답','Fs = 1.5 → 통상 기준 1.5 이상으로 안정']],e:'분자와 분모를 바꾸면 0.67이 되어 판정이 반대가 됩니다. 저항이 위(분자), 활동이 아래(분모).'}
+];
+
+/* ================= v6: 계산 문제 풀기 (공식 탭 안) ================= */
+var CALCK = {prog: 'sanangi_calc_prog_v1', seg: 'sanangi_fseg_v1'};
+var calcProgRaw = sGet(CALCK.prog, {});
+var calcProg = {};
+(function(){
+  if (!calcProgRaw || typeof calcProgRaw !== 'object') return;
+  for (var k in calcProgRaw){
+    var p = calcProgRaw[k];
+    if (!p || typeof p !== 'object') continue;
+    calcProg[k] = {a: (p.a && typeof p.a === 'object') ? p.a : {},
+                   done: !!p.done,
+                   round: (typeof p.round === 'number' && p.round > 0) ? p.round : 1};
+  }
+})();
+
+var CALC_LISTS = {'0': CALC.slice()};
+(function(){
+  for (var s = 1; s <= 5; s++){
+    var arr = [];
+    for (var i = 0; i < CALC.length; i++) if (CALC[i].s === s) arr.push(CALC[i]);
+    CALC_LISTS[String(s)] = arr;
+  }
+})();
+var CALC_KEYS = ['0', '1', '2', '3', '4', '5'];
+var calcSeg = {m: 'fml'};
+
+function calcKeyName(key){ return String(key) === '0' ? '전체' : key + '과목'; }
+function calcProgOf(key){
+  key = String(key);
+  if (!calcProg[key]) calcProg[key] = {a:{}, done:false, round:1};
+  var p = calcProg[key];
+  if (!p.a || typeof p.a !== 'object') p.a = {};
+  if (typeof p.round !== 'number' || p.round < 1) p.round = 1;
+  return p;
+}
+function calcStat(key){
+  key = String(key);
+  var list = CALC_LISTS[key] || [], p = calcProgOf(key), seen = 0, ok = 0;
+  for (var i = 0; i < list.length; i++){
+    var id = list[i].id;
+    if (id in p.a){ seen++; if (p.a[id] === 1) ok++; }
+  }
+  return {total:list.length, seen:seen, ok:ok, pct:seen ? Math.round(ok / seen * 100) : 0,
+          done:!!p.done, round:p.round};
+}
+/* 과목·전체 세션을 통틀어 한 문제라도 채점된 것을 모은 값 (상단 요약용) */
+function calcStatAll(){
+  var seen = {}, n = 0, ok = 0;
+  for (var k = 0; k < CALC_KEYS.length; k++){
+    var p = calcProgOf(CALC_KEYS[k]);
+    for (var id in p.a){
+      if (seen[id]) continue;
+      seen[id] = 1; n++;
+      if (p.a[id] === 1) ok++;
+    }
+  }
+  return {seen:n, total:CALC.length, ok:ok, pct:n ? Math.round(ok / n * 100) : 0};
+}
+function calcCheckSvg(){
+  return '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6L9 17l-5-5"/></svg>';
+}
+function calcCardHtml(key){
+  var st = calcStat(key);
+  var all = String(key) === '0';
+  var nm = all ? '전체' : key + '과목';
+  var subj = all ? '5과목 35문항 · 기출 계산 유형' : (SUBJECTS[parseInt(key, 10) - 1] || {}).name || '';
+  var cta = st.seen === 0 ? '바로 풀기' : (st.done ? '한 번 더 풀기' : '이어서 풀기');
+  var pctW = st.total ? Math.round(st.seen / st.total * 100) : 0;
+  var badge = st.done ? '<span class="csc-badge">' + calcCheckSvg() + '1회차 완료</span>' : '';
+  var color = all ? 'var(--accent)' : 'var(--s' + key + ')';
+  return '<button class="csc' + (all ? ' all' : '') + (st.done ? ' done' : '') + '" data-ck="' + key + '">' +
+    '<div class="csc-top"><span class="csc-dot" style="background:' + color + '"></span>' +
+    '<span class="csc-nm">' + nm + '</span>' +
+    '<span class="csc-ct">' + st.total + '문항</span>' + badge + '</div>' +
+    '<span class="csc-sbj">' + escapeHtml(subj) + '</span>' +
+    '<div class="csc-mt">진행률 <b>' + st.seen + '/' + st.total + '</b>' +
+    '<span class="sep">·</span>정답률 <b>' + st.pct + '%</b></div>' +
+    '<i class="csc-bar"><b style="width:' + pctW + '%"></b></i>' +
+    '<div class="csc-go"><span>' + cta + '</span><em>›</em></div>' +
+    '</button>';
+}
+function renderCalcHome(){
+  var host = $('calcList');
+  if (!host) return;
+  var st0 = calcStatAll(), finished = 0;
+  for (var s = 1; s <= 5; s++) if (calcStat(String(s)).done) finished++;
+  var h = '';
+  for (var i = 0; i < CALC_KEYS.length; i++) h += calcCardHtml(CALC_KEYS[i]);
+  host.innerHTML = h;
+  var sum = $('calcSum');
+  if (sum) sum.innerHTML = '계산 <b>35문항</b> · 푼 문제 <b>' + st0.seen + '/' + st0.total +
+    '</b> · 정답률 <b>' + st0.pct + '%</b> · <b>' + finished + '/5과목</b> 완료';
+  var bar = $('calcBar');
+  if (bar) bar.style.width = (st0.total ? Math.round(st0.seen / st0.total * 100) : 0) + '%';
+}
+
+/* ---------- 공식집 ↔ 계산 문제 세그먼트 ---------- */
+function calcSegApply(mode, persist){
+  calcSeg.m = mode;
+  var a = $('fmlHome'), b = $('calcHome');
+  if (a) a.style.display = mode === 'fml' ? '' : 'none';
+  if (b) b.style.display = mode === 'calc' ? '' : 'none';
+  var btns = document.querySelectorAll('#fSeg .qseg-b');
+  for (var i = 0; i < btns.length; i++){
+    var on = btns[i].getAttribute('data-fm') === mode;
+    btns[i].className = 'qseg-b' + (on ? ' active' : '');
+    btns[i].setAttribute('aria-selected', on ? 'true' : 'false');
+  }
+  if (persist) sSet(CALCK.seg, mode);
+  if (mode === 'calc') renderCalcHome(); else renderFormulas();
+}
+function calcSegInit(){
+  var seg = $('fSeg');
+  if (!seg) return;
+  seg.addEventListener('click', function(e){
+    var b = closestEl(e.target, '.qseg-b');
+    if (!b) return;
+    calcSegApply(b.getAttribute('data-fm'), true);
+    window.scrollTo(0, 0);
+  });
+  var saved = sGet(CALCK.seg, 'fml');
+  calcSegApply(saved === 'calc' ? 'calc' : 'fml', false);
+}
+
+/* ---------- 세션 ---------- */
+var cals = {list: [], idx: 0, answered: false, pick: -1, mode: 'subject', key: '0', res: {}};
+
+function startCalc(key, mode, ids){
+  var list;
+  if (mode === 'wrong'){
+    list = [];
+    for (var i = 0; i < CALC.length; i++) if (ids && ids[CALC[i].id]) list.push(CALC[i]);
+  } else {
+    list = (CALC_LISTS[String(key)] || []).slice();
+  }
+  if (!list.length) return;
+  cals.list = list;
+  cals.idx = 0;
+  cals.answered = false;
+  cals.pick = -1;
+  cals.mode = mode;
+  cals.key = String(key);
+  cals.res = {};
+  if (mode !== 'wrong'){
+    var p = calcProgOf(cals.key);
+    if (p.done){                 // 완료한 회차를 다시 시작하면 새 회차
+      p.a = {};
+      p.round++;
+      p.done = false;
+      calcProg[cals.key] = p;
+      sSet(CALCK.prog, calcProg);
+    }
+    var seen = 0;
+    for (var j = 0; j < list.length; j++){
+      if (list[j].id in p.a){ seen++; cals.res[list[j].id] = p.a[list[j].id]; }
+    }
+    cals.idx = Math.min(seen, list.length - 1);
+  }
+  var P = $('calcP');
+  if (P) P.classList.add('on');
+  document.body.style.overflow = 'hidden';
+  var F = $('calcFin'); if (F) F.classList.remove('on');
+  if ($('calcBody')) $('calcBody').style.display = '';
+  if ($('calcBot')) $('calcBot').style.display = '';
+  renderCalcQ();
+}
+
+function calcTopTitle(){
+  if (cals.mode === 'wrong') return '오답 복습';
+  return calcKeyName(cals.key) + ' ' + cals.list.length + '문항';
+}
+function renderCalcQ(){
+  var q = cals.list[cals.idx];
+  if (!q) return;
+  cals.answered = false;
+  cals.pick = -1;
+  $('calcTopTitle').textContent = calcTopTitle();
+  $('calcPos').textContent = (cals.idx + 1) + ' / ' + cals.list.length;
+  $('calcPBar').style.width = (cals.idx / cals.list.length * 100) + '%';
+  $('calcTopic').textContent = q.n;
+  $('calcSbj').textContent = q.s + '과목';
+  $('calcQ').textContent = q.q;
+  var h = '';
+  for (var i = 0; i < q.o.length; i++){
+    h += '<button class="copt" data-oi="' + i + '"><span class="no">' + (i + 1) +
+      '</span><span class="tx">' + escapeHtml(q.o[i]) + '</span></button>';
+  }
+  $('calcOpts').innerHTML = h;
+  $('calcRes').innerHTML = '';
+  $('calcNext').className = 'cpnext';
+  $('calcNext').textContent = (cals.idx === cals.list.length - 1) ? '결과 보기' : '다음 문제';
+  if ($('calcBody')) $('calcBody').scrollTop = 0;
+}
+
+function calcAnswer(oi){
+  if (cals.answered) return;
+  var q = cals.list[cals.idx];
+  if (!q) return;
+  cals.answered = true;
+  cals.pick = oi;
+  var ok = oi === q.k;
+  cals.res[q.id] = ok ? 1 : 0;
+  var p = calcProgOf(cals.key);
+  p.a[q.id] = ok ? 1 : 0;
+  calcProg[cals.key] = p;
+  sSet(CALCK.prog, calcProg);
+  var opts = $('calcOpts').querySelectorAll('.copt');
+  for (var i = 0; i < opts.length; i++){
+    var mine = parseInt(opts[i].getAttribute('data-oi'), 10) === oi;
+    opts[i].setAttribute('aria-disabled', 'true');
+    if (i === q.k) opts[i].className = 'copt right';
+    else if (mine) opts[i].className = 'copt miss';
+    else opts[i].className = 'copt dim';
+  }
+  var steps = '';
+  for (var s = 0; s < q.st.length; s++){
+    var lab = q.st[s][0], cls = 'cpstep';
+    if (s === 0) cls += ' f';
+    if (s === q.st.length - 1) cls += ' z';
+    steps += '<div class="' + cls + '"><i>' + escapeHtml(lab) + '</i><p>' +
+      escapeHtml(q.st[s][1]) + '</p></div>';
+  }
+  $('calcRes').innerHTML = '<div class="cpexp ' + (ok ? 'ok' : 'no') + '">' +
+    '<div class="cpexp-hd">' + (ok ? '정답입니다' : '아쉬워요 · 정답은 ' + (q.k + 1) + '번') + '</div>' +
+    steps +
+    '<p class="cpnote"><b>포인트</b> ' + escapeHtml(q.e) + '</p></div>';
+  $('calcNext').className = 'cpnext on';
+  $('calcPBar').style.width = ((cals.idx + 1) / cals.list.length * 100) + '%';
+}
+
+function calcNext(){
+  if (!cals.answered) return;
+  if (cals.idx >= cals.list.length - 1){ calcFinish(); return; }
+  cals.idx++;
+  renderCalcQ();
+}
+
+function calcFinish(){
+  var list = cals.list, okN = 0, wrongIds = {};
+  for (var i = 0; i < list.length; i++){
+    if (cals.res[list[i].id] === 1) okN++;
+    else if (cals.res[list[i].id] === 0) wrongIds[list[i].id] = 1;
+  }
+  var key = cals.key, p = calcProgOf(key);
+  var first = false;
+  if (cals.mode !== 'wrong'){
+    var answeredAll = true;
+    for (var z = 0; z < list.length; z++)
+      if (!(list[z].id in p.a)) answeredAll = false;
+    first = !p.done && answeredAll;
+    if (first) p.done = true;
+    calcProg[key] = p;
+    sSet(CALCK.prog, calcProg);
+  }
+  var wrongN = Object.keys(wrongIds).length;
+  var pct = Math.round(okN / list.length * 100);
+  $('calcFinEm').textContent = pct === 100 ? '🎉' : (pct >= 80 ? '👍' : '📐');
+  $('calcFinSc').textContent = okN + ' / ' + list.length;
+  $('calcFinSub').textContent = cals.mode === 'wrong'
+    ? (wrongN ? '오답 복습 완료 · 틀린 ' + wrongN + '문제를 아래에서 다시 확인하세요'
+              : '오답 복습 완료 · 모두 맞혔습니다')
+    : (calcKeyName(key) + (first ? ' 1회차 완료' : ' 완료') + ' · 정답률 ' + pct + '%');
+  $('calcFinMsg').textContent = pct === 100
+    ? '계산 문제는 공식 → 대입 순서만 손에 익으면 시간을 크게 줄일 수 있습니다.'
+    : '틀린 문제는 아래 공식과 포인트를 소리 내어 한 번 읽고, 오답만 풀기로 다시 확인하세요.';
+  var h = '';
+  for (var j = 0; j < list.length; j++){
+    if (cals.res[list[j].id] !== 0) continue;
+    var q = list[j];
+    h += '<div class="cpfin-it"><p class="cpfin-n">' + escapeHtml(q.n) + ' · ' + q.s + '과목</p>' +
+      '<p class="cpfin-q">' + escapeHtml(q.q) + '</p>' +
+      '<p class="cpfin-f">공식: ' + escapeHtml(q.f) + '</p>' +
+      '<p class="cpfin-e">정답 ' + escapeHtml(q.o[q.k]) + ' — ' +
+      escapeHtml(q.st[q.st.length - 1][1]) + '</p>' +
+      '<p class="cpfin-e" style="margin-top:4px">' + escapeHtml(q.e) + '</p></div>';
+  }
+  $('calcFinList').innerHTML = h;
+  var rb = $('calcFinRetry');
+  if (cals.mode === 'wrong' || wrongN === 0){
+    rb.textContent = '한 번 더';
+    rb.className = 'btn primary';
+    rb.setAttribute('data-mode', 'again');
+    rb.removeAttribute('data-ids');
+  } else {
+    rb.textContent = '오답만 풀기 (' + wrongN + '문제)';
+    rb.className = 'btn primary cpfin-wr';
+    rb.setAttribute('data-mode', 'wrong');
+    rb.setAttribute('data-ids', Object.keys(wrongIds).join(','));
+  }
+  if ($('calcBody')) $('calcBody').style.display = 'none';
+  if ($('calcBot')) $('calcBot').style.display = 'none';
+  $('calcFin').classList.add('on');
+}
+
+function calcClose(){
+  var P = $('calcP');
+  if (P) P.classList.remove('on');
+  document.body.style.overflow = '';
+  var F = $('calcFin'); if (F) F.classList.remove('on');
+  renderCalcHome();
+}
+
+(function calcInit(){
+  var host = $('calcList');
+  if (host){
+    host.addEventListener('click', function(e){
+      var c = closestEl(e.target, '.csc');
+      if (!c) return;
+      startCalc(c.getAttribute('data-ck'), 'subject');
+    });
+  }
+  var o = $('calcOpts');
+  if (o){
+    o.addEventListener('click', function(e){
+      var b = closestEl(e.target, '.copt');
+      if (!b) return;
+      calcAnswer(parseInt(b.getAttribute('data-oi'), 10));
+    });
+  }
+  if ($('calcNext')) $('calcNext').addEventListener('click', calcNext);
+  if ($('calcQuit')) $('calcQuit').addEventListener('click', calcClose);
+  if ($('calcFinClose')) $('calcFinClose').addEventListener('click', calcClose);
+  if ($('calcFinRetry')) $('calcFinRetry').addEventListener('click', function(){
+    var mode = this.getAttribute('data-mode');
+    if (mode === 'wrong'){
+      var ids = {};
+      var arr = (this.getAttribute('data-ids') || '').split(',');
+      for (var i = 0; i < arr.length; i++) if (arr[i]) ids[arr[i]] = 1;
+      startCalc(cals.key, 'wrong', ids);
+    } else {
+      startCalc(cals.key, 'subject');
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var P = $('calcP');
+    if (P && P.classList.contains('on')) calcClose();
+  });
+  calcSegInit();
+  renderCalcHome();
+})();
+
+/* ================= v6: 로드맵 — 학습 플랜 체크 · 내 목표·진도 ================= */
+var PLANK = {tasks: 'sanangi_plan_v1', goals: 'sanangi_goals_v1', seg: 'sanangi_rseg_v1'};
+
+var PLAN_WEEKS = [
+  {n:1, tasks:['암기카드 1~21장 소리 내어 2회독', '1과목 OX 72지문', '계산문제 1과목 7문항', '주말 CBT 20문항']},
+  {n:2, tasks:['법규 숫자 카드 다시 2회독', '1과목 OX 오답 재풀이', '4지선다 1과목 30문항', '주말 CBT 20문항']},
+  {n:3, tasks:['2과목 암기카드 1회독', '2과목 OX 72지문', '계산문제 2과목 7문항', '주말 CBT 20문항']},
+  {n:4, tasks:['위험성평가·FTA 카드 정리', '2과목 OX 오답 재풀이', '4지선다 2과목 30문항', '주말 CBT 20문항']},
+  {n:5, tasks:['3과목 암기카드 1회독', '3과목 OX 72지문', '계산문제 3과목 7문항', '주말 CBT 20문항']},
+  {n:6, tasks:['전기 카드(접지 4종·방폭)', '4과목 OX 72지문', '계산문제 4과목 전기 4문항', '주말 CBT 20문항']},
+  {n:7, tasks:['화학 카드(MSDS·폭발범위)', '4과목 OX 오답 재풀이', '계산문제 4과목 화학 3문항', '주말 CBT 20문항']},
+  {n:8, tasks:['5과목 암기카드 1회독', '5과목 OX 72지문', '계산문제 5과목 7문항', '주말 CBT 20문항']}
+];
+var PLAN_TOTAL = PLAN_WEEKS.length * 4;
+
+var planState = sGet(PLANK.tasks, {});
+if (!planState || typeof planState !== 'object') planState = {};
+
+var MILESTONES = [
+  {id:'m1', t:'전과목 암기카드 84장 1회독', s:'암기카드 탭 · 84장 전부 넘기고 외웠음 표시'},
+  {id:'m2', t:'기출 OX 360지문 1회독', s:'핵심 퀴즈 → 기출 OX · 과목별 72지문'},
+  {id:'m3', t:'공식 54개 · 계산 35문제 완주', s:'공식 탭 → 🧮 계산 문제 풀기 · 35문항'},
+  {id:'m4', t:'2027년 1월 학점은행제 학점인정 신청', s:'응시 자격 학점을 먼저 확인하고 신청'},
+  {id:'m5', t:'큐넷 2027년 1회 원서접수', s:'Q-Net 공고로 접수 기간 확인 후 접수'},
+  {id:'m6', t:'7개년 CBT 700문항 1회독', s:'CBT 탭 · 7개 세트 × 100문항'}
+];
+var GOAL_TAGS = ['전체', '1과목', '2과목', '3과목', '4과목', '5과목', '필기', '실기', '서류'];
+
+var goalState = sGet(PLANK.goals, {});
+if (!goalState || typeof goalState !== 'object') goalState = {};
+if (!goalState.ms || typeof goalState.ms !== 'object') goalState.ms = {};
+if (!Array.isArray(goalState.my)) goalState.my = [];
+
+function planSave(){ sSet(PLANK.tasks, planState); }
+function goalSave(){ sSet(PLANK.goals, goalState); }
+
+/* ---------- 8주 플랜 체크 ---------- */
+function planWeekStat(n){
+  var c = 0;
+  for (var i = 1; i <= 4; i++) if (planState['w' + n + 't' + i]) c++;
+  return c;
+}
+function planStat(){
+  var c = 0;
+  for (var k in planState) if (planState[k] && /^w[1-8]t[1-4]$/.test(k)) c++;
+  return {done:c, total:PLAN_TOTAL, pct:PLAN_TOTAL ? Math.round(c / PLAN_TOTAL * 100) : 0};
+}
+function renderPlanTasks(){
+  var host = $('planWeeks');
+  if (!host) return;
+  var dts = host.querySelectorAll('details');
+  for (var i = 0; i < dts.length; i++){
+    var wk = PLAN_WEEKS[i];
+    if (!wk) continue;
+    var body = dts[i].querySelector('.dbody');
+    if (body && !body.querySelector('.wtasks')){
+      var h = '<div class="wtasks"><p class="wtasks-hd">이번 주 체크</p>';
+      for (var t = 0; t < wk.tasks.length; t++){
+        var id = 'w' + wk.n + 't' + (t + 1);
+        h += '<label class="wtask"><input class="ckb" type="checkbox" data-t="' + id + '">' +
+             '<span class="wtask-tx">' + escapeHtml(wk.tasks[t]) + '</span></label>';
+      }
+      h += '</div>';
+      body.insertAdjacentHTML('beforeend', h);
+    }
+    var sum = dts[i].querySelector('summary');
+    var badge = sum && sum.querySelector('.wkp');
+    if (sum && !badge){
+      badge = document.createElement('span');
+      badge.className = 'wkp';
+      badge.id = 'wkp' + wk.n;
+      sum.appendChild(badge);
+    }
+    var cw = planWeekStat(wk.n);
+    if (badge){
+      badge.textContent = cw + '/4 · ' + Math.round(cw / 4 * 100) + '%';
+      badge.className = 'wkp' + (cw === 4 ? ' full' : '');
+    }
+    var boxes = dts[i].querySelectorAll('.ckb');
+    for (var b = 0; b < boxes.length; b++){
+      var key = boxes[b].getAttribute('data-t');
+      boxes[b].checked = !!planState[key];
+    }
+  }
+  var st = planStat();
+  var pct = $('planPct');
+  if (pct) pct.innerHTML = '<b>' + st.done + '</b>/' + st.total + ' · ' + st.pct + '%';
+  var bar = $('planBar');
+  if (bar) bar.style.width = st.pct + '%';
+}
+
+/* 5개월 로드맵: 지금 어느 구간인지 표시 */
+function markTimeline(){
+  var rows = document.querySelectorAll('#planHome .tlrow');
+  if (!rows.length) return;
+  var d = new Date();
+  var cur = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2);
+  for (var i = 0; i < rows.length; i++){
+    var from = rows[i].getAttribute('data-from'), to = rows[i].getAttribute('data-to');
+    var cls = 'tlrow';
+    if (to && to < cur) cls += ' done';
+    else if (from && to && from <= cur && cur <= to) cls += ' now';
+    rows[i].className = cls;
+  }
+}
+
+(function planInit(){
+  var host = $('planWeeks');
+  if (host){
+    host.addEventListener('change', function(e){
+      var cb = e.target;
+      if (!cb || !cb.classList || !cb.classList.contains('ckb')) return;
+      var key = cb.getAttribute('data-t');
+      if (!key) return;
+      if (cb.checked) planState[key] = true; else delete planState[key];
+      planSave();
+      renderPlanTasks();
+      renderGoals();
+    });
+  }
+})();
+
+/* ---------- 내 목표·진도 ---------- */
+function goalStats(){
+  var ms = 0, my = 0;
+  for (var i = 0; i < MILESTONES.length; i++) if (goalState.ms[MILESTONES[i].id]) ms++;
+  for (var j = 0; j < goalState.my.length; j++) if (goalState.my[j].d) my++;
+  var total = MILESTONES.length + goalState.my.length;
+  var done = ms + my;
+  return {ms:ms, my:my, done:done, total:total, pct:total ? Math.round(done / total * 100) : 0};
+}
+function renderGoals(){
+  var list = $('msList');
+  if (!list) return;
+  var i, g;
+  var h = '';
+  for (i = 0; i < MILESTONES.length; i++){
+    g = MILESTONES[i];
+    var on = !!goalState.ms[g.id];
+    h += '<label class="gs-it' + (on ? ' done' : '') + '"><input class="ckb" type="checkbox" data-ms="' +
+      g.id + '"' + (on ? ' checked' : '') + '><span class="gs-bd"><span class="gs-tx">' +
+      escapeHtml(g.t) + '</span><span class="gs-sub">' + escapeHtml(g.s) + '</span></span></label>';
+  }
+  list.innerHTML = h;
+
+  var my = $('myList');
+  if (my){
+    var m = '';
+    for (i = 0; i < goalState.my.length; i++){
+      g = goalState.my[i];
+      m += '<div class="gs-it' + (g.d ? ' done' : '') + '"><input class="ckb" type="checkbox" data-gid="' +
+        escapeHtml(g.id) + '"' + (g.d ? ' checked' : '') + '><span class="gs-bd"><span class="gs-tx">' +
+        escapeHtml(g.t) + (g.tag ? '<span class="gs-tag">' + escapeHtml(g.tag) + '</span>' : '') +
+        '</span></span><button class="gdel" data-del="' + escapeHtml(g.id) + '" aria-label="삭제">✕</button></div>';
+    }
+    my.innerHTML = m || '<p class="gempty">아직 내 목표가 없습니다.<br>아래에서 한 줄로 적고 추가해 보세요.</p>';
+  }
+
+  var st = goalStats();
+  var pct = $('goalPct');
+  if (pct) pct.textContent = st.pct + '%';
+  var bar = $('goalBar');
+  if (bar) bar.style.width = st.pct + '%';
+  var done = $('goalDone');
+  if (done) done.innerHTML = '완료 <b>' + st.done + '</b> / 전체 <b>' + st.total + '</b>';
+  var mini = $('goalPlanMini');
+  if (mini){
+    var ps = planStat();
+    mini.innerHTML = '8주 플랜 <b>' + ps.done + '/' + ps.total + '</b> · ' + ps.pct + '%';
+  }
+}
+
+(function goalInit(){
+  var ms = $('msList');
+  if (ms){
+    ms.addEventListener('change', function(e){
+      var cb = e.target;
+      if (!cb || !cb.getAttribute) return;
+      var id = cb.getAttribute('data-ms');
+      if (!id) return;
+      if (cb.checked) goalState.ms[id] = true; else delete goalState.ms[id];
+      goalSave();
+      renderGoals();
+    });
+  }
+  var my = $('myList');
+  if (my){
+    my.addEventListener('change', function(e){
+      var cb = e.target;
+      if (!cb || !cb.getAttribute) return;
+      var id = cb.getAttribute('data-gid');
+      if (!id) return;
+      for (var i = 0; i < goalState.my.length; i++){
+        if (goalState.my[i].id === id){ goalState.my[i].d = !!cb.checked; break; }
+      }
+      goalSave();
+      renderGoals();
+    });
+    my.addEventListener('click', function(e){
+      var b = closestEl(e.target, '.gdel');
+      if (!b) return;
+      var id = b.getAttribute('data-del');
+      for (var i = 0; i < goalState.my.length; i++){
+        if (goalState.my[i].id === id){ goalState.my.splice(i, 1); break; }
+      }
+      goalSave();
+      renderGoals();
+    });
+  }
+  function addGoal(){
+    var inp = $('goalInput'), sel = $('goalTag');
+    if (!inp) return;
+    var txt = (inp.value || '').replace(/\s+/g, ' ').trim();
+    if (!txt){ inp.focus(); return; }
+    if (txt.length > 40) txt = txt.slice(0, 40);
+    goalState.my.push({id:'g' + Date.now() + Math.floor(Math.random() * 1000),
+                       t:txt, tag:(sel ? sel.value : '전체'), d:false});
+    inp.value = '';
+    if (sel) sel.value = '전체';
+    goalSave();
+    renderGoals();
+  }
+  var sel0 = $('goalTag');
+  if (sel0){
+    var oh = '';
+    for (var g0 = 0; g0 < GOAL_TAGS.length; g0++)
+      oh += '<option value="' + GOAL_TAGS[g0] + '">' + GOAL_TAGS[g0] + '</option>';
+    sel0.innerHTML = oh;
+  }
+  var add = $('goalAdd');
+  if (add) add.addEventListener('click', addGoal);
+  var inp = $('goalInput');
+  if (inp) inp.addEventListener('keydown', function(e){
+    if (e.key === 'Enter'){ e.preventDefault(); addGoal(); }
+  });
+})();
+
+/* ---------- 로드맵 세그먼트 (학습 플랜 | 내 목표·진도) ---------- */
+var rmSeg = {m:'plan'};
+function roadmapSegApply(mode, persist){
+  rmSeg.m = mode;
+  var a = $('planHome'), b = $('goalHome');
+  if (a) a.style.display = mode === 'plan' ? '' : 'none';
+  if (b) b.style.display = mode === 'goal' ? '' : 'none';
+  var btns = document.querySelectorAll('#rSeg .qseg-b');
+  for (var i = 0; i < btns.length; i++){
+    var on = btns[i].getAttribute('data-rm') === mode;
+    btns[i].className = 'qseg-b' + (on ? ' active' : '');
+    btns[i].setAttribute('aria-selected', on ? 'true' : 'false');
+  }
+  if (persist) sSet(PLANK.seg, mode);
+  if (mode === 'goal') renderGoals(); else renderPlanTasks();
+}
+function renderRoadmap(){
+  renderPlanTasks();
+  renderGoals();
+  markTimeline();
+}
+(function roadmapSegInit(){
+  var seg = $('rSeg');
+  if (!seg) return;
+  seg.addEventListener('click', function(e){
+    var b = closestEl(e.target, '.qseg-b');
+    if (!b) return;
+    roadmapSegApply(b.getAttribute('data-rm'), true);
+    window.scrollTo(0, 0);
+  });
+  var saved = sGet(PLANK.seg, 'plan');
+  roadmapSegApply(saved === 'goal' ? 'goal' : 'plan', false);
+  renderRoadmap();
+})();
 
 /* ---------- init ---------- */
 applyTheme(theme);
