@@ -415,8 +415,6 @@ body.fs-3 .diagram svg{max-height:96px}
   border:1px solid var(--line);border-left:1px solid var(--line);overflow:hidden}
 .exhead{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line)}
 .exhead .exlab{font-size:calc(14px * var(--fs));font-weight:800;letter-spacing:-.3px;color:var(--text)}
-.exhead .exbadge{display:inline-block;padding:3px 10px;border-radius:999px;border:1px solid var(--accent);
-  color:var(--accent);font-size:calc(11.5px * var(--fs));font-weight:800;letter-spacing:.6px;line-height:1.35}
 .exhead .exverdict{margin-left:auto;font-size:calc(11.5px * var(--fs));font-weight:800;padding:3px 9px;
   border-radius:999px;white-space:nowrap}
 .exverdict.ok{color:var(--green);background:color-mix(in srgb,var(--green) 14%,transparent)}
@@ -662,7 +660,7 @@ html.ht-cards #viewCards .btn{padding:11px 10px;font-size:14.5px}
 html.ht-cards #viewCards .btn.small{padding:9px 12px;font-size:12.5px}
 html.ht-cards #viewCards .foot{padding:5px 0 0}
 
-/* 카드 아래 버튼 3개: 한 줄 (외웠음 표시 · 순서 섞기 · 안 외운 것만) */
+/* 카드 아래 버튼 3개: 한 줄 (순서 섞기 · 안 외운 것만 · 외웠음 표시) */
 html.ht-cards #viewCards .fcrow{display:flex;align-items:stretch;gap:7px;margin-top:11px}
 html.ht-cards #viewCards .fcrow .btn{min-width:0;white-space:nowrap;font-size:12.5px;
   padding:12px 7px;border-radius:13px;letter-spacing:-.4px}
@@ -966,6 +964,137 @@ body:not(.light) .gmeter{background:rgba(0,0,0,.3)}
 .gempty{text-align:center;color:var(--muted);font-size:12px;line-height:1.65;padding:14px 4px 8px}
 .gtip{margin:9px 0 0;font-size:11px;color:var(--muted);line-height:1.55;word-break:keep-all}
 
+/* ================= v8: CBT 홈 (소방설비 CBT 홈과 같은 구조·눈금) ================= */
+#viewCbt .hero{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--surface),var(--surface2));
+  padding:16px;box-shadow:var(--shadow)}
+#viewCbt .hero .kick{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--accent);margin-bottom:6px}
+#viewCbt .hero h2{margin:0 0 5px;font-size:19px;letter-spacing:-.5px}
+#viewCbt .hero p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.6;word-break:keep-all}
+#viewCbt .hstats{display:flex;gap:7px;margin-top:14px}
+#viewCbt .hstat{flex:1;text-align:center;border:1px solid var(--line);border-radius:13px;background:var(--surface);padding:8px 3px}
+#viewCbt .hstat b{display:block;font-size:16px;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+#viewCbt .hstat span{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.01em}
+#viewCbt .setlist{display:flex;flex-direction:column;gap:8px;margin-top:11px}
+#viewCbt .setcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:15px;background:var(--surface);padding:12px 13px;color:var(--text);font-family:inherit;
+  cursor:pointer;transition:transform .12s ease}
+#viewCbt .setcard:active{transform:scale(.99)}
+#viewCbt .setcard .yr{flex:0 0 auto;min-width:54px;font-size:19px;font-weight:800;letter-spacing:-.7px;
+  color:var(--accent);font-variant-numeric:tabular-nums}
+#viewCbt .setcard .mid{flex:1;min-width:0}
+#viewCbt .setcard .mid b{display:block;font-size:14px;font-weight:700;letter-spacing:-.25px}
+#viewCbt .setcard .mid em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:2px}
+#viewCbt .setcard .best{flex:0 0 auto;text-align:right;font-size:10.5px;color:var(--muted);font-weight:700;line-height:1.35}
+#viewCbt .setcard .best b{display:block;font-size:15px;color:var(--text);letter-spacing:-.4px}
+#viewCbt .setcard .best b.ok{color:var(--green)}
+#viewCbt .setcard .best b.no{color:var(--red)}
+#viewCbt .setcard.mode .yr{font-size:15px;color:var(--text);letter-spacing:-.3px}
+#viewCbt .setcard.mode .yr span{display:block;font-size:17px;line-height:1.1}
+#viewCbt .setcard .arrow{flex:0 0 auto;color:var(--muted);font-size:15px;opacity:.6}
+#viewCbt .sgroup{margin-top:18px}
+#viewCbt .sgroup h2{font-size:14px;margin:0 0 8px;letter-spacing:-.2px;color:var(--text)}
+#viewCbt .sgroup .hint{font-size:11.5px;color:var(--muted);margin:-3px 0 8px;line-height:1.5}
+/* ================= v8: 효율 학습 — 망각곡선 복습 · 과락 레이더 · 복습 플레이어 ================= */
+.eff{margin-top:14px;border:1px solid var(--line);border-radius:18px;background:var(--surface);
+  padding:14px 14px 13px;box-shadow:var(--shadow)}
+.eff-h{display:flex;align-items:center;gap:7px}
+.eff-h .eff-e{font-size:14px;line-height:1}
+.eff-h b{font-size:13.5px;letter-spacing:-.3px}
+.eff-h .eff-n{margin-left:auto;font-size:11px;font-weight:800;color:var(--accent);
+  background:var(--accent-soft);border-radius:999px;padding:3px 9px;font-variant-numeric:tabular-nums}
+.eff-p{margin:6px 0 0;font-size:11.5px;color:var(--muted);line-height:1.55;word-break:keep-all}
+.eff-p b{color:var(--text)}
+.eff-sched{display:flex;gap:6px;margin-top:11px}
+.eff-sched div{flex:1;min-width:0;text-align:center;border:1px solid var(--line);border-radius:11px;
+  padding:6px 2px 5px;background:var(--surface2)}
+.eff-sched b{display:block;font-size:14px;line-height:1.25;font-variant-numeric:tabular-nums}
+.eff-sched span{display:block;font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:-.2px}
+.eff-sched div.on{border-color:var(--accent);background:var(--accent-soft)}
+.eff-sched div.on b,.eff-sched div.on span{color:var(--accent)}
+.eff-btn{display:block;width:100%;margin-top:12px;border:0;border-radius:13px;padding:12px 10px;
+  font-size:13.5px;font-weight:800;letter-spacing:-.3px;background:var(--accent);color:#fff;
+  font-family:inherit;cursor:pointer;transition:transform .12s ease,opacity .2s}
+.eff-btn:active{transform:scale(.99)}
+.eff-btn[disabled]{background:var(--surface2);color:var(--muted);cursor:default}
+.eff-btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.eff-btn.ghost[disabled]{color:var(--muted)}
+
+/* 과락 레이더 */
+.rad-list{margin-top:11px}
+.rad-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.rad-row:first-child{margin-top:0}
+.rad-nm{flex:0 0 50px;font-size:11.5px;font-weight:700;color:var(--text);white-space:nowrap;letter-spacing:-.2px}
+.rad-g{position:relative;flex:1;min-width:0;height:9px;border-radius:999px;background:var(--surface2);overflow:hidden}
+.rad-g b{display:block;height:100%;width:0;border-radius:999px;background:var(--green);transition:width .35s ease}
+.rad-g i{position:absolute;top:0;bottom:0;left:40%;width:1px;background:rgba(248,113,113,.75)}
+.rad-g.mid b{background:var(--amber)}
+.rad-g.warn b{background:var(--red)}
+.rad-g.none b{background:var(--muted);opacity:.35}
+.rad-sc{flex:0 0 26px;text-align:right;font-size:11.5px;font-weight:800;
+  font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.rad-st{flex:0 0 46px;text-align:center;font-size:9.5px;font-weight:800;border-radius:999px;
+  padding:2px 0;letter-spacing:-.3px;background:var(--surface2);color:var(--muted)}
+.rad-st.warn{background:rgba(248,113,113,.16);color:var(--red)}
+.rad-st.mid{background:rgba(245,165,36,.16);color:var(--amber)}
+.rad-st.ok{background:rgba(52,211,153,.16);color:var(--green)}
+
+/* 복습 플레이어 (전체화면) */
+.srp{position:fixed;inset:0;z-index:140;background:var(--bg);display:none;flex-direction:column}
+.srp.on{display:flex}
+.srp-top{display:flex;align-items:center;gap:10px;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line);
+  background:var(--header);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.srp-x{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);
+  color:var(--text);font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.srp-t{font-size:12.5px;font-weight:800;letter-spacing:-.3px;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.srp-pos{margin-left:auto;font-size:12px;font-weight:800;color:var(--muted);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.srp-bar{display:block;height:3px;background:var(--surface2)}
+.srp-bar b{display:block;height:100%;width:0;background:var(--accent);transition:width .25s ease}
+.srp-body{flex:1;min-height:0;overflow-y:auto;padding:15px 16px 22px;-webkit-overflow-scrolling:touch}
+.srp-meta{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;color:var(--muted)}
+.srp-meta .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.srp-meta em{font-style:normal;margin-left:auto;border:1px solid var(--line);border-radius:999px;
+  padding:2px 8px;font-size:9.5px;letter-spacing:-.2px}
+.srp-q{margin:10px 0 0;font-size:15px;font-weight:700;line-height:1.58;letter-spacing:-.35px;word-break:keep-all}
+.srp-opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.srp-opts.ox{flex-direction:row}
+.sopt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:13px;background:var(--surface);padding:12px 13px;font-size:13px;line-height:1.45;
+  color:var(--text);font-family:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+.sopt .cir{flex:0 0 auto;width:21px;height:21px;border-radius:50%;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;color:var(--muted)}
+.srp-opts.ox .sopt{flex-direction:column;justify-content:center;gap:6px;padding:16px 8px;
+  font-size:14px;font-weight:800}
+.srp-opts.ox .sopt .cir{width:28px;height:28px;font-size:14px}
+.sopt.right{border-color:var(--green);background:rgba(52,211,153,.14)}
+.sopt.right .cir{background:rgba(52,211,153,.22);color:var(--green)}
+.sopt.miss{border-color:var(--red);background:rgba(248,113,113,.14)}
+.sopt.miss .cir{background:rgba(248,113,113,.22);color:var(--red)}
+.sopt.dim{opacity:.45}
+.srp-exp:empty{display:none}
+.srp-exp{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);
+  padding:12px 13px;font-size:12.5px;line-height:1.62;color:var(--text);word-break:keep-all}
+.srp-exp .hd{font-size:12px;font-weight:800;margin-bottom:6px}
+.srp-exp .hd.ok{color:var(--green)}
+.srp-exp .hd.no{color:var(--red)}
+.srp-exp .tm{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);
+  color:var(--muted);font-size:11.5px;line-height:1.55}
+.srp-foot{flex:0 0 auto;padding:10px 14px calc(12px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line);background:var(--surface)}
+.srp-next{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:15px;
+  font-weight:800;background:var(--accent);color:#fff;font-family:inherit;cursor:pointer;letter-spacing:-.3px}
+.srp-next[disabled]{background:var(--surface2);color:var(--muted)}
+.srp-next.ghost{background:transparent;border:1px solid var(--line);color:var(--text);margin-top:8px}
+.srp-res{display:none;flex:1;min-height:0;overflow-y:auto;flex-direction:column;
+  justify-content:center;padding:22px 20px calc(26px + env(safe-area-inset-bottom));text-align:center}
+.srp-res.on{display:flex}
+.srp-em{font-size:34px;line-height:1.1}
+.srp-sc{display:block;margin-top:10px;font-size:30px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.srp-sc small{font-size:14px;font-weight:700;color:var(--muted);letter-spacing:0;margin-left:3px}
+.srp-msg{margin:8px 0 0;font-size:13px;color:var(--muted);line-height:1.6;word-break:keep-all}
+.srp-res .srp-next{margin-top:22px}
 </style>
 </head>
 <body>
@@ -1025,9 +1154,9 @@ body:not(.light) .gmeter{background:rgba(0,0,0,.3)}
       </div>
 
       <div class="row tight fcrow">
-        <button class="btn" id="btnMaster">외웠음 표시</button>
         <button class="btn small" id="btnShuffle">순서 섞기</button>
         <button class="btn small" id="btnOnlyUnmastered">안 외운 것만</button>
+        <button class="btn" id="btnMaster">외웠음 표시</button>
       </div>
       <footer class="foot" id="fcFoot"></footer>
     </section>
@@ -1369,23 +1498,45 @@ body:not(.light) .gmeter{background:rgba(0,0,0,.3)}
 
     <!-- ============ CBT ============ -->
     <section class="view" id="viewCbt">
-      <div id="cbtHome">
-        <div class="banner">📝 <b>기출유형 CBT (7개년)</b> — 세트마다 5과목 × 20문항, 총 100문항·5과목 구성입니다. 합격 기준은 <b>과목당 40점 · 평균 60점</b>이니 한 과목만 잘 나와도 과락입니다.</div>
-        <div class="panel" style="padding:13px 13px 4px">
-          <h3 style="margin-bottom:11px">CBT 선택</h3>
-          <div id="cbtExamList"></div>
-        </div>
-        <div class="panel">
-          <h3>북마크 · 오답 복습</h3>
-          <p>접혀 있는 동안에도 북마크(🔖)와 오답은 자동으로 모입니다. 닫았다 열어도 이어서 풀 수 있어요.</p>
-          <div class="row tight" style="margin-top:0">
-            <button class="btn rvbtn" id="cbtGoBm">🔖 북마크한 문제만 복습 (<b id="cbtBmN">0</b>)</button>
-          </div>
-          <div class="row tight">
-            <button class="btn rvbtn" id="cbtGoWr">❌ 오답 문제만 복습 (<b id="cbtWrN">0</b>)</button>
-          </div>
+      <div class="hero">
+        <div class="kick">CBT 실전 · 7개년</div>
+        <h2>7개년 기출유형 · 100문항</h2>
+        <p>실제 필기와 같은 4지선다 CBT 화면입니다. 과목당 20문항씩 100문항을 풀고 <b>채점</b>을 누르면 과목별 점수와 과락 여부가 바로 나옵니다.</p>
+        <div class="hstats">
+          <div class="hstat"><b id="hBank">700</b><span>전체 문항</span></div>
+          <div class="hstat"><b id="hDone">0</b><span>푼 문항</span></div>
+          <div class="hstat"><b id="hBest">-</b><span>최고 평균</span></div>
+          <div class="hstat"><b id="hWrong">0</b><span>오답 노트</span></div>
         </div>
       </div>
+
+      <!-- 🧠 망각곡선 복습 (1·3·7·14일) -->
+      <div class="eff" id="srBox">
+        <div class="eff-h"><span class="eff-e">🧠</span><b>오늘의 망각곡선 복습</b><span class="eff-n" id="srDueN">0</span></div>
+        <p class="eff-p" id="srDueMsg">틀린 문제가 1·3·7·14일 간격으로 다시 돌아옵니다.</p>
+        <div class="eff-sched" id="srSched"></div>
+        <button class="eff-btn" id="srGo" disabled>오늘 복습할 문항 없음</button>
+      </div>
+
+      <!-- ⚠️ 과목별 과락 레이더 -->
+      <div class="eff" id="radarBox">
+        <div class="eff-h"><span class="eff-e">⚠️</span><b>과목별 과락 레이더</b><span class="eff-n" id="radAvg">기록 없음</span></div>
+        <p class="eff-p">푼 OX·4지선다·CBT·계산 정답률을 과목별로 모은 예상 점수입니다. <b>40점 미만</b>이면 과락입니다.</p>
+        <div class="rad-list" id="radList"></div>
+        <button class="eff-btn ghost" id="radarGo" disabled>푼 문제가 없어 약점을 아직 모릅니다</button>
+      </div>
+      <div class="sgroup">
+        <h2>연도별 CBT</h2>
+        <div class="setlist" id="setList"></div>
+      </div>
+
+      <div class="sgroup">
+        <h2>복습 · 빠른 풀이</h2>
+        <p class="hint">북마크한 문제와 틀린 문제만 모아 다시 풉니다. 화면을 좌우로 밀어 다음 문제로 넘길 수 있습니다.</p>
+        <div class="setlist" id="modeList"></div>
+      </div>
+
+      <div class="banner">💡 <b>과락 계산</b> — 과목당 20문항이므로 7문항 이하를 맞히면 40점 미만(과락)입니다. 8문항(40점)을 넘기고 평균 60점을 넘겨야 합격권입니다.</div>
     </section>
 
     <!-- ============ 계산 공식집 ============ -->
@@ -1534,6 +1685,31 @@ body:not(.light) .gmeter{background:rgba(0,0,0,.3)}
     </div>
   </div>
 
+<!-- 복습 플레이어 (망각곡선 · 약점 과목) -->
+<div class="srp" id="srp">
+  <div class="srp-top">
+    <button class="srp-x" id="srpClose" aria-label="닫기">✕</button>
+    <span class="srp-t" id="srpTitle">오늘의 망각곡선 복습</span>
+    <span class="srp-pos" id="srpPos">1 / 1</span>
+  </div>
+  <i class="srp-bar"><b id="srpBar"></b></i>
+  <div class="srp-body" id="srpBody">
+    <div class="srp-meta"><i class="dot" id="srpDot"></i><span id="srpSubj">1과목</span><em id="srpKind">OX</em></div>
+    <p class="srp-q" id="srpQ"></p>
+    <div class="srp-opts" id="srpOpts"></div>
+    <div class="srp-exp" id="srpExp"></div>
+  </div>
+  <div class="srp-foot" id="srpFoot">
+    <button class="srp-next" id="srpNext" disabled>다음 문제</button>
+  </div>
+  <div class="srp-res" id="srpRes">
+    <span class="srp-em" id="srpEm">🧠</span>
+    <b class="srp-sc" id="srpScore">0 / 0</b>
+    <p class="srp-msg" id="srpMsg"></p>
+    <button class="srp-next" id="srpAgain">틀린 문제 다시 풀기</button>
+    <button class="srp-next ghost" id="srpEnd">닫기</button>
+  </div>
+</div>
   <nav class="tabs">
     <div class="tabs-inner">
       <button class="tab active" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
@@ -2017,7 +2193,7 @@ function switchTab(name){
     tabs[i].className = 'tab' + (on ? ' active' : '');
   }
   if (name === 'quiz'){ renderQuizSetup(); renderOxHome(); }
-  if (name === 'cbt') cbtSetup();
+  if (name === 'cbt'){ cbtSetup(); renderEff(); }
   if (name === 'roadmap') renderRoadmap();
   if (name === 'formula'){ renderFormulas(); renderCalcHome(); }
   window.scrollTo(0, 0);
@@ -2267,6 +2443,8 @@ function answerQuiz(k){
   if (ok){ qz.correct++; delete wrongSet[q.i]; }
   else { qz.wrongIds.push(q.i); wrongSet[q.i] = true; }
   sSet(KEYS.w, wrongSet);
+  mcAns[q.i] = ok ? 1 : 0; srSaveMc();
+  srRecord('mc', q.i, q.s, ok);
   var opts = $('qpOpts').children;
   for (var i = 0; i < opts.length; i++){
     var oi = parseInt(opts[i].getAttribute('data-k'), 10);
@@ -2420,24 +2598,54 @@ function wrongCbtIds(){
   return out;
 }
 
-function cbtSetup(){
-  var h = '';
-  var order = ['2026','2025','2024','2023','2022','2021','2020'];
-  for (var i = 0; i < order.length; i++){
-    var y = order[i], n = EXAMS[y].qs.length, ac = answeredCount(y);
-    var r = cbtData.r[y];
-    var meta = n + '문항 · 5과목 × 20';
-    if (r) meta += ' · 최근 ' + r.avg + '점 ' + (r.pass ? '합격' : '불합격');
-    else if (ac) meta += ' · ' + ac + '문항 진행 중';
-    else if (cbtData.p[y] && cbtData.p[y].e) meta += ' · ' + fmtTime(cbtData.p[y].e) + ' 기록';
-    h += '<button class="exrow" data-y="' + y + '"><span class="yr">' + y.slice(2) + '년</span>' +
-         '<span class="ti"><b>' + EXAMS[y].title + '</b><span>' + meta + '</span></span><span class="go">›</span></button>';
-  }
-  $('cbtExamList').innerHTML = h;
-  $('cbtBmN').textContent = bookmarkCount();
-  $('cbtWrN').textContent = wrongCbtCount();
+function cbtBankTotal(){
+  var n = 0, y;
+  for (y in EXAMS) n += EXAMS[y].qs.length;
+  return n;
 }
-
+function cbtBestHtml(r){
+  if (!r) return '<b>\u2013</b>기록 없음';
+  return '<b class="' + (r.pass ? 'ok' : 'no') + '">' + r.avg + '</b>' + (r.pass ? '합격권' : '과락·미달');
+}
+function cbtModeCard(id, icon, name, desc, n){
+  return '<button class="setcard mode" data-set="' + id + '"' + (n ? '' : ' data-empty="1"') + '>' +
+    '<span class="yr"><span>' + icon + '</span></span>' +
+    '<span class="mid"><b>' + name + '</b><em>' + desc + '</em></span>' +
+    '<span class="best"><b>' + n + '</b>문항</span>' +
+    '<span class="arrow">\u203A</span></button>';
+}
+function cbtSetup(){
+  var order = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+  var done = 0, best = -1, i, y, h = '', m = '';
+  for (i = 0; i < order.length; i++) done += answeredCount(order[i]);
+  for (y in cbtData.r) if (cbtData.r[y] && cbtData.r[y].avg > best) best = cbtData.r[y].avg;
+  $('hBank').textContent = String(cbtBankTotal());
+  $('hDone').textContent = String(done);
+  $('hBest').textContent = (best < 0) ? '-' : (best + '점');
+  $('hWrong').textContent = String(wrongCbtCount());
+  for (i = 0; i < order.length; i++){
+    y = order[i];
+    var n = EXAMS[y].qs.length, ac = answeredCount(y);
+    var sub = ac ? (ac + '문항 응답') : '아직 시작 전';
+    h += '<button class="setcard" data-set="' + y + '"><span class="yr">' + y + '</span>' +
+         '<span class="mid"><b>' + n + '문항 · 5과목 × 20</b><em>' + sub + '</em></span>' +
+         '<span class="best">' + cbtBestHtml(cbtData.r[y]) + '</span>' +
+         '<span class="arrow">\u203A</span></button>';
+  }
+  $('setList').innerHTML = h;
+  var mb = bookmarkCount(), mw = wrongCbtCount();
+  m += cbtModeCard('bm', '\uD83D\uDD16', '북마크 복습', mb ? mb + '문항 · 표시한 문제만' : '북마크한 문제가 없습니다', mb);
+  m += cbtModeCard('wr', '\uD83C\uDFAF', '오답 복습', mw ? mw + '문항 · 틀린 문제만' : '틀린 문제가 없습니다', mw);
+  m += cbtModeCard('quick', '\u26A1', '빠른 20문항', '전체 7개년 ' + cbtBankTotal() + '문항 중 무작위 20문항', 20);
+  $('modeList').innerHTML = m;
+  renderEff();
+}
+function cbtCbtPool(){
+  var order = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'], out = [], i, j;
+  for (i = 0; i < order.length; i++)
+    for (j = 0; j < EXAMS[order[i]].qs.length; j++) out.push(EXAMS[order[i]].qs[j]);
+  return out;
+}
 function cbtStart(setKey, pool, mode){
   var qs = pool || EXAMS[setKey].qs;
   if (!qs.length) return;
@@ -2498,7 +2706,7 @@ function cbtMarks(q){ return q.t === 'ox' ? ['O', 'X'] : ['①', '②', '③', '
 
 function cbtExplHtml(q, rec){
   var marks = cbtMarks(q);
-  var h = '<div class="exhead"><span class="exlab">해설</span><span class="exbadge">ORZO</span>';
+  var h = '<div class="exhead"><span class="exlab">해설</span>';
   if (cbt.graded){
     var ok = rec && rec.v === q.k;
     var ansTxt = q.t === 'ox' ? (q.o[q.k] === 'O' ? 'O(맞다)' : 'X(아니다)') : (q.k + 1) + '번';
@@ -2533,7 +2741,8 @@ function cbtRender(){
   var sj = SUBJECTS[q.s - 1] || {short:'', tag:''};
   $('cbtSubjTxt').textContent = sj.short + (sj.tag ? ' · ' + sj.tag : '');
   $('cbtSubjDot').style.background = 'var(--s' + q.s + ')';
-  $('cbtTitle').textContent = (cbt.mode === 'exam' && EXAMS[cbt.setKey]) ? EXAMS[cbt.setKey].title.replace(' 기출유형', '') : '북마크 · 오답 복습';
+  $('cbtTitle').textContent = (cbt.mode === 'exam' && EXAMS[cbt.setKey]) ? EXAMS[cbt.setKey].title.replace(' 기출유형', '') :
+    (cbt.mode === 'quick' ? '빠른 20문항' : (cbt.mode === 'wrong' ? '오답 복습' : '북마크 복습'));
   $('cbtQ').textContent = q.q;
   var chosen = rec ? rec.v : -1;
   var reveal = cbt.showAns || cbt.graded;
@@ -2612,8 +2821,8 @@ function cbtGrade(){
     per[q.s].n++;
     var rec = store[q.id];
     if (!rec){ unanswered++; continue; }
-    if (rec.v === q.k){ per[q.s].c++; correct++; rec.ok = 1; }
-    else { rec.ok = 0; if (cbt.wrongIds.indexOf(q.id) < 0) cbt.wrongIds.push(q.id); }
+    if (rec.v === q.k){ per[q.s].c++; correct++; rec.ok = 1; srRecord('cbt', q.id, q.s, true); }
+    else { rec.ok = 0; if (cbt.wrongIds.indexOf(q.id) < 0) cbt.wrongIds.push(q.id); srRecord('cbt', q.id, q.s, false); }
   }
   /* 오답장 갱신 (핵심 퀴즈와 오답 저장소를 공유) */
   for (var i2 = 0; i2 < cbt.list.length; i2++){
@@ -2663,10 +2872,12 @@ function showModal(id){ $(id).style.display = 'flex'; }
 function hideModal(id){ $(id).style.display = 'none'; }
 
 /* 이벤트 */
-$('cbtExamList').addEventListener('click', function(e){
-  var row = closestEl(e.target, '.exrow');
+var CBT_ORDER = ['2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+$('setList').addEventListener('click', function(e){
+  var row = closestEl(e.target, '.setcard');
   if (!row) return;
-  var y = row.getAttribute('data-y');
+  var y = row.getAttribute('data-set');
+  if (!EXAMS[y]) return;
   var prog = cbtData.p[y];
   var ac = answeredCount(y);
   if (prog && (prog.e > 0 || ac)){
@@ -2693,19 +2904,29 @@ $('cbtExamList').addEventListener('click', function(e){
     cbtStart(y, null, 'exam');
   }
 });
-$('cbtGoBm').addEventListener('click', function(){
-  var pool = [];
-  for (var y_i = 0; y_i < ['2026','2025','2024','2023','2022','2021','2020'].length; y_i++){
-    var y = ['2026','2025','2024','2023','2022','2021','2020'][y_i];
-    for (var i = 0; i < EXAMS[y].qs.length; i++) if (cbtData.m[EXAMS[y].qs[i].id]) pool.push(EXAMS[y].qs[i]);
+$('modeList').addEventListener('click', function(e){
+  var row = closestEl(e.target, '.setcard');
+  if (!row) return;
+  var id = row.getAttribute('data-set'), pool = [], i, j;
+  if (id === 'bm'){
+    for (i = 0; i < CBT_ORDER.length; i++){
+      var qs = EXAMS[CBT_ORDER[i]].qs;
+      for (j = 0; j < qs.length; j++) if (cbtData.m[qs[j].id]) pool.push(qs[j]);
+    }
+    if (!pool.length) return;
+    cbtStart('2026', pool, 'review');
+    return;
   }
-  if (!pool.length) return;
-  cbtStart('2026', pool, 'review');
-});
-$('cbtGoWr').addEventListener('click', function(){
-  var pool = wrongCbtIds();
-  if (!pool.length) return;
-  cbtStart('2026', pool, 'review');
+  if (id === 'wr'){
+    pool = wrongCbtIds();
+    if (!pool.length) return;
+    cbtStart('2026', pool, 'wrong');
+    return;
+  }
+  if (id === 'quick'){
+    pool = shuffleArr(cbtCbtPool()).slice(0, 20);
+    cbtStart('2026', pool, 'quick');
+  }
 });
 $('cbtClose').addEventListener('click', cbtClosePlayer);
 $('cbtGridBtn').addEventListener('click', openGrid);
@@ -3430,6 +3651,7 @@ function answerOx(a){
   if (ok) oxs.correct++; else oxs.wrong.push(q.id);
   oxSeen[q.id] = ok ? 1 : 0;
   sSet(OXK.seen, oxSeen);
+  srRecord('ox', q.id, q.sub, ok);
   if (oxs.mode === 'subject'){
     var p = oxProgOf(oxs.key);
     p.a[q.id] = ok ? 1 : 0;
@@ -3839,6 +4061,8 @@ function calcAnsMap(){
 function calcSaveAnswer(id, ok){
   for (var k = 0; k < CALC_KEYS.length; k++) calcProgOf(CALC_KEYS[k]).a[id] = ok ? 1 : 0;
   sSet(CALCK.prog, calcProg);
+  var cq = EFF_IDX.calc[id];
+  srRecord('calc', id, cq ? cq.s : 1, ok);
 }
 function calcClearIds(ids){
   for (var k = 0; k < CALC_KEYS.length; k++){
@@ -4426,6 +4650,391 @@ function renderRoadmap(){
   renderRoadmap();
 })();
 
+/* ================= v8: 효율 학습 — 망각곡선 복습 · 과락 레이더 =================
+   ① 망각곡선: OX·4지선다·CBT·계산에서 틀린 문제에 1 → 3 → 7 → 14일 간격 복습 예정일을 잡는다.
+      맞히면 다음 단계로, 틀리면 1일로 리셋.  오늘 도래 문항을 그 자리에서 다시 푼다.
+   ② 과락 레이더: 푼 문제들의 정답률을 과목별로 모아 예상 점수(100점 환산)와
+      40점 미만 위험 / 40~59 주의 / 60 이상 안정을 보여 주고, 가장 약한 과목을 바로 푼다.
+   저장: EFFK.sr = { 'ox:p111-1':{s,src,id,st,due,w,n}, ... }  (st 0~3 = 1·3·7·14일)
+        EFFK.mc = { 'q1':1|0, ... }  (4지선다 답 기록 — 과락 레이더 집계용)
+*/
+var EFFK = { sr: 'sanangi_sr_v1', mc: 'sanangi_mc_ans_v1' };
+var SR_IV = [1, 3, 7, 14];
+var SR_LAST = SR_IV.length - 1;
+var srRawStore = sGet(EFFK.sr, {});
+var srStore = (srRawStore && typeof srRawStore === 'object') ? srRawStore : {};
+var mcRawStore = sGet(EFFK.mc, {});
+var mcAns = (mcRawStore && typeof mcRawStore === 'object') ? mcRawStore : {};
+
+function srPad2(n){ return (n < 10 ? '0' : '') + n; }
+function srDayStr(d){ return d.getFullYear() + '-' + srPad2(d.getMonth() + 1) + '-' + srPad2(d.getDate()); }
+function srToday(){ return srDayStr(new Date()); }
+function srShift(base, days){
+  var p = String(base).split('-');
+  var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+  d.setDate(d.getDate() + days);
+  return srDayStr(d);
+}
+function srDiff(a, b){   /* b − a (일) */
+  var x = String(a).split('-'), y = String(b).split('-');
+  var d1 = new Date(parseInt(x[0], 10), parseInt(x[1], 10) - 1, parseInt(x[2], 10));
+  var d2 = new Date(parseInt(y[0], 10), parseInt(y[1], 10) - 1, parseInt(y[2], 10));
+  return Math.round((d2.getTime() - d1.getTime()) / 86400000);
+}
+function srSaveStore(){ sSet(EFFK.sr, srStore); }
+function srSaveMc(){ sSet(EFFK.mc, mcAns); }
+
+/* 한 문제 채점 결과를 망각곡선에 반영한다. 맞힌 문제는 이미 추적 중일 때만 다음 단계로 넘어간다. */
+function srRecord(src, id, sub, ok){
+  if (!id) return;
+  var key = src + ':' + id, r = srStore[key];
+  if (!ok){
+    srStore[key] = { s: sub, src: src, id: id, st: 0, due: srShift(srToday(), SR_IV[0]),
+                     w: ((r && r.w) || 0) + 1, n: ((r && r.n) || 0) + 1 };
+  } else if (r){
+    var ns = Math.min((r.st | 0) + 1, SR_LAST);
+    r.st = ns; r.due = srShift(srToday(), SR_IV[ns]); r.n = (r.n | 0) + 1; r.s = sub;
+    srStore[key] = r;
+  } else {
+    return;   /* 틀린 적 없는 문제는 추적하지 않는다 */
+  }
+  srSaveStore();
+  effRefresh();
+}
+function srCountAll(){
+  var n = 0, k;
+  for (k in srStore) if (srStore[k] && srStore[k].due) n++;
+  return n;
+}
+function srDueList(){
+  var t = srToday(), out = [], k, r;
+  for (k in srStore){
+    r = srStore[k];
+    if (r && r.due && r.due <= t) out.push(r);
+  }
+  out.sort(function(a, b){ return a.due < b.due ? -1 : (a.due > b.due ? 1 : 0); });
+  return out;
+}
+function srSchedule(){
+  var t = srToday(), out = { today: 0, d1: 0, d3: 0, d7: 0, later: 0 }, k, r, d;
+  for (k in srStore){
+    r = srStore[k];
+    if (!r || !r.due) continue;
+    d = srDiff(t, r.due);
+    if (d <= 0) out.today++;
+    else if (d === 1) out.d1++;
+    else if (d <= 3) out.d3++;
+    else if (d <= 7) out.d7++;
+    else out.later++;
+  }
+  return out;
+}
+function srNextDueLabel(){
+  var t = srToday(), best = '', k, r;
+  for (k in srStore){
+    r = srStore[k];
+    if (!r || !r.due || r.due <= t) continue;
+    if (!best || r.due < best) best = r.due;
+  }
+  if (!best) return '';
+  var d = srDiff(t, best);
+  if (d === 1) return '내일';
+  if (d <= 7) return d + '일 뒤';
+  return best.slice(5, 7) + '월 ' + best.slice(8, 10) + '일';
+}
+
+/* ---------- 화면 ---------- */
+function renderEff(){
+  var box = $('srDueN');
+  if (!box) return;
+  var due = srDueList(), sch = srSchedule(), total = srCountAll();
+  box.textContent = String(due.length);
+  var msg = $('srDueMsg');
+  if (due.length){
+    msg.innerHTML = '<b>' + due.length + '문항</b>이 오늘 다시 돌아왔어요. 틀린 문제는 1·3·7·14일 간격으로 한 번 더 물어봅니다.';
+  } else if (total){
+    msg.innerHTML = '오늘 다시 볼 문항은 없어요. 추적 중인 <b>' + total + '문항</b> 가운데 다음 도래는 <b>' +
+      srNextDueLabel() + '</b>입니다.';
+  } else {
+    msg.innerHTML = '아직 틀린 문제가 없어요. OX·4지선다·CBT·계산에서 틀리면 <b>1·3·7·14일</b> 뒤로 자동 예약됩니다.';
+  }
+  var s = $('srSched');
+  if (s){
+    var cells = [[sch.today, '오늘'], [sch.d1, '내일'], [sch.d3, '3일 내'], [sch.d7, '7일 내'], [sch.later, '이후']];
+    var h = '';
+    for (var i = 0; i < cells.length; i++){
+      h += '<div' + (i === 0 && cells[0][0] ? ' class="on"' : '') + '><b>' + cells[i][0] + '</b><span>' + cells[i][1] + '</span></div>';
+    }
+    s.innerHTML = h;
+  }
+  var g = $('srGo');
+  if (g){
+    g.disabled = !due.length;
+    g.textContent = due.length ? ('🧠 오늘 복습 시작 · ' + due.length + '문항') : '오늘 복습할 문항 없음';
+  }
+
+  var list = $('radList');
+  if (!list) return;
+  var agg = EFF.radar(), h2 = '', sum = 0, cnt = 0, worst = 0, minSc = 101, danger = 0;
+  for (var sub = 1; sub <= EFF.n; sub++){
+    var o = agg[sub] || { n: 0, c: 0 };
+    var sc = o.n ? Math.round(o.c / o.n * 100) : -1;
+    var cls = sc < 0 ? 'none' : (sc < 40 ? 'warn' : (sc < 60 ? 'mid' : 'ok'));
+    var lb = sc < 0 ? '미응시' : (sc < 40 ? '과락 위험' : (sc < 60 ? '주의' : '안정'));
+    if (sc >= 0){
+      sum += sc; cnt++;
+      if (sc < minSc){ minSc = sc; worst = sub; }
+      if (sc < 40) danger++;
+    }
+    h2 += '<div class="rad-row"><span class="rad-nm">' + EFF.sub(sub) + '</span>' +
+          '<span class="rad-g ' + cls + '"><b style="width:' + (sc < 0 ? 0 : sc) + '%"></b><i></i></span>' +
+          '<span class="rad-sc">' + (sc < 0 ? '–' : sc) + '</span>' +
+          '<span class="rad-st ' + cls + '">' + lb + '</span></div>';
+  }
+  list.innerHTML = h2;
+  var avg = $('radAvg');
+  if (avg) avg.textContent = cnt ? ('예상 평균 ' + Math.round(sum / cnt) + '점') : '기록 없음';
+  var wb = $('radarGo');
+  if (wb){
+    if (cnt){
+      wb.disabled = false;
+      wb.textContent = (danger ? '⚠️ 과락 위험 과목 바로 풀기 · ' + EFF.sub(worst)
+                               : '약점 과목 바로 풀기 · ' + EFF.sub(worst));
+      EFF.weak = worst;
+    } else {
+      wb.disabled = true;
+      wb.textContent = '푼 문제가 없어 약점을 아직 모릅니다';
+      EFF.weak = 0;
+    }
+  }
+}
+var effTimer = null;
+function effRefresh(){
+  if (effTimer) return;
+  effTimer = setTimeout(function(){ effTimer = null; renderEff(); }, 100);
+}
+
+/* ---------- 복습 플레이어 ---------- */
+var srp = { open: false, list: [], idx: 0, answered: false, correct: 0, wrong: [], title: '' };
+
+function srMakeItem(ref){
+  if (!ref) return null;
+  if (ref.q && ref.k !== undefined) return ref;
+  return EFF.item(ref.src, ref.id);
+}
+function srOpen(refs, title){
+  var items = [], i, it;
+  for (i = 0; i < refs.length; i++){
+    it = srMakeItem(refs[i]);
+    if (it) items.push(it);
+  }
+  if (!items.length) return;
+  srp.open = true;
+  srp.list = items;
+  srp.idx = 0;
+  srp.answered = false;
+  srp.correct = 0;
+  srp.wrong = [];
+  srp.title = title;
+  $('srpTitle').textContent = title;
+  $('srpRes').className = 'srp-res';
+  $('srpBody').style.display = '';
+  $('srpFoot').style.display = '';
+  $('srp').className = 'srp on';
+  document.body.style.overflow = 'hidden';
+  srRender();
+}
+function srRender(){
+  var it = srp.list[srp.idx];
+  if (!it) return;
+  $('srpPos').textContent = (srp.idx + 1) + ' / ' + srp.list.length;
+  $('srpBar').style.width = Math.round((srp.idx + 1) / srp.list.length * 100) + '%';
+  $('srpSubj').textContent = EFF.sub(it.s);
+  $('srpDot').style.background = 'var(--s' + it.s + ')';
+  $('srpKind').textContent = it.kind;
+  $('srpQ').textContent = it.q;
+  var h = '';
+  if (it.ox){
+    h = '<button class="sopt ox" data-i="0"><span class="cir">O</span><span>맞다</span></button>' +
+        '<button class="sopt ox" data-i="1"><span class="cir">X</span><span>아니다</span></button>';
+  } else {
+    for (var i = 0; i < it.o.length; i++){
+      h += '<button class="sopt" data-i="' + i + '"><span class="cir">' + (i + 1) + '</span>' +
+           '<span>' + escapeHtml(it.o[i]) + '</span></button>';
+    }
+  }
+  $('srpOpts').className = 'srp-opts' + (it.ox ? ' ox' : '');
+  $('srpOpts').innerHTML = h;
+  $('srpExp').innerHTML = '';
+  $('srpNext').textContent = (srp.idx === srp.list.length - 1) ? '결과 보기' : '다음 문제';
+  $('srpNext').disabled = true;
+  srp.answered = false;
+  $('srpBody').scrollTop = 0;
+}
+function srPick(i){
+  if (!srp.open || srp.answered) return;
+  var it = srp.list[srp.idx];
+  if (!it) return;
+  srp.answered = true;
+  var ok = (i === it.k);
+  if (ok) srp.correct++; else srp.wrong.push(it);
+  var opts = $('srpOpts').children;
+  for (var j = 0; j < opts.length; j++){
+    var oi = parseInt(opts[j].getAttribute('data-i'), 10);
+    if (oi === it.k) opts[j].className = opts[j].className.replace(' dim', '') + ' right';
+    else if (oi === i) opts[j].className += ' miss';
+    else opts[j].className += ' dim';
+  }
+  var ansTxt = it.ox ? (it.k === 0 ? 'O' : 'X') : ((it.k + 1) + '번');
+  var h = '<div class="hd ' + (ok ? 'ok' : 'no') + '">' +
+          (ok ? '✓ 정답입니다' : ('✕ 오답 · 정답은 ' + ansTxt)) + '</div>' +
+          escapeHtml(it.expl || '');
+  if (it.extra) h += '<div class="tm">' + escapeHtml(it.extra) + '</div>';
+  $('srpExp').innerHTML = h;
+  srRecord(it.src, it.id, it.s, ok);
+  $('srpNext').disabled = false;
+  $('srpBody').scrollTop = $('srpBody').scrollHeight;
+}
+function srNextQ(){
+  if (!srp.open || !srp.answered) return;
+  if (srp.idx < srp.list.length - 1){ srp.idx++; srRender(); }
+  else srFinish();
+}
+function srFinish(){
+  var n = srp.list.length, c = srp.correct, w = srp.wrong.length;
+  var pct = n ? Math.round(c / n * 100) : 0;
+  $('srpEm').textContent = pct === 100 ? '🎉' : (pct >= 70 ? '💪' : '📝');
+  $('srpScore').innerHTML = c + ' <small>/ ' + n + ' · ' + pct + '%</small>';
+  $('srpMsg').innerHTML = w
+    ? ('틀린 ' + w + '문항은 내일 다시 나옵니다. 맞힌 문항은 3·7·14일 뒤로 넘어갑니다.')
+    : '전부 맞혔습니다. 이 문항들은 3·7·14일 뒤에 한 번 더 확인합니다.';
+  $('srpAgain').style.display = w ? '' : 'none';
+  $('srpAgain').textContent = '틀린 ' + w + '문항 다시 풀기';
+  $('srpBody').style.display = 'none';
+  $('srpFoot').style.display = 'none';
+  $('srpRes').className = 'srp-res on';
+  renderEff();
+}
+function srClose(){
+  srp.open = false;
+  $('srp').className = 'srp';
+  document.body.style.overflow = '';
+  renderEff();
+}
+function srStartDue(){
+  var due = srDueList();
+  if (!due.length) return;
+  var refs = [], i;
+  for (i = 0; i < due.length; i++) refs.push({ src: due[i].src, id: due[i].id });
+  srOpen(refs, '오늘의 망각곡선 복습');
+}
+function srStartWeak(){
+  var sub = EFF.weak;
+  if (!sub) return;
+  var refs = EFF.pool(sub);
+  if (!refs.length) return;
+  srOpen(refs, '약점 과목 · ' + EFF.sub(sub));
+}
+(function srWire(){
+  var g = $('srGo');
+  if (g) g.addEventListener('click', srStartDue);
+  var rg = $('radarGo');
+  if (rg) rg.addEventListener('click', srStartWeak);
+  var x = $('srpClose');
+  if (x) x.addEventListener('click', srClose);
+  var nx = $('srpNext');
+  if (nx) nx.addEventListener('click', srNextQ);
+  var op = $('srpOpts');
+  if (op) op.addEventListener('click', function(e){
+    var b = closestEl(e.target, '.sopt');
+    if (b) srPick(parseInt(b.getAttribute('data-i'), 10));
+  });
+  var ag = $('srpAgain');
+  if (ag) ag.addEventListener('click', function(){
+    var items = srp.wrong.slice(0);
+    if (!items.length) return;
+    srOpen(items, '틀린 문제 다시 풀기');
+  });
+  var en = $('srpEnd');
+  if (en) en.addEventListener('click', srClose);
+})();
+
+/* ---------- 산업안전기사를 위한 어댑터: 문제 색인 · 과목 이름 · 레이더 집계 · 약점 문제 모으기 ---------- */
+var EFF_IDX = { ox: {}, mc: {}, cbt: {}, calc: {} };
+(function(){
+  var i, y;
+  for (i = 0; i < OXQ.length; i++) EFF_IDX.ox[OXQ[i].id] = OXQ[i];
+  for (i = 0; i < QUIZ.length; i++) EFF_IDX.mc[QUIZ[i].i] = QUIZ[i];
+  for (y in CBT_BANK) for (i = 0; i < CBT_BANK[y].length; i++) EFF_IDX.cbt[CBT_BANK[y][i].id] = CBT_BANK[y][i];
+  for (i = 0; i < CALC.length; i++) EFF_IDX.calc[CALC[i].id] = CALC[i];
+})();
+
+var EFF = {
+  n: 5,
+  weak: 0,
+  sub: function(s){ var x = SUBJECTS[s - 1]; return x ? x.short : (s + '과목'); },
+  item: function(src, id){
+    var q = EFF_IDX[src] && EFF_IDX[src][id];
+    if (!q) return null;
+    if (src === 'ox'){
+      return { src: src, id: id, s: q.sub, kind: '기출 OX', q: q.q, ox: true,
+               k: q.a ? 0 : 1, expl: q.exp, extra: '' };
+    }
+    if (src === 'calc'){
+      var arr = [], i;
+      if (q.st && q.st.length){
+        /* 0번은 공식이라 앞에 따로 붙이므로 건너뛴다 */
+        for (i = 1; i < q.st.length; i++) arr.push(q.st[i][1]);
+      }
+      return { src: src, id: id, s: q.s, kind: '계산 문제', q: q.q, o: q.o, k: q.k, expl: q.e,
+               extra: (q.n ? q.n + ' — ' : '') + (q.f || '') + (arr.length ? ' → ' + arr.join(' → ') : '') };
+    }
+    return { src: src, id: id, s: q.s, kind: (src === 'cbt' ? 'CBT' : '4지선다'),
+             q: q.q, o: q.o, k: q.k, ox: q.t === 'ox', expl: q.e, extra: q.intent || '' };
+  },
+  /* 푼 문제 전체를 과목별로 집계: OX(oxSeen) + 4지선다(mcAns) + CBT(cbtData.a) + 계산(calcProg) */
+  radar: function(){
+    var agg = {}, i, id, j, rec, q;
+    for (i = 1; i <= 5; i++) agg[i] = { n: 0, c: 0 };
+    function put(sub, ok){
+      var a = agg[sub];
+      if (!a) return;
+      a.n++; if (ok) a.c++;
+    }
+    for (id in oxSeen){ q = EFF_IDX.ox[id]; if (q) put(q.sub, !!oxSeen[id]); }
+    for (id in mcAns){ q = EFF_IDX.mc[id]; if (q) put(q.s, !!mcAns[id]); }
+    for (var y in cbtData.a){
+      for (id in cbtData.a[y]){
+        rec = cbtData.a[y][id]; q = EFF_IDX.cbt[id];
+        if (q && rec && typeof rec.v === 'number') put(q.s, rec.v === q.k);
+      }
+    }
+    var cm = calcAnsMap();
+    for (id in cm){ q = EFF_IDX.calc[id]; if (q) put(q.s, cm[id] === 1); }
+    return agg;
+  },
+  /* 가장 약한 과목 20문항: 기출 OX 6 · 4지선다 6 · CBT 5 · 계산 3 */
+  pool: function(sub){
+    var caps = { ox: 6, mc: 6, cbt: 5, calc: 3 }, out = [], i, src, y;
+    function take(list, srcName, cap){
+      var arr = [], k;
+      for (k = 0; k < list.length; k++) arr.push(list[k]);
+      arr = shuffleArr(arr);
+      for (k = 0; k < arr.length && k < cap; k++) out.push({ src: srcName, id: arr[k] });
+    }
+    var ox = [], mc = [], cbt = [], calc = [];
+    for (i = 0; i < OXQ.length; i++) if (OXQ[i].sub === sub) ox.push(OXQ[i].id);
+    for (i = 0; i < QUIZ.length; i++) if (QUIZ[i].s === sub) mc.push(QUIZ[i].i);
+    for (y in CBT_BANK) for (i = 0; i < CBT_BANK[y].length; i++) if (CBT_BANK[y][i].s === sub) cbt.push(CBT_BANK[y][i].id);
+    for (i = 0; i < CALC.length; i++) if (CALC[i].s === sub) calc.push(CALC[i].id);
+    take(ox, 'ox', caps.ox);
+    take(mc, 'mc', caps.mc);
+    take(cbt, 'cbt', caps.cbt);
+    take(calc, 'calc', caps.calc);
+    return shuffleArr(out);
+  }
+};
+
 /* ---------- init ---------- */
 applyTheme(theme);
 $('fcChips').innerHTML = chipsHtml();
@@ -4435,6 +5044,7 @@ renderCards();
 renderQuizSetup();
 quizChipsInit();
 setQMode(qxMode);
+renderEff();
 </script>
 </body>
 </html>
