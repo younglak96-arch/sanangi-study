@@ -1406,6 +1406,7 @@ body:not(.light) .gmeter{background:rgba(0,0,0,.3)}
       <div id="calcHome" style="display:none">
         <div class="cbar-top"><span class="csum" id="calcSum"></span></div>
         <i class="cmeter"><b id="calcBar"></b></i>
+        <div class="chips" id="calcChips"></div>
         <div id="calcList"></div>
       </div>
 
@@ -3755,7 +3756,7 @@ var CALC = [
 ];
 
 /* ================= v6: 계산 문제 풀기 (공식 탭 안) ================= */
-var CALCK = {prog: 'sanangi_calc_prog_v1', seg: 'sanangi_fseg_v1'};
+var CALCK = {prog: 'sanangi_calc_prog_v1', seg: 'sanangi_fseg_v1', sel: 'sanangi_calc_sel_v1'};
 var calcProgRaw = sGet(CALCK.prog, {});
 var calcProg = {};
 (function(){
@@ -3779,6 +3780,8 @@ var CALC_LISTS = {'0': CALC.slice()};
 })();
 var CALC_KEYS = ['0', '1', '2', '3', '4', '5'];
 var calcSeg = {m: 'fml'};
+var calcSel = String(sGet(CALCK.sel, '0'));
+if (CALC_LISTS[calcSel] === undefined) calcSel = '0';
 
 function calcKeyName(key){ return String(key) === '0' ? '전체' : key + '과목'; }
 function calcProgOf(key){
@@ -3835,14 +3838,26 @@ function calcCardHtml(key){
     '<div class="csc-go"><span>' + cta + '</span><em>›</em></div>' +
     '</button>';
 }
+function renderCalcChips(){
+  var box = $('calcChips');
+  if (!box) return;
+  var h = '';
+  for (var i = 0; i < CALC_KEYS.length; i++){
+    var k = CALC_KEYS[i], st = calcStat(k);
+    var lbl = k === '0' ? '전체' : (k + '과목');
+    h += '<button class="chip' + (calcSel === k ? ' active' : '') + '" data-cf="' + k + '">' +
+      lbl + '<small>' + st.seen + '/' + st.total + '</small></button>';
+  }
+  box.innerHTML = h;
+}
 function renderCalcHome(){
   var host = $('calcList');
   if (!host) return;
   var st0 = calcStatAll(), finished = 0;
   for (var s = 1; s <= 5; s++) if (calcStat(String(s)).done) finished++;
-  var h = '';
-  for (var i = 0; i < CALC_KEYS.length; i++) h += calcCardHtml(CALC_KEYS[i]);
-  host.innerHTML = h;
+  if (CALC_LISTS[calcSel] === undefined) calcSel = '0';
+  host.innerHTML = calcCardHtml(calcSel);
+  renderCalcChips();
   var sum = $('calcSum');
   if (sum) sum.innerHTML = '계산 <b>35문항</b> · 푼 문제 <b>' + st0.seen + '/' + st0.total +
     '</b> · 정답률 <b>' + st0.pct + '%</b> · <b>' + finished + '/5과목</b> 완료';
@@ -4063,6 +4078,16 @@ function calcClose(){
       var c = closestEl(e.target, '.csc');
       if (!c) return;
       startCalc(c.getAttribute('data-ck'), 'subject');
+    });
+  }
+  var chips = $('calcChips');
+  if (chips){
+    chips.addEventListener('click', function(e){
+      var c = closestEl(e.target, '.chip');
+      if (!c) return;
+      calcSel = c.getAttribute('data-cf') || '0';
+      sSet(CALCK.sel, calcSel);
+      renderCalcHome();
     });
   }
   var o = $('calcOpts');
