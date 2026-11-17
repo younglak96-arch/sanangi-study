@@ -382,30 +382,32 @@ body.fs-3 .diagram svg{max-height:96px}
   .diagram svg{max-height:96px}
 }
 
-/* ---------- v4: 계산 공식집 ---------- */
+/* ---------- v7: 📖 공식집 카드 (소방설비 공식집 스타일) ---------- */
 .fsearch{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--text);
   border-radius:12px;padding:11px 13px;font-size:calc(14px * var(--fs));margin:0 0 12px;
   -webkit-appearance:none;appearance:none;font-family:inherit}
 .fsearch::placeholder{color:var(--muted)}
-.fml{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:14px 14px 13px;
-  margin-bottom:11px;box-shadow:var(--shadow)}
-.fmlhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.fbadge{flex:0 0 auto;font-size:calc(11px * var(--fs));font-weight:800;padding:3px 8px;border-radius:999px;
-  border:1px solid currentColor;letter-spacing:-.2px;line-height:1.3}
-.fbadge.s1{color:var(--s1)}
-.fbadge.s2{color:var(--s2)}
-.fbadge.s3{color:var(--s3)}
-.fbadge.s4{color:var(--s4)}
-.fbadge.s5{color:var(--s5)}
-.fmlname{font-size:calc(15px * var(--fs));font-weight:800;letter-spacing:-.3px;word-break:keep-all;line-height:1.35}
-.fmleq{background:var(--accent-soft);border:1px solid var(--line);border-radius:11px;padding:10px 12px;
-  font-size:calc(14px * var(--fs));font-weight:800;line-height:1.62;color:var(--text);
-  word-break:break-word;font-variant-numeric:tabular-nums}
-.fmlrow{margin:9px 0 0;font-size:calc(13px * var(--fs));line-height:1.62;color:var(--muted);word-break:keep-all}
-.fmlrow b{font-weight:800;color:var(--text);margin-right:6px}
-.fmlrow.tip{color:var(--amber)}
-.fmlrow.tip b{color:var(--amber)}
-.fmlrow.ex{color:var(--text)}
+.fml{border:1px solid var(--line);border-radius:16px;background:var(--surface);
+  padding:13px 14px 12px;margin-bottom:10px;box-shadow:var(--shadow)}
+.fml-hd{display:flex;align-items:center;gap:8px;margin:0 0 9px}
+.fml-bd{flex:0 0 auto;font-size:calc(10.5px * var(--fs));font-weight:800;letter-spacing:-.1px;
+  padding:3px 8px;border-radius:999px;background:transparent;border:1px solid var(--line);line-height:1.3}
+.fml-bd.s1{color:var(--s1)}
+.fml-bd.s2{color:var(--s2)}
+.fml-bd.s3{color:var(--s3)}
+.fml-bd.s4{color:var(--s4)}
+.fml-bd.s5{color:var(--s5)}
+.fml-nm{font-size:calc(14.5px * var(--fs));font-weight:800;letter-spacing:-.35px;line-height:1.35;
+  word-break:keep-all;min-width:0}
+.fml-f{margin:0;padding:11px 12px;border-radius:12px;background:var(--surface2);
+  border:1px solid var(--line);font-size:calc(14px * var(--fs));font-weight:800;line-height:1.55;
+  letter-spacing:-.2px;color:var(--text);word-break:keep-all;overflow-wrap:anywhere;
+  font-variant-numeric:tabular-nums}
+.fml-d{margin:9px 0 0;font-size:calc(12.5px * var(--fs));line-height:1.62;color:var(--muted);
+  word-break:keep-all;letter-spacing:-.1px}
+.fml-e{margin:9px 0 0;padding-top:8px;border-top:1px dashed var(--line);
+  font-size:calc(12.5px * var(--fs));line-height:1.6;color:var(--text);word-break:keep-all}
+.fml-e b{color:var(--green);font-weight:800;margin-right:5px}
 .fmlnone{padding:26px 12px;text-align:center;color:var(--muted);font-size:13px}
 
 /* ---------- v4: 오르조식 구조화 해설 ---------- */
@@ -1389,8 +1391,8 @@ body:not(.light) .gmeter{background:rgba(0,0,0,.3)}
     <!-- ============ 계산 공식집 ============ -->
     <section class="view" id="viewFormula">
       <div class="qseg" id="fSeg" role="tablist" aria-label="공식 탭 보기">
-        <button class="qseg-b active" data-fm="fml" role="tab" aria-selected="true"><span class="em">📖</span> 공식집 (54)</button>
-        <button class="qseg-b" data-fm="calc" role="tab" aria-selected="false"><span class="em">🧮</span> 계산 문제 풀기 (35)</button>
+        <button class="qseg-b active" data-fm="fml" role="tab" aria-selected="true"><span class="em">📖</span> 공식집</button>
+        <button class="qseg-b" data-fm="calc" role="tab" aria-selected="false"><span class="em">🧮</span> 계산 문제</button>
       </div>
 
       <div id="fmlHome">
@@ -1962,6 +1964,14 @@ function fmlChipsHtml(){
     h += '<button class="chip' + (fml.s === i ? ' active' : '') + '" data-f="' + i + '">' + i + '과목</button>';
   $('fmlChips').innerHTML = h;
 }
+/* 한 카드 = 머리(과목 배지 + 공식명) · 회색 수식 박스 · 한 줄 설명(기호·단위 + 함정) · 예 */
+function fmlDesc(f){
+  var v = String(f.v || '').replace(/^단위:\s*/, '').trim();
+  var t = String(f.t || '').trim();
+  if (!v) return t;
+  if (!t) return /[.!?]$/.test(v) ? v : v + '.';
+  return (/[.!?]$/.test(v) ? v : v + '.') + ' ' + t;
+}
 function renderFormulas(){
   var q = (fml.q || '').trim().toLowerCase();
   var out = '', n = 0;
@@ -1970,15 +1980,16 @@ function renderFormulas(){
     if (fml.s && f.s !== fml.s) continue;
     if (q && (f.n + ' ' + f.f + ' ' + f.v + ' ' + f.t + ' ' + f.e).toLowerCase().indexOf(q) < 0) continue;
     n++;
-    out += '<div class="fml"><div class="fmlhead"><span class="fbadge s' + f.s + '">' + f.s + '과목</span>' +
-      '<span class="fmlname">' + escapeHtml(f.n) + '</span></div>' +
-      '<div class="fmleq">' + escapeHtml(f.f).replace(/\n/g, '<br>') + '</div>' +
-      '<p class="fmlrow"><b>기호·단위</b>' + escapeHtml(f.v.replace(/^단위:\s*/, '')) + '</p>' +
-      '<p class="fmlrow tip"><b>주의</b>' + escapeHtml(f.t) + '</p>' +
-      '<p class="fmlrow ex"><b>예</b>' + escapeHtml(f.e) + '</p></div>';
+    out += '<div class="fml">' +
+      '<div class="fml-hd"><span class="fml-bd s' + f.s + '">' + f.s + '과목</span>' +
+      '<span class="fml-nm">' + escapeHtml(f.n) + '</span></div>' +
+      '<div class="fml-f">' + escapeHtml(f.f).replace(/\n/g, '<br>') + '</div>' +
+      '<p class="fml-d">' + escapeHtml(fmlDesc(f)) + '</p>' +
+      '<p class="fml-e"><b>예</b>' + escapeHtml(f.e) + '</p>' +
+      '</div>';
   }
   $('fmlList').innerHTML = out || '<div class="fmlnone">해당하는 공식이 없습니다.<br>다른 검색어를 넣어 보세요.</div>';
-  $('fmlCount').textContent = n + '개 공식';
+  $('fmlCount').textContent = (fml.s ? fml.s + '과목' : '전체 5과목') + ' · ' + n + '개 공식';
 }
 (function(){
   fmlChipsHtml();
@@ -3794,10 +3805,10 @@ function calcProgOf(key){
 }
 function calcStat(key){
   key = String(key);
-  var list = CALC_LISTS[key] || [], p = calcProgOf(key), seen = 0, ok = 0;
+  var list = CALC_LISTS[key] || [], p = calcProgOf(key), am = calcAnsMap(), seen = 0, ok = 0;
   for (var i = 0; i < list.length; i++){
     var id = list[i].id;
-    if (id in p.a){ seen++; if (p.a[id] === 1) ok++; }
+    if (id in am){ seen++; if (am[id] === 1) ok++; }
   }
   return {total:list.length, seen:seen, ok:ok, pct:seen ? Math.round(ok / seen * 100) : 0,
           done:!!p.done, round:p.round};
@@ -3814,6 +3825,27 @@ function calcStatAll(){
     }
   }
   return {seen:n, total:CALC.length, ok:ok, pct:n ? Math.round(ok / n * 100) : 0};
+}
+/* 한 문제의 답은 과목 세션·전체 세션이 함께 쓴다 (문제 id가 전 과목에서 고유).
+   그래서 어떤 세션에서 풀든 전체 알약·과목 알약·요약이 같은 진도를 가리킨다. */
+function calcAnsMap(){
+  var m = {};
+  for (var k = 0; k < CALC_KEYS.length; k++){
+    var p = calcProgOf(CALC_KEYS[k]);
+    for (var id in p.a) if (!(id in m)) m[id] = p.a[id];
+  }
+  return m;
+}
+function calcSaveAnswer(id, ok){
+  for (var k = 0; k < CALC_KEYS.length; k++) calcProgOf(CALC_KEYS[k]).a[id] = ok ? 1 : 0;
+  sSet(CALCK.prog, calcProg);
+}
+function calcClearIds(ids){
+  for (var k = 0; k < CALC_KEYS.length; k++){
+    var p = calcProgOf(CALC_KEYS[k]);
+    for (var id in ids) if (id in p.a) delete p.a[id];
+  }
+  sSet(CALCK.prog, calcProg);
 }
 function calcCheckSvg(){
   return '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6L9 17l-5-5"/></svg>';
@@ -3915,17 +3947,21 @@ function startCalc(key, mode, ids){
   if (mode !== 'wrong'){
     var p = calcProgOf(cals.key);
     if (p.done){                 // 완료한 회차를 다시 시작하면 새 회차
-      p.a = {};
+      var clr = {};
+      for (var t = 0; t < list.length; t++) clr[list[t].id] = 1;
+      calcClearIds(clr);
+      p = calcProgOf(cals.key);
       p.round++;
       p.done = false;
       calcProg[cals.key] = p;
       sSet(CALCK.prog, calcProg);
     }
-    var seen = 0;
+    var am = calcAnsMap();
     for (var j = 0; j < list.length; j++){
-      if (list[j].id in p.a){ seen++; cals.res[list[j].id] = p.a[list[j].id]; }
+      if (list[j].id in am) cals.res[list[j].id] = am[list[j].id];
     }
-    cals.idx = Math.min(seen, list.length - 1);
+    cals.idx = 0;                // 아직 안 푼 첫 문제부터 이어서
+    for (var u = 0; u < list.length; u++) if (!(list[u].id in am)){ cals.idx = u; break; }
   }
   var P = $('calcP');
   if (P) P.classList.add('on');
@@ -3971,10 +4007,7 @@ function calcAnswer(oi){
   cals.pick = oi;
   var ok = oi === q.k;
   cals.res[q.id] = ok ? 1 : 0;
-  var p = calcProgOf(cals.key);
-  p.a[q.id] = ok ? 1 : 0;
-  calcProg[cals.key] = p;
-  sSet(CALCK.prog, calcProg);
+  calcSaveAnswer(q.id, ok);
   var opts = $('calcOpts').querySelectorAll('.copt');
   for (var i = 0; i < opts.length; i++){
     var mine = parseInt(opts[i].getAttribute('data-oi'), 10) === oi;
@@ -4015,9 +4048,9 @@ function calcFinish(){
   var key = cals.key, p = calcProgOf(key);
   var first = false;
   if (cals.mode !== 'wrong'){
-    var answeredAll = true;
+    var answeredAll = true, am = calcAnsMap();
     for (var z = 0; z < list.length; z++)
-      if (!(list[z].id in p.a)) answeredAll = false;
+      if (!(list[z].id in am)) answeredAll = false;
     first = !p.done && answeredAll;
     if (first) p.done = true;
     calcProg[key] = p;
