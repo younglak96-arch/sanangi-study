@@ -741,36 +741,185 @@ body.cards-fixed #fcCard{--cfit:1}
 }
 
 
-/* ================= v6: 계산 문제 ================= */
+/* ================= v7: 🧮 계산 문제 — 홈 카드 + 전체화면 플레이어 =================
+   산안기와 같은 UX: 상단 요약·진행바 → 과목 필터(진행 n/8) → 과목 시작 카드
+   → 카드를 누르면 전체화면 플레이어(종료·진행바·1/N·4지선다·공식→대입→정답·다음 문제)
+*/
 #viewFormula .qseg{margin-bottom:12px}
-.qseg-b b{font-weight:800}
 #paneCalc[hidden],#paneFml[hidden]{display:none}
 
-.calcbar{display:flex;align-items:center;gap:8px;margin:0 0 8px}
-.calcmeta{flex:1;min-width:0;font-size:11.5px;font-weight:700;color:var(--muted);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px}
-.calcmeta b{color:var(--text);font-weight:800}
-.calcreset{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);
-  font-size:11px;font-weight:800;padding:6px 9px;border-radius:9px;letter-spacing:-.2px;transition:background .15s,color .15s}
-.calcreset.arm{background:var(--accent-soft);color:var(--text);border-color:transparent}
+/* ---------- 상단 요약 + 진행 바 ---------- */
+.cbar-top{display:flex;align-items:center;gap:8px;margin:0 0 9px}
+.csum{flex:1;min-width:0;font-size:11.5px;font-weight:700;color:var(--muted);
+  letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-variant-numeric:tabular-nums}
+.csum b{color:var(--text);font-weight:800}
+.cmeter{display:block;height:6px;border-radius:99px;background:var(--surface2);
+  border:1px solid var(--line);overflow:hidden;margin:0 0 12px}
+.cmeter>b{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s ease}
 
-.calcq{margin-top:13px}
-.calcq .qtext2{font-size:16px;line-height:1.6}
-.opt[disabled]{opacity:1}
-.cstep{display:flex;gap:8px;padding:3px 0;font-size:13px;line-height:1.55;word-break:keep-all}
-.cstep em{flex:0 0 30px;font-style:normal;font-weight:800;font-size:10.5px;color:var(--accent);
-  letter-spacing:.02em;padding-top:2px}
-.cstep span{flex:1;color:var(--text);font-weight:600}
-.cnote{margin:8px 0 0;font-size:12.5px;color:var(--muted);line-height:1.6;word-break:keep-all}
+/* ---------- 과목 필터 (진행 n/total) ---------- */
+#calcChips{padding-bottom:11px}
+#calcChips .chip{display:inline-flex;align-items:center;gap:4px}
+#calcChips .chip small{font-size:10.5px;font-weight:800;opacity:.62;
+  font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+#calcChips .chip.active small{opacity:.9}
 
-.cdone{text-align:center;padding:30px 4px 6px}
-.cdone .big{font-size:38px;display:block;line-height:1;margin-bottom:12px}
-.cdone b{font-size:18px;letter-spacing:-.3px;word-break:keep-all}
-.cdone p{font-size:13px;color:var(--muted);margin:10px 0 0;line-height:1.6;word-break:keep-all}
-.cdonebar{height:8px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);
-  overflow:hidden;margin:14px 0 0}
-.cdonebar>i{display:block;height:100%;border-radius:99px;
-  background:linear-gradient(90deg,var(--accent),var(--green))}
+/* ---------- 과목 시작 카드 ---------- */
+.csc{display:block;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:17px;background:var(--surface);color:var(--text);
+  padding:12px 14px 0;margin:0 0 9px;overflow:hidden;box-shadow:var(--shadow);
+  transition:transform .12s ease,border-color .15s}
+.csc:last-child{margin-bottom:2px}
+.csc:active{transform:scale(.993)}
+body:not(.light) .csc{background:var(--surface2)}
+.csc.all{border-color:rgba(255,122,77,.42)}
+body.light .csc.all{border-color:rgba(194,65,12,.3)}
+.csc.done{border-color:rgba(52,211,153,.4)}
+body.light .csc.done{border-color:rgba(4,120,87,.32)}
+.csc-top{display:flex;align-items:center;gap:7px;min-width:0}
+.csc-dot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:var(--s1)}
+.csc-nm{flex:0 0 auto;font-size:15.5px;font-weight:800;letter-spacing:-.35px}
+.csc-ct{flex:0 0 auto;font-size:11.5px;font-weight:700;color:var(--muted);
+  font-variant-numeric:tabular-nums;letter-spacing:-.1px}
+.csc-badge{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;
+  font-size:10.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+  border-radius:999px;padding:4px 8px;letter-spacing:-.2px;white-space:nowrap}
+.csc-sbj{display:block;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--muted);
+  letter-spacing:-.15px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csc-mt{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;
+  font-weight:700;color:var(--muted);letter-spacing:-.15px;font-variant-numeric:tabular-nums}
+.csc-mt b{color:var(--text);font-weight:800}
+.csc-mt .sep{opacity:.6}
+.csc-bar{display:block;height:5px;border-radius:99px;background:var(--surface2);
+  margin-top:7px;overflow:hidden;border:1px solid var(--line)}
+body:not(.light) .csc-bar{background:rgba(0,0,0,.28)}
+.csc-bar b{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);
+  transition:width .3s ease}
+.csc.done .csc-bar b{background:var(--green)}
+.csc-go{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin:11px -14px 0;padding:11px 15px;background:var(--accent-soft);
+  border-top:1px solid var(--line);font-size:14px;font-weight:800;letter-spacing:-.3px;
+  color:var(--accent)}
+body:not(.light) .csc-go{background:rgba(255,122,77,.18)}
+.csc.done .csc-go{color:var(--text);background:var(--surface2)}
+body:not(.light) .csc.done .csc-go{background:rgba(0,0,0,.18)}
+.csc-go em{font-style:normal;font-size:16px;font-weight:700;line-height:1;opacity:.85}
+.calcnote{margin:11px 0 0;font-size:11.5px;line-height:1.62;color:var(--muted);
+  letter-spacing:-.1px;word-break:keep-all;text-align:center}
+
+/* ---------- 계산 문제 플레이어 (전체화면) ---------- */
+body.calc-lock{overflow:hidden;overscroll-behavior:none}
+.cp{position:fixed;inset:0;z-index:128;display:none;justify-content:center;background:var(--pbg)}
+.cp.on{display:flex}
+.cpshell{width:100%;max-width:480px;height:100%;display:flex;flex-direction:column;
+  background:var(--pbg);position:relative;overflow:hidden;padding-top:env(safe-area-inset-top)}
+.cpbar{flex:0 0 auto;display:flex;align-items:center;gap:11px;padding:10px 14px 12px}
+.cpquit{flex:0 0 auto;border:0;border-radius:11px;background:var(--surface2);color:var(--text);
+  font-size:12.5px;font-weight:800;padding:9px 12px;letter-spacing:-.2px}
+.cpquit:active{transform:scale(.96)}
+.cphd{flex:1;min-width:0}
+.cphd-row{display:flex;align-items:baseline;gap:8px}
+.cphd-nm{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--muted);
+  letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cphd-pos{flex:0 0 auto;font-size:11.5px;font-weight:800;color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.cppbar{display:block;height:3px;border-radius:99px;background:var(--surface2);
+  margin-top:7px;overflow:hidden}
+.cppbar b{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);
+  transition:width .25s ease}
+
+.cpbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;padding:2px 14px 12px}
+.cpcard{border-radius:20px;border:1px solid var(--line);background:var(--surface);
+  padding:15px 16px 14px;box-shadow:var(--shadow)}
+body:not(.light) .cpcard{background:var(--surface2)}
+.cpcard-top{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.cptopic{flex:1;min-width:0;font-size:11.5px;font-weight:800;color:var(--accent);
+  letter-spacing:-.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cpsbj{flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:3px 8px;letter-spacing:-.2px}
+.cpq{margin:0 0 13px;font-size:calc(16.5px * var(--fs));line-height:1.58;font-weight:700;
+  letter-spacing:-.35px;word-break:keep-all;color:var(--text)}
+
+.cpopts{display:flex;flex-direction:column;gap:8px}
+.copt{display:flex;align-items:flex-start;gap:9px;width:100%;text-align:left;
+  border:1px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:13px;padding:11px 12px;font-size:calc(13.5px * var(--fs));line-height:1.55;
+  font-weight:600;letter-spacing:-.2px;word-break:keep-all;
+  transition:background .15s,border-color .15s,transform .11s}
+.copt:active{transform:scale(.99)}
+.copt .no{flex:0 0 22px;height:22px;border-radius:50%;background:var(--surface2);
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.copt .tx{flex:1;min-width:0}
+.copt.right{border-color:rgba(52,211,153,.6);background:rgba(52,211,153,.13)}
+.copt.right .no{background:var(--green);border-color:transparent;color:#06251a}
+.copt.miss{border-color:rgba(248,113,113,.55);background:rgba(248,113,113,.12)}
+.copt.miss .no{background:var(--red);border-color:transparent;color:#2a0b0b}
+.copt.dim{opacity:.5}
+.copt[aria-disabled="true"]{pointer-events:none}
+
+.cpres{margin-top:11px}
+.cpres:empty{display:none}
+.cpexp{border:1px solid var(--line);border-radius:14px;background:var(--surface2);
+  padding:12px 13px;animation:fade .18s ease both}
+.cpexp-hd{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;
+  letter-spacing:-.2px;margin-bottom:8px}
+.cpexp.ok .cpexp-hd{color:var(--green)}
+.cpexp.no .cpexp-hd{color:var(--red)}
+.cpstep{display:flex;gap:8px;padding:6px 0;border-top:1px dashed var(--line);
+  font-size:calc(12.5px * var(--fs));line-height:1.6;word-break:keep-all}
+.cpstep:first-of-type{border-top:0}
+.cpstep i{flex:0 0 40px;font-style:normal;font-size:11px;font-weight:800;color:var(--accent);
+  letter-spacing:-.2px;padding-top:2px}
+.cpstep.f i{color:var(--text)}
+.cpstep.z i{color:var(--green)}
+.cpstep p{margin:0;flex:1;min-width:0;color:var(--muted)}
+.cpstep.f p{color:var(--text);font-weight:700}
+.cpstep.z p{color:var(--text);font-weight:800;font-size:calc(13.5px * var(--fs))}
+.cpnote{margin:9px 0 0;padding-top:9px;border-top:1px solid var(--line);
+  font-size:calc(11.5px * var(--fs));line-height:1.62;color:var(--amber);word-break:keep-all}
+.cpnote b{font-weight:800}
+
+.cpbot{flex:0 0 auto;padding:0 14px calc(12px + env(safe-area-inset-bottom))}
+.cpnext{display:none;width:100%;border:0;border-radius:15px;background:var(--accent);
+  color:#fff;font-size:15px;font-weight:800;padding:15px;letter-spacing:-.2px}
+.cpnext.on{display:block;animation:fade .16s ease both}
+.cpnext:active{transform:scale(.99)}
+
+/* ---------- 완료 화면 ---------- */
+.cpfinish{position:absolute;inset:0;padding-top:env(safe-area-inset-top);
+  display:none;flex-direction:column;overflow:hidden;background:var(--pbg)}
+.cpfinish.on{display:flex}
+.cpfin-in{flex:0 1 auto;min-height:0;margin:auto 0;padding:16px 16px 8px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cpfin-hd{text-align:center;padding:6px 0 4px}
+.cpfin-em{font-size:34px;line-height:1}
+.cpfin-sc{font-size:34px;font-weight:800;letter-spacing:-1px;margin:8px 0 2px;
+  font-variant-numeric:tabular-nums}
+.cpfin-sub{font-size:12.5px;font-weight:700;color:var(--muted);word-break:keep-all}
+.cpfin-msg{text-align:center;font-size:13px;color:var(--muted);line-height:1.6;
+  margin:12px 0 14px;word-break:keep-all}
+.cpfin-list{margin:0 0 12px}
+.cpfin-it{border:1px solid var(--line);border-radius:13px;background:var(--surface);
+  padding:11px 12px;margin-bottom:8px}
+body:not(.light) .cpfin-it{background:var(--surface2)}
+.cpfin-n{font-size:11px;font-weight:800;color:var(--accent);margin:0 0 3px}
+.cpfin-q{font-size:12.5px;font-weight:700;line-height:1.5;margin:0 0 5px;word-break:keep-all}
+.cpfin-f{font-size:12px;font-weight:800;color:var(--text);margin:0 0 3px;word-break:keep-all}
+.cpfin-e{font-size:11.5px;color:var(--muted);line-height:1.55;margin:0;word-break:keep-all}
+.cpfin-btns{display:flex;gap:9px;padding:0 16px calc(14px + env(safe-area-inset-bottom))}
+.cpfin-btns .btn{flex:1;white-space:nowrap}
+.cpfin-btns .btn.cpfin-wr{font-size:13px;letter-spacing:-.4px}
+
+/* 좁은 화면 */
+@media (max-width:360px){
+  #calcChips .chip{font-size:11.5px;padding:5px 7px}
+  .cpq{font-size:calc(15.5px * var(--fs))}
+  .csc-nm{font-size:14.5px}
+}
 
 /* ================= v6: 학습 플랜 · 내 목표·진도 ================= */
 #rmSeg{margin-bottom:14px}
@@ -1034,8 +1183,8 @@ summary:after{margin-left:8px}
     <!-- ============ 계산 공식집 ============ -->
     <section class="view" id="viewFormula">
       <div class="qseg" id="fmlSeg" role="tablist" aria-label="공식집 · 계산 문제">
-        <button class="qseg-b active" data-mode="fml" role="tab" aria-selected="true"><span class="em">📖</span> 공식집 <b>79</b></button>
-        <button class="qseg-b" data-mode="calc" role="tab" aria-selected="false"><span class="em">🧮</span> 계산 문제 <b>32</b></button>
+        <button class="qseg-b active" data-mode="fml" role="tab" aria-selected="true"><span class="em">📖</span> 공식집</button>
+        <button class="qseg-b" data-mode="calc" role="tab" aria-selected="false"><span class="em">🧮</span> 계산 문제</button>
       </div>
 
       <div id="paneFml">
@@ -1046,11 +1195,11 @@ summary:after{margin-left:8px}
       </div>
 
       <div id="paneCalc" hidden>
-        <div class="fmllead"><b>계산은 <u>공식 → 대입 → 정답</u> 세 줄이면 끝납니다.</b><br>기출에서 반복되는 계산 32문제를 과목당 8개씩 담았습니다. 답을 고르면 바로 풀이가 열리고, 진도는 자동으로 저장됩니다.</div>
+        <div class="cbar-top"><span class="csum" id="calcSum"></span></div>
+        <i class="cmeter"><b id="calcBar"></b></i>
         <div class="chips" id="calcChips"></div>
-        <p class="fmlcnt" id="calcCount"></p>
-        <div id="calcTop"></div>
-        <div id="calcBody"></div>
+        <div id="calcList"></div>
+        <p class="calcnote">계산은 공식 → 대입 → 정답 세 줄이면 끝납니다.<br>과목 카드를 누르면 전체화면으로 풀리고, 진도·정답은 이 기기에 자동 저장됩니다.</p>
       </div>
 
       <footer class="foot">수치는 소방시설법령·화재안전기술기준(NFTC) 기준입니다. 개정 시 원문을 확인하세요.</footer>
@@ -1391,6 +1540,54 @@ summary:after{margin-left:8px}
       </footer>
     </section>
   </main>
+
+  <!-- ============ 계산 문제 플레이어 ============ -->
+  <div class="cp" id="calcP" role="dialog" aria-modal="true" aria-label="계산 문제 풀이">
+    <div class="cpshell">
+      <div class="cpbar">
+        <button class="cpquit" id="calcQuit">종료</button>
+        <div class="cphd">
+          <div class="cphd-row">
+            <span class="cphd-nm" id="calcTopTitle">1과목 8문항</span>
+            <span class="cphd-pos" id="calcPos">1 / 8</span>
+          </div>
+          <i class="cppbar"><b id="calcPBar"></b></i>
+        </div>
+      </div>
+
+      <div class="cpbody" id="calcBody">
+        <div class="cpcard">
+          <div class="cpcard-top">
+            <span class="cptopic" id="calcTopic"></span>
+            <span class="cpsbj" id="calcSbj"></span>
+          </div>
+          <p class="cpq" id="calcQ"></p>
+          <div class="cpopts" id="calcOpts"></div>
+          <div class="cpres" id="calcRes"></div>
+        </div>
+      </div>
+
+      <div class="cpbot" id="calcBot">
+        <button class="cpnext" id="calcNext">다음 문제</button>
+      </div>
+
+      <div class="cpfinish" id="calcFin">
+        <div class="cpfin-in">
+          <div class="cpfin-hd">
+            <div class="cpfin-em" id="calcFinEm"></div>
+            <div class="cpfin-sc" id="calcFinSc"></div>
+            <div class="cpfin-sub" id="calcFinSub"></div>
+          </div>
+          <p class="cpfin-msg" id="calcFinMsg"></p>
+          <div class="cpfin-list" id="calcFinList"></div>
+        </div>
+        <div class="cpfin-btns">
+          <button class="btn" id="calcFinRetry">한 번 더</button>
+          <button class="btn primary" id="calcFinClose">목록으로</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ============ CBT 플레이어 ============ -->
   <div class="player" id="player" role="dialog" aria-modal="true" aria-label="CBT 풀이">
@@ -4340,227 +4537,346 @@ var CALC = [
 {i:'c31',s:4,n:'축전지 용량',q:'보수율 0.8, 용량환산시간 5시간, 방전전류 16A일 때 필요한 축전지 용량[Ah]은?',o:['80 Ah','64 Ah','125 Ah','100 Ah'],k:3,a:'100 Ah',f:'C = (1/L)·K·I',d:'(1 ÷ 0.8) × 5 × 16 = 1.25 × 80',e:'보수율 L로 나누므로 용량이 커집니다. 곱하면 64Ah라는 오답이 나옵니다. L은 0.8(80%)을 씁니다.'},
 {i:'c32',s:4,n:'비상콘센트 회로 수',q:'한 층에 비상콘센트 24개를 설치할 때 필요한 전용회로 수는? (전용회로당 10개 이하, 각 층 2회로 이상)',o:['2회로','3회로','24회로','12회로'],k:1,a:'3회로',f:'회로 수 = ⌈콘센트 수 ÷ 10⌉',d:'24 ÷ 10 = 2.4 → 3회로 (2회로 이상 기준도 충족)',e:'올림하지 않고 2회로로 두면 10개를 넘는 4개가 걸립니다. 콘센트는 높이 0.8~1.5m, 수평거리 50m(지하상가 25m) 이내에 설치합니다.'},
 ];
-/* ================= v6: 🧮 계산 문제 풀기 =================
-   - 공식집 옆 세그먼트로 전환, 과목 필터, 4지선다 즉시 채점
-   - 공식 → 대입 → 정답 3단 풀이 + 함정 해설
-   - 진행·정답은 localStorage(sobang_calc_v1)에 저장, 완료 시 오답만 풀기
+/* ================= v7: 🧮 계산 문제 — 홈 카드 + 전체화면 플레이어 =================
+   - 공식집 옆 세그먼트, 상단 요약(계산 32문항 · 푼 문제 n/32 · 정답률 · n/4과목 완료) + 진행 바
+   - 과목 필터(전체 · 1~4과목, 진행 n/8) → 과목 시작 카드 1장(바로/이어서/한 번 더 풀기)
+   - 카드를 누르면 전체화면 플레이어: 종료 · 진행 바 · 1/N · 4지선다
+     → 공식 → 대입 → 정답 3단 풀이 + 함정 해설 → 다음 문제
+   - 완료 화면: 정답률 + 오답만 풀기 (N문제) / 한 번 더
+   - 정답은 문제 단위로 한 번만 기록한다: sobang_calc_v2 = {a:{id:1|0}, done:{'0'~'4':1}, round:{...}}
+     → 전체로 풀어도 과목 카드의 진행률 n/8 에 그대로 반영된다.
 */
-var CALC_SUB = ['', '1과목 소방원론', '2과목 소방전기일반', '3과목 소방관계법규', '4과목 소방전기시설'];
-var CALCKEY = 'sobang_calc_v1';
-var calc = { filter: 0, kind: 'n', sess: null, store: sGet(CALCKEY, {}) };
-if (!calc.store || typeof calc.store !== 'object') calc.store = {};
+var CALC_SUB = ['', '소방원론', '소방전기일반', '소방관계법규', '소방전기시설'];
+var CALC_KEYS = ['0', '1', '2', '3', '4'];
+var CALCK = { prog: 'sobang_calc_v2', sel: 'sobang_calcsel_v1', seg: 'sobang_fmlmode_v1' };
 
+var calcSt = calcState(sGet(CALCK.prog, {}));
+var calcSel = String(sGet(CALCK.sel, '0'));
+if (CALC_KEYS.indexOf(calcSel) < 0) calcSel = '0';
+
+function calcState(raw){
+  var st = (raw && typeof raw === 'object') ? raw : {};
+  if (!st.a || typeof st.a !== 'object') st.a = {};
+  if (!st.done || typeof st.done !== 'object') st.done = {};
+  if (!st.round || typeof st.round !== 'object') st.round = {};
+  return st;
+}
+function calcSave(){ sSet(CALCK.prog, calcSt); }
 function calcFind(id){
   for (var i = 0; i < CALC.length; i++) if (CALC[i].i === id) return CALC[i];
   return null;
 }
-function calcIds(filter){
+function calcListOf(key){
+  key = String(key);
   var out = [];
-  for (var i = 0; i < CALC.length; i++) if (!filter || CALC[i].s === filter) out.push(CALC[i].i);
+  for (var i = 0; i < CALC.length; i++)
+    if (key === '0' || CALC[i].s === parseInt(key, 10)) out.push(CALC[i]);
   return out;
 }
-function calcSave(){ sSet(CALCKEY, calc.store); }
-function calcFilterName(){ return calc.filter ? CALC_SUB[calc.filter] : '전체 4과목'; }
+function calcKeyName(key){ return String(key) === '0' ? '전체' : key + '과목'; }
 
-function calcLoad(kind){
-  kind = kind || 'n';
-  var key = calc.filter + kind;
-  var s = calc.store[key];
-  if (!s || !s.ids || !s.ids.length){
-    if (kind === 'w'){ calc.kind = 'n'; calcLoad('n'); return; }
-    s = { ids: calcIds(calc.filter), pos: 0, ans: {}, done: false };
-    calc.store[key] = s;
+/* 한 과목(또는 전체)의 진행·정답률 — 정답은 문제 단위로 공유한다 */
+function calcStat(key){
+  key = String(key);
+  var list = calcListOf(key), seen = 0, ok = 0;
+  for (var i = 0; i < list.length; i++){
+    var id = list[i].i;
+    if (id in calcSt.a){ seen++; if (calcSt.a[id] === 1) ok++; }
   }
-  if (typeof s.pos !== 'number' || s.pos < 0) s.pos = 0;
-  if (!s.ans) s.ans = {};
-  calc.kind = kind;
-  calc.sess = s;
-  calcSave();
+  var full = list.length > 0 && seen === list.length;
+  return { total: list.length, seen: seen, ok: ok,
+           pct: seen ? Math.round(ok / seen * 100) : 0,
+           done: !!(calcSt.done[key] || full),
+           round: calcSt.round[key] || 1 };
 }
-function calcChipsHtml(){
-  var h = '<button class="chip' + (calc.filter === 0 ? ' active' : '') + '" data-f="0">전체 <b>' + CALC.length + '</b></button>';
-  for (var i = 1; i <= 4; i++){
-    var n = 0;
-    for (var j = 0; j < CALC.length; j++) if (CALC[j].s === i) n++;
-    h += '<button class="chip' + (calc.filter === i ? ' active' : '') + '" data-f="' + i + '">' + i + '과목 <b>' + n + '</b></button>';
-  }
-  return h;
+function calcStatAll(){ return calcStat('0'); }
+function calcCheckSvg(){
+  return '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:10px;height:10px;fill:none;' +
+    'stroke:currentColor;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round">' +
+    '<path d="M20 6L9 17l-5-5"/></svg>';
 }
-function calcScore(){
-  var s = calc.sess, ok = 0, no = 0, wrongIds = [];
-  if (!s) return { ok: 0, no: 0, wrongIds: [], total: 0 };
-  for (var i = 0; i < s.ids.length; i++){
-    var id = s.ids[i], q = calcFind(id);
-    if (!q) continue;
-    if (s.ans[id] === undefined) continue;
-    if (s.ans[id] === q.k) ok++;
-    else { no++; wrongIds.push(id); }
-  }
-  return { ok: ok, no: no, wrongIds: wrongIds, total: s.ids.length };
-}
-function renderCalc(){
-  var chips = $('calcChips');
-  if (chips) chips.innerHTML = calcChipsHtml();
-  if (!calc.sess) calcLoad('n');
-  var s = calc.sess;
-  if (!s || !s.ids.length){ $('calcBody').innerHTML = '<div class="empty"><span class="big">🧮</span>이 과목의 계산 문제가 없습니다.</div>'; return; }
-  var sc = calcScore(), total = s.ids.length, answered = sc.ok + sc.no;
-  var cnt = $('calcCount');
-  if (cnt) cnt.textContent = calcFilterName() + ' · ' + total + '문제 · 푼 ' + answered + '문제' + (calc.kind === 'w' ? ' (오답 복습)' : '');
 
-  var top = $('calcTop');
-  var pct = total ? Math.round(answered / total * 100) : 0;
-  top.innerHTML = '<div class="calcbar"><span class="calcmeta">정답 <b>' + sc.ok + '</b> · 오답 <b>' + sc.no + '</b> · 남은 ' + (total - answered) + '문제</span>' +
-    '<button class="calcreset" id="calcReset">처음부터</button></div>' +
-    '<div class="meter"><i style="width:' + pct + '%"></i></div>';
+/* ---------- 홈: 과목 시작 카드 ---------- */
+function calcCardHtml(key){
+  key = String(key);
+  var st = calcStat(key), all = key === '0', nm = calcKeyName(key);
+  var subj = all
+    ? '4과목 ' + CALC.length + '문항 · 기출 계산 유형'
+    : (CALC_SUB[parseInt(key, 10)] || '') + ' · 기출 계산 ' + st.total + '문항';
+  var cta = st.done ? '한 번 더 풀기' : (st.seen > 0 ? '이어서 풀기' : '바로 풀기');
+  var pctW = st.total ? Math.round(st.seen / st.total * 100) : 0;
+  var badge = st.done ? '<span class="csc-badge">' + calcCheckSvg() + '1회차 완료</span>' : '';
+  var color = all ? 'var(--accent)' : 'var(--s' + key + ')';
+  return '<button class="csc' + (all ? ' all' : '') + (st.done ? ' done' : '') +
+    '" data-ck="' + key + '" aria-label="' + nm + ' 계산 문제 ' + cta + '">' +
+    '<div class="csc-top"><span class="csc-dot" style="background:' + color + '"></span>' +
+    '<span class="csc-nm">' + nm + '</span>' +
+    '<span class="csc-ct">' + st.total + '문항</span>' + badge + '</div>' +
+    '<span class="csc-sbj">' + escapeHtml(subj) + '</span>' +
+    '<div class="csc-mt">진행률 <b>' + st.seen + '/' + st.total + '</b>' +
+    ' <span class="sep">·</span> 정답률 <b>' + st.pct + '%</b></div>' +
+    '<i class="csc-bar"><b style="width:' + pctW + '%"></b></i>' +
+    '<div class="csc-go"><span>' + cta + '</span><em>›</em></div>' +
+    '</button>';
+}
+function renderCalcChips(){
+  var box = $('calcChips');
+  if (!box) return;
+  var h = '';
+  for (var i = 0; i < CALC_KEYS.length; i++){
+    var k = CALC_KEYS[i], st = calcStat(k);
+    h += '<button class="chip' + (calcSel === k ? ' active' : '') + '" data-cf="' + k + '">' +
+      calcKeyName(k) + '<small>' + st.seen + '/' + st.total + '</small></button>';
+  }
+  box.innerHTML = h;
+}
+function renderCalcHome(){
+  var host = $('calcList');
+  if (!host) return;
+  if (CALC_KEYS.indexOf(calcSel) < 0) calcSel = '0';
+  var st0 = calcStatAll(), finished = 0;
+  for (var s = 1; s <= 4; s++) if (calcStat(String(s)).done) finished++;
+  host.innerHTML = calcCardHtml(calcSel);
+  renderCalcChips();
+  var sum = $('calcSum');
+  if (sum) sum.innerHTML = '계산 <b>' + CALC.length + '문항</b> · 푼 문제 <b>' +
+    st0.seen + '/' + st0.total + '</b> · 정답률 <b>' + st0.pct + '%</b> · <b>' +
+    finished + '/4과목</b> 완료';
+  var bar = $('calcBar');
+  if (bar) bar.style.width = (st0.total ? Math.round(st0.seen / st0.total * 100) : 0) + '%';
+}
+function renderCalc(){ renderCalcHome(); }
 
-  var body = $('calcBody');
-  if (s.done){ body.innerHTML = calcDoneHtml(sc); return; }
-  if (s.pos >= total) s.pos = total - 1;
-  body.innerHTML = calcCardHtml(calcFind(s.ids[s.pos]), s.pos, total, s.ans[s.ids[s.pos]]);
-}
-function calcCardHtml(q, idx, total, chosen){
-  if (!q) return '';
-  var h = '<div class="qcard calcq">';
-  h += '<div class="qmeta"><span class="qtype">' + q.s + '과목 · ' + escapeHtml(q.n) + '</span><span class="qnum">' + (idx + 1) + ' / ' + total + '</span></div>';
-  h += '<p class="qtext2">' + escapeHtml(q.q) + '</p><div class="opts">';
-  for (var k = 0; k < 4; k++){
-    var cls = 'opt';
-    if (chosen !== undefined){
-      if (k === q.k) cls += ' correct';
-      else if (k === chosen) cls += ' wrong';
-    }
-    h += '<button class="' + cls + '" data-k="' + k + '"' + (chosen !== undefined ? ' disabled' : '') + '>' +
-      '<span class="mark">' + (k + 1) + '</span><span class="txt">' + escapeHtml(q.o[k]) + '</span></button>';
-  }
-  h += '</div></div>';
-  if (chosen !== undefined){
-    var ok = chosen === q.k;
-    h += '<div class="expl ' + (ok ? 'ok' : 'no') + '" id="calcExp"><b>' + (ok ? '정답입니다' : '아쉽습니다 · 정답은 ' + (q.k + 1) + '번') + '</b>' +
-      '<div class="cstep"><em>공식</em><span>' + escapeHtml(q.f) + '</span></div>' +
-      '<div class="cstep"><em>대입</em><span>' + escapeHtml(q.d) + '</span></div>' +
-      '<div class="cstep"><em>정답</em><span>' + escapeHtml(q.a) + '</span></div>' +
-      '<p class="cnote">' + escapeHtml(q.e) + '</p></div>';
-    h += '<div class="row tight"><button class="btn primary" id="calcNext">' + (idx + 1 >= total ? '결과 보기' : '다음 문제 ›') + '</button></div>';
-  }
-  return h;
-}
-function calcDoneHtml(sc){
-  var total = sc.total, pct = total ? Math.round(sc.ok / total * 100) : 0;
-  var h = '<div class="cdone"><span class="big">' + (pct >= 60 ? '🎉' : '💪') + '</span>';
-  h += '<b>' + total + '문제 중 ' + sc.ok + '문제 정답 · ' + pct + '%</b>';
-  h += '<div class="cdonebar"><i style="width:' + pct + '%"></i></div>';
-  h += '<p>' + (pct >= 60
-      ? '필기 합격선(평균 60점)을 넘었습니다. 틀린 문제의 공식만 다시 읽고 넘어가세요.'
-      : '60%에 조금 못 미칩니다. 아래 오답만 풀기로 세 문제씩 다시 풀어보세요.') + '</p>';
-  if (sc.wrongIds.length){
-    h += '<div class="row"><button class="btn primary" id="calcWrong">오답만 풀기 (' + sc.wrongIds.length + '문제)</button></div>';
-  } else {
-    h += '<p class="fine" style="margin-top:10px">이 범위는 전부 맞혔습니다. 과목을 바꿔 이어서 풀어보세요.</p>';
-  }
-  h += '<div class="row tight"><button class="btn" id="calcAgain">처음부터 다시</button></div>';
-  h += '</div>';
-  return h;
-}
-function calcAnswer(k){
-  var s = calc.sess;
-  if (!s || s.done) return;
-  var id = s.ids[s.pos], q = calcFind(id);
-  if (!q || s.ans[id] !== undefined) return;
-  s.ans[id] = k;
-  calcSave();
-  renderCalc();
-  var exp = $('calcExp');
-  if (exp && exp.scrollIntoView) exp.scrollIntoView({ block: 'nearest' });
-}
-function calcNext(){
-  var s = calc.sess;
-  if (!s) return;
-  if (s.pos + 1 >= s.ids.length){ s.done = true; calcSave(); renderCalc(); return; }
-  s.pos++;
-  calcSave();
-  renderCalc();
-  var pane = $('paneCalc');
-  if (pane) window.scrollTo(0, pane.getBoundingClientRect().top + window.pageYOffset - 66);
-}
-function calcReset(){
-  delete calc.store[calc.filter + 'n'];
-  delete calc.store[calc.filter + 'w'];
-  calc.kind = 'n';
-  calc.sess = null;
-  calcLoad('n');
-  renderCalc();
-  window.scrollTo(0, $('paneCalc').getBoundingClientRect().top + window.pageYOffset - 66);
-}
-function calcWrongOnly(){
-  var sc = calcScore();
-  if (!sc.wrongIds.length) return;
-  calc.store[calc.filter + 'w'] = { ids: sc.wrongIds.slice(0), pos: 0, ans: {}, done: false };
-  calc.kind = 'w';
-  calc.sess = calc.store[calc.filter + 'w'];
-  calcSave();
-  renderCalc();
-  window.scrollTo(0, $('paneCalc').getBoundingClientRect().top + window.pageYOffset - 66);
-}
+/* ---------- 공식집 ↔ 계산 문제 세그먼트 ---------- */
 function setFmlMode(m){
   var isCalc = m === 'calc';
-  $('paneFml').hidden = isCalc;
-  $('paneCalc').hidden = !isCalc;
+  var fml = $('paneFml'), calcPane = $('paneCalc');
+  if (fml) fml.hidden = isCalc;
+  if (calcPane) calcPane.hidden = !isCalc;
   var bs = document.querySelectorAll('#fmlSeg .qseg-b');
   for (var i = 0; i < bs.length; i++){
     var on = bs[i].getAttribute('data-mode') === (isCalc ? 'calc' : 'fml');
     bs[i].className = 'qseg-b' + (on ? ' active' : '');
     bs[i].setAttribute('aria-selected', on ? 'true' : 'false');
   }
-  if (isCalc) renderCalc(); else renderFormulas();
-  sSet('sobang_fmlmode_v1', isCalc ? 'calc' : 'fml');
+  if (isCalc) renderCalcHome(); else renderFormulas();
+  sSet(CALCK.seg, isCalc ? 'calc' : 'fml');
 }
 
-$('fmlSeg').addEventListener('click', function(e){
-  var b = closestEl(e.target, '.qseg-b');
-  if (!b) return;
-  setFmlMode(b.getAttribute('data-mode'));
-});
-$('calcChips').addEventListener('click', function(e){
-  var chip = closestEl(e.target, '.chip');
-  if (!chip) return;
-  calc.filter = parseInt(chip.getAttribute('data-f'), 10) || 0;
-  calc.kind = 'n';
-  calc.sess = null;
-  calcLoad('n');
-  renderCalc();
-});
-$('calcChips').addEventListener('touchstart', function(){}, { passive: true });
-$('calcTop').addEventListener('click', function(e){
-  var btn = closestEl(e.target, '#calcReset');
-  if (!btn) return;
-  if (btn.getAttribute('data-arm') !== '1'){
-    btn.setAttribute('data-arm', '1');
-    btn.textContent = '한 번 더 누르면 리셋';
-    btn.className = 'calcreset arm';
-    setTimeout(function(){
-      if (btn.getAttribute('data-arm') === '1'){
-        btn.removeAttribute('data-arm');
-        btn.textContent = '처음부터';
-        btn.className = 'calcreset';
-      }
-    }, 2600);
-    return;
+/* ---------- 세션 ---------- */
+var cals = { list: [], idx: 0, answered: false, pick: -1, mode: 'subject', key: '0', res: {} };
+
+function startCalc(key, mode, ids){
+  var list, i;
+  if (mode === 'wrong'){
+    list = [];
+    for (i = 0; i < CALC.length; i++) if (ids && ids[CALC[i].i]) list.push(CALC[i]);
+  } else {
+    list = calcListOf(key);
   }
-  calcReset();
-});
-$('calcBody').addEventListener('click', function(e){
-  var nx = closestEl(e.target, '#calcNext');
-  if (nx){ calcNext(); return; }
-  var wr = closestEl(e.target, '#calcWrong');
-  if (wr){ calcWrongOnly(); return; }
-  var ag = closestEl(e.target, '#calcAgain');
-  if (ag){ calcReset(); return; }
-  var opt = closestEl(e.target, '.opt');
-  if (opt && !opt.hasAttribute('disabled')){
-    calcAnswer(parseInt(opt.getAttribute('data-k'), 10) || 0);
+  if (!list.length) return;
+  cals.list = list;
+  cals.idx = 0;
+  cals.answered = false;
+  cals.pick = -1;
+  cals.mode = mode;
+  cals.key = String(key);
+  cals.res = {};
+  if (mode !== 'wrong'){
+    key = String(key);
+    if (calcStat(key).done){            // 완료한 범위를 다시 시작하면 새 회차
+      for (i = 0; i < list.length; i++) delete calcSt.a[list[i].i];
+      delete calcSt.done[key];
+      calcSt.round[key] = (calcSt.round[key] || 1) + 1;
+      calcSave();
+    }
+    var seen = 0;
+    for (i = 0; i < list.length; i++){
+      if (list[i].i in calcSt.a){ seen++; cals.res[list[i].i] = calcSt.a[list[i].i]; }
+    }
+    cals.idx = Math.min(seen, list.length - 1);
   }
-});
+  var P = $('calcP');
+  if (P) P.classList.add('on');
+  document.body.classList.add('calc-lock');
+  var F = $('calcFin'); if (F) F.classList.remove('on');
+  if ($('calcBody')) $('calcBody').style.display = '';
+  if ($('calcBot')) $('calcBot').style.display = '';
+  renderCalcQ();
+}
+function calcTopTitle(){
+  if (cals.mode === 'wrong') return '오답 복습';
+  return calcKeyName(cals.key) + ' ' + cals.list.length + '문항';
+}
+function renderCalcQ(){
+  var q = cals.list[cals.idx];
+  if (!q) return;
+  cals.answered = false;
+  cals.pick = -1;
+  $('calcTopTitle').textContent = calcTopTitle();
+  $('calcPos').textContent = (cals.idx + 1) + ' / ' + cals.list.length;
+  $('calcPBar').style.width = (cals.idx / cals.list.length * 100) + '%';
+  $('calcTopic').textContent = q.n;
+  $('calcSbj').textContent = q.s + '과목';
+  $('calcQ').textContent = q.q;
+  var h = '';
+  for (var i = 0; i < q.o.length; i++){
+    h += '<button class="copt" data-oi="' + i + '"><span class="no">' + (i + 1) +
+      '</span><span class="tx">' + escapeHtml(q.o[i]) + '</span></button>';
+  }
+  $('calcOpts').innerHTML = h;
+  $('calcRes').innerHTML = '';
+  $('calcNext').className = 'cpnext';
+  $('calcNext').textContent = (cals.idx === cals.list.length - 1) ? '결과 보기' : '다음 문제';
+  if ($('calcBody')) $('calcBody').scrollTop = 0;
+}
+function calcAnswer(oi){
+  if (cals.answered) return;
+  var q = cals.list[cals.idx];
+  if (!q) return;
+  cals.answered = true;
+  cals.pick = oi;
+  var ok = oi === q.k;
+  cals.res[q.i] = ok ? 1 : 0;
+  calcSt.a[q.i] = ok ? 1 : 0;
+  calcSave();
+  var opts = $('calcOpts').querySelectorAll('.copt');
+  for (var i = 0; i < opts.length; i++){
+    var mine = parseInt(opts[i].getAttribute('data-oi'), 10) === oi;
+    opts[i].setAttribute('aria-disabled', 'true');
+    if (i === q.k) opts[i].className = 'copt right';
+    else if (mine) opts[i].className = 'copt miss';
+    else opts[i].className = 'copt dim';
+  }
+  var steps = '';
+  var arr = [['공식', q.f], ['대입', q.d], ['정답', q.a]];
+  for (var s = 0; s < arr.length; s++){
+    var cls = 'cpstep';
+    if (s === 0) cls += ' f';
+    if (s === arr.length - 1) cls += ' z';
+    steps += '<div class="' + cls + '"><i>' + arr[s][0] + '</i><p>' +
+      escapeHtml(arr[s][1]) + '</p></div>';
+  }
+  $('calcRes').innerHTML = '<div class="cpexp ' + (ok ? 'ok' : 'no') + '">' +
+    '<div class="cpexp-hd">' + (ok ? '정답입니다' : '아쉬워요 · 정답은 ' + (q.k + 1) + '번') + '</div>' +
+    steps +
+    '<p class="cpnote"><b>포인트</b> ' + escapeHtml(q.e) + '</p></div>';
+  $('calcNext').className = 'cpnext on';
+  $('calcPBar').style.width = ((cals.idx + 1) / cals.list.length * 100) + '%';
+}
+function calcNext(){
+  if (!cals.answered) return;
+  if (cals.idx >= cals.list.length - 1){ calcFinish(); return; }
+  cals.idx++;
+  renderCalcQ();
+}
+function calcFinish(){
+  var list = cals.list, okN = 0, wrongIds = {}, i;
+  for (i = 0; i < list.length; i++){
+    if (cals.res[list[i].i] === 1) okN++;
+    else if (cals.res[list[i].i] === 0) wrongIds[list[i].i] = 1;
+  }
+  var key = cals.key, first = false;
+  if (cals.mode !== 'wrong'){
+    var all = true;
+    for (i = 0; i < list.length; i++) if (!(list[i].i in calcSt.a)) all = false;
+    first = all && !calcSt.done[key];
+    if (all) calcSt.done[key] = 1;
+    calcSave();
+  }
+  var wrongN = Object.keys(wrongIds).length;
+  var pct = list.length ? Math.round(okN / list.length * 100) : 0;
+  $('calcFinEm').textContent = pct === 100 ? '🎉' : (pct >= 80 ? '👍' : '📐');
+  $('calcFinSc').textContent = okN + ' / ' + list.length;
+  $('calcFinSub').textContent = cals.mode === 'wrong'
+    ? (wrongN ? '오답 복습 완료 · 틀린 ' + wrongN + '문제를 아래에서 다시 확인하세요'
+              : '오답 복습 완료 · 모두 맞혔습니다')
+    : (calcKeyName(key) + (first ? ' 1회차 완료' : ' 완료') + ' · 정답률 ' + pct + '%');
+  $('calcFinMsg').textContent = pct === 100
+    ? '계산 문제는 공식 → 대입 순서만 손에 익으면 시간을 크게 줄일 수 있습니다.'
+    : '틀린 문제는 아래 공식과 포인트를 소리 내어 한 번 읽고, 오답만 풀기로 다시 확인하세요.';
+  var h = '';
+  for (i = 0; i < list.length; i++){
+    if (cals.res[list[i].i] !== 0) continue;
+    var q = list[i];
+    h += '<div class="cpfin-it"><p class="cpfin-n">' + escapeHtml(q.n) + ' · ' + q.s + '과목</p>' +
+      '<p class="cpfin-q">' + escapeHtml(q.q) + '</p>' +
+      '<p class="cpfin-f">공식: ' + escapeHtml(q.f) + '</p>' +
+      '<p class="cpfin-e">정답 ' + (q.k + 1) + '번 — ' + escapeHtml(q.a) + '</p>' +
+      '<p class="cpfin-e" style="margin-top:4px">' + escapeHtml(q.e) + '</p></div>';
+  }
+  $('calcFinList').innerHTML = h;
+  var rb = $('calcFinRetry');
+  if (cals.mode === 'wrong' || wrongN === 0){
+    rb.textContent = '한 번 더';
+    rb.className = 'btn primary';
+    rb.setAttribute('data-mode', 'again');
+    rb.removeAttribute('data-ids');
+  } else {
+    rb.textContent = '오답만 풀기 (' + wrongN + '문제)';
+    rb.className = 'btn primary cpfin-wr';
+    rb.setAttribute('data-mode', 'wrong');
+    rb.setAttribute('data-ids', Object.keys(wrongIds).join(','));
+  }
+  if ($('calcBody')) $('calcBody').style.display = 'none';
+  if ($('calcBot')) $('calcBot').style.display = 'none';
+  $('calcFin').classList.add('on');
+}
+function calcClose(){
+  var P = $('calcP');
+  if (P) P.classList.remove('on');
+  document.body.classList.remove('calc-lock');
+  var F = $('calcFin'); if (F) F.classList.remove('on');
+  renderCalcHome();
+}
+
+(function calcInit(){
+  var host = $('calcList');
+  if (host) host.addEventListener('click', function(e){
+    var c = closestEl(e.target, '.csc');
+    if (!c) return;
+    startCalc(c.getAttribute('data-ck'), 'subject');
+  });
+  var chips = $('calcChips');
+  if (chips) chips.addEventListener('click', function(e){
+    var c = closestEl(e.target, '.chip');
+    if (!c) return;
+    calcSel = c.getAttribute('data-cf') || '0';
+    sSet(CALCK.sel, calcSel);
+    renderCalcHome();
+  });
+  var o = $('calcOpts');
+  if (o) o.addEventListener('click', function(e){
+    var btn = closestEl(e.target, '.copt');
+    if (!btn) return;
+    calcAnswer(parseInt(btn.getAttribute('data-oi'), 10) || 0);
+  });
+  if ($('calcNext')) $('calcNext').addEventListener('click', calcNext);
+  if ($('calcQuit')) $('calcQuit').addEventListener('click', calcClose);
+  if ($('calcFinClose')) $('calcFinClose').addEventListener('click', calcClose);
+  if ($('calcFinRetry')) $('calcFinRetry').addEventListener('click', function(){
+    var mode = this.getAttribute('data-mode');
+    if (mode === 'wrong'){
+      var ids = {}, arr = (this.getAttribute('data-ids') || '').split(',');
+      for (var i = 0; i < arr.length; i++) if (arr[i]) ids[arr[i]] = 1;
+      startCalc(cals.key, 'wrong', ids);
+    } else {
+      startCalc(cals.key, 'subject');
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var P = $('calcP');
+    if (P && P.classList.contains('on')) calcClose();
+  });
+  var seg = $('fmlSeg');
+  if (seg) seg.addEventListener('click', function(e){
+    var b = closestEl(e.target, '.qseg-b');
+    if (!b) return;
+    setFmlMode(b.getAttribute('data-mode'));
+  });
+  setFmlMode(sGet(CALCK.seg, 'fml') === 'calc' ? 'calc' : 'fml');
+})();
 
 /* ================= v6: 🗺️ 학습 플랜 · 🎯 내 목표·진도 =================
    - 8주 플랜 주차 카드에 체크 과제 + 주차별 %
