@@ -448,7 +448,7 @@ body.light{--oxb:#2563eb;--oxx:#dd4b26}
 body.light .qseg-b.active{box-shadow:0 4px 12px -10px rgba(16,32,56,.6)}
 
 /* 과목 요약 + 저장한 문제 */
-.oxtools{display:flex;align-items:center;gap:8px;margin:0 0 9px}
+.oxtools{display:flex;align-items:center;gap:8px;margin:0 0 10px}
 .oxsum{flex:1;min-width:0;font-size:11.5px;font-weight:700;color:var(--muted);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px}
 .oxsaved{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--text);
@@ -459,70 +459,45 @@ body.light .qseg-b.active{box-shadow:0 4px 12px -10px rgba(16,32,56,.6)}
 .oxsaved b{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:800}
 .oxsaved:active{transform:scale(.97)}
 
-/* 과목 탭 */
-.oxsubj{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;margin:0 0 11px;
-  padding:0 0 1px;border-bottom:1px solid var(--line);
-  -webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
-.oxsubj.lft{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 18px);
-  mask-image:linear-gradient(to right,transparent 0,#000 18px)}
-.oxsubj.rgt{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent 100%);
-  mask-image:linear-gradient(to right,#000 calc(100% - 18px),transparent 100%)}
-.oxsubj.lft.rgt{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);
-  mask-image:linear-gradient(to right,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}
-.oxsubj::-webkit-scrollbar{display:none;width:0;height:0}
-.oxsj{flex:0 0 auto;border:0;background:transparent;color:var(--muted);
-  font-size:13.5px;font-weight:800;letter-spacing:-.35px;padding:8px 1px 9px;
-  border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;
-  transition:color .16s,border-color .16s}
-.oxsj.active{color:var(--text);border-bottom-color:var(--text)}
-
-/* 단원 아코디언 */
-.oxch{border:1px solid var(--line);border-radius:16px;background:var(--surface);
-  margin:0 0 8px;overflow:hidden;box-shadow:var(--shadow)}
-.oxch-hd{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;
-  color:var(--text);padding:14px 13px 14px 14px;text-align:left}
-.oxch-hd:active{background:var(--surface2)}
-.oxch-no{flex:0 0 auto;font-size:11.5px;font-weight:800;color:var(--muted);
-  font-variant-numeric:tabular-nums;min-width:12px}
-.oxch-nm{flex:1;min-width:0;font-size:14.5px;font-weight:800;letter-spacing:-.35px;
-  line-height:1.4;word-break:keep-all}
-.oxch-ct{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--muted);
-  font-variant-numeric:tabular-nums;letter-spacing:.01em}
-.oxch-ar{flex:0 0 auto;width:18px;height:18px;display:flex;align-items:center;justify-content:center;
-  color:var(--muted);transition:transform .2s ease}
-.oxch-ar svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;
+/* ---------- v6: 과목 카드 6장 (전체 + 1~5과목) ---------- */
+.oxsc{display:block;width:100%;text-align:left;border:1px solid var(--line);
+  border-radius:17px;background:var(--surface);color:var(--text);
+  padding:12px 14px 0;margin:0 0 9px;overflow:hidden;
+  box-shadow:var(--shadow);transition:transform .12s ease,border-color .15s}
+.oxsc:last-child{margin-bottom:2px}
+.oxsc:active{transform:scale(.993)}
+.oxsc.all{border-color:rgba(91,141,239,.42)}
+body.light .oxsc.all{border-color:rgba(37,99,235,.32)}
+.oxsc.done{border-color:rgba(52,211,153,.4)}
+.oxsc-top{display:flex;align-items:center;gap:7px;min-width:0}
+.oxsc-dot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:var(--s1)}
+.oxsc-nm{flex:0 0 auto;font-size:15.5px;font-weight:800;letter-spacing:-.35px}
+.oxsc-ct{flex:0 0 auto;font-size:11.5px;font-weight:700;color:var(--muted);
+  font-variant-numeric:tabular-nums;letter-spacing:-.1px}
+.oxsc-badge{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;
+  font-size:10.5px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+  border-radius:999px;padding:4px 8px;letter-spacing:-.2px;white-space:nowrap}
+.oxsc-badge svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:3.4;
   stroke-linecap:round;stroke-linejoin:round}
-.oxch.open .oxch-ar{transform:rotate(180deg)}
-.oxch-bd{display:none;padding:0 9px 9px;border-top:1px solid var(--line);
-  background:var(--surface2);padding-top:9px}
-.oxch.open .oxch-bd{display:block}
-@media (prefers-reduced-motion:reduce){.oxch-ar{transition:none}}
-
-/* 소단원 카드 */
-.oxt{display:block;width:100%;text-align:left;border:1px solid var(--line);
-  border-radius:13px;background:var(--surface);color:var(--text);
-  padding:12px 12px 11px;margin:0 0 7px;transition:background .15s,border-color .15s}
-.oxt:last-child{margin-bottom:0}
-.oxt:active{transform:scale(.995)}
-.oxt.done{background:var(--accent-soft);border-color:transparent}
-body.light .oxt.done{background:rgba(37,99,235,.06);border-color:rgba(37,99,235,.16)}
-.oxt-hd{display:flex;align-items:flex-start;gap:8px}
-.oxt-nm{flex:1;min-width:0;font-size:14px;font-weight:800;letter-spacing:-.35px;
-  line-height:1.42;word-break:keep-all}
-.oxt-ar{flex:0 0 auto;color:var(--muted);font-size:16px;line-height:1.2;font-weight:300;margin-top:1px}
-.oxt-mt{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:4px;
-  font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:-.1px}
-.oxt-ct{font-variant-numeric:tabular-nums}
-.oxt-done{display:inline-flex;align-items:center;gap:3px;color:var(--accent);font-weight:800}
-.oxt-done svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:3.2;
-  stroke-linecap:round;stroke-linejoin:round}
-.oxt-acc{color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
-.oxt-bar{display:block;height:4px;border-radius:99px;background:var(--line);
-  margin-top:9px;overflow:hidden}
-.oxt-bar b{display:block;height:100%;width:0;border-radius:99px;background:var(--muted);
+.oxsc-sbj{display:block;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--muted);
+  letter-spacing:-.15px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oxsc-mt{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;
+  font-weight:700;color:var(--muted);letter-spacing:-.15px;font-variant-numeric:tabular-nums}
+.oxsc-mt b{color:var(--text);font-weight:800}
+.oxsc-mt .sep{font-style:normal;opacity:.5}
+.oxsc-bar{display:block;height:5px;border-radius:99px;background:var(--surface2);
+  margin-top:7px;overflow:hidden;border:1px solid var(--line)}
+.oxsc-bar b{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);
   transition:width .3s ease}
-.oxt.done .oxt-bar b,.oxt-bar b.full{background:var(--accent)}
-.oxt-bar b.half{background:var(--accent);opacity:.55}
+.oxsc-bar b.half{opacity:.6}
+.oxsc-go{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin:11px -14px 0;padding:11px 15px;background:var(--accent-soft);
+  border-top:1px solid var(--line);font-size:14px;font-weight:800;letter-spacing:-.3px;
+  color:var(--accent)}
+.oxsc-go em{font-style:normal;font-size:16px;font-weight:700;line-height:1;opacity:.85}
+.oxsc.done .oxsc-go{color:var(--text);background:var(--surface2)}
+.oxsc-go small{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:-.1px;
+  margin-left:5px;font-variant-numeric:tabular-nums}
 
 /* ---------- OX 플레이어 ---------- */
 .oxp{position:fixed;inset:0;z-index:125;display:none;justify-content:center;background:var(--bg)}
@@ -657,10 +632,71 @@ body.light .oxt.done{background:rgba(37,99,235,.06);border-color:rgba(37,99,235,
 .chip.active small{color:var(--accent)}
 
 /* 다크에서 카드 대비 보정 */
-body:not(.light) .oxt{background:var(--surface2)}
-body:not(.light) .oxch-bd{background:rgba(0,0,0,.16)}
-body:not(.light) .oxt.done{background:rgba(91,141,239,.13)}
-body:not(.light) .oxt.done .oxt-done{color:#a8c4ff}
+body:not(.light) .oxsc{background:var(--surface2)}
+body:not(.light) .oxsc-go{background:rgba(91,141,239,.18)}
+body:not(.light) .oxsc.done .oxsc-go{background:rgba(0,0,0,.18)}
+body:not(.light) .oxsc-bar{background:rgba(0,0,0,.28)}
+
+/* ================= v6: 암기카드 화면 완전 고정 (페이지·카드 내부 스크롤 없음) ================= */
+html.ht-cards{overflow:hidden;height:100%;overscroll-behavior:none}
+html.ht-cards body{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior:none}
+html.ht-cards .app{height:100vh;height:100dvh;min-height:0;overflow:hidden}
+html.ht-cards main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+  padding:12px 18px calc(var(--tabh,55px) + 10px)}
+html.ht-cards #viewCards.active{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
+  animation:none}
+html.ht-cards #viewCards .metaline,
+html.ht-cards #viewCards .meter,
+html.ht-cards #viewCards .chips,
+html.ht-cards #viewCards .row,
+html.ht-cards #viewCards .foot,
+html.ht-cards #viewCards .empty{flex:0 0 auto}
+html.ht-cards #viewCards .metaline{margin-bottom:7px;font-size:11.5px}
+html.ht-cards #viewCards .meter{margin-bottom:10px}
+html.ht-cards #viewCards .chips{padding-bottom:7px}
+html.ht-cards #viewCards .row.tight{margin-top:8px}
+html.ht-cards #viewCards .row{margin-top:10px}
+html.ht-cards #viewCards .btn{padding:11px 10px;font-size:14.5px}
+html.ht-cards #viewCards .btn.small{padding:9px 12px;font-size:12.5px}
+html.ht-cards #viewCards .foot{padding:5px 0 0}
+
+/* 카드 아래 버튼 3개: 한 줄 (외웠음 표시 · 순서 섞기 · 안 외운 것만) */
+html.ht-cards #viewCards .fcrow{display:flex;align-items:stretch;gap:7px;margin-top:11px}
+html.ht-cards #viewCards .fcrow .btn{min-width:0;white-space:nowrap;font-size:12.5px;
+  padding:12px 7px;border-radius:13px;letter-spacing:-.4px}
+html.ht-cards #viewCards #btnMaster{flex:1.22 1 0;background:var(--accent-soft);
+  border-color:transparent;color:var(--accent);font-weight:800}
+html.ht-cards #viewCards #btnShuffle,
+html.ht-cards #viewCards #btnOnlyUnmastered{flex:1 1 0;color:var(--muted);font-weight:700}
+html.ht-cards #viewCards #btnShuffle.on,
+html.ht-cards #viewCards #btnOnlyUnmastered.on{background:var(--accent-soft);
+  border-color:transparent;color:var(--text)}
+html.ht-cards #viewCards #btnMaster.done{background:rgba(52,211,153,.16);
+  border-color:rgba(52,211,153,.4);color:var(--green)}
+
+/* 카드가 남는 높이를 그대로 차지 */
+html.ht-cards .scene{flex:1 1 auto;min-height:0;display:flex;margin-top:0}
+html.ht-cards .fcard{flex:1 1 auto;width:100%;height:auto;min-height:0}
+html.ht-cards .face{padding:12px 15px 10px}
+html.ht-cards .face-top{margin-bottom:7px}
+html.ht-cards .face-body{overflow:hidden;-webkit-overflow-scrolling:auto}
+html.ht-cards .face-bottom{margin-top:5px}
+html.ht-cards .face-inner{--cf:1}
+html.ht-cards .qtext,html.ht-cards .atext{font-size:calc(19.5px * var(--fs) * var(--cf,1))}
+html.ht-cards .note{font-size:calc(13.5px * var(--fs) * var(--cf,1));
+  margin-top:8px;padding:9px 11px;border-radius:12px}
+html.ht-cards .diagram{margin:5px 0 2px;padding:5px 6px 4px}
+html.ht-cards .diagram svg{max-height:calc(100px * var(--cf,1))}
+/* 가 3: 글자를 조금만 키우고 도해·여백을 줄여 84장 모두 한 화면에 */
+body.fs-3 .qtext,body.fs-3 .atext{font-size:calc(24px * var(--cf,1))}
+body.fs-3 .note{font-size:calc(15.5px * var(--cf,1));margin-top:7px;padding:8px 10px}
+body.fs-3 .diagram svg{max-height:calc(92px * var(--cf,1))}
+body.fs-3 .badge{font-size:11px;padding:4px 9px}
+body.fs-3 .kicker{font-size:10.5px}
+@media (max-height:720px){
+  html.ht-cards .scene{min-height:0}
+  html.ht-cards .diagram svg{max-height:calc(84px * var(--cf,1))}
+}
 
 </style>
 </head>
@@ -720,10 +756,8 @@ body:not(.light) .oxt.done .oxt-done{color:#a8c4ff}
         <div class="row"><button class="btn primary" id="btnShowAll">전체 카드 보기</button></div>
       </div>
 
-      <div class="row tight">
+      <div class="row tight fcrow">
         <button class="btn" id="btnMaster">외웠음 표시</button>
-      </div>
-      <div class="row tight">
         <button class="btn small" id="btnShuffle">순서 섞기</button>
         <button class="btn small" id="btnOnlyUnmastered">안 외운 것만</button>
       </div>
@@ -742,9 +776,8 @@ body:not(.light) .oxt.done .oxt-done{color:#a8c4ff}
           <span class="oxsum" id="oxSum"></span>
           <button class="oxsaved" id="oxSavedBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.2h10a1 1 0 011 1V20l-6-4.1L6 19.9V5.2a1 1 0 011-1z"/></svg>저장한 문제 <b id="oxSavedN">0</b></button>
         </div>
-        <div class="oxsubj" id="oxSubj" role="tablist" aria-label="과목"></div>
         <div id="oxList"></div>
-        <footer class="foot">기출에 반복해서 나오는 지문만 모았습니다. O/X를 누르면 바로 채점되고 한 줄 해설이 붙습니다.</footer>
+        <footer class="foot">기출에 반복해서 나오는 지문만 모았습니다. 과목을 고르면 그 과목 지문을 한 번에 풀고, O/X를 누르면 바로 채점됩니다.</footer>
       </div>
 
       <div id="mcHome" style="display:none">
@@ -1021,8 +1054,8 @@ body:not(.light) .oxt.done .oxt-done{color:#a8c4ff}
         <button class="oxquit" id="oxQuit">종료</button>
         <div class="oxhd">
           <div class="oxhd-row">
-            <span class="oxhd-nm" id="oxTopTitle">재해 발생 이론</span>
-            <span class="oxhd-pos" id="oxPos">1 / 6</span>
+            <span class="oxhd-nm" id="oxTopTitle">1과목 72문항</span>
+            <span class="oxhd-pos" id="oxPos">1 / 72</span>
           </div>
           <i class="oxpbar"><b id="oxPBar"></b></i>
         </div>
@@ -1062,7 +1095,7 @@ body:not(.light) .oxt.done .oxt-done{color:#a8c4ff}
         </div>
         <div class="oxfin-btns">
           <button class="btn" id="oxFinRetry">한 번 더</button>
-          <button class="btn primary" id="oxFinClose">단원 목록으로</button>
+          <button class="btn primary" id="oxFinClose">과목 목록으로</button>
         </div>
       </div>
     </div>
@@ -2746,19 +2779,27 @@ var OXQ = [
 {id:'p543-6',sub:5,ch:4,topic:'p543',src:'기출유형 · 5과목 건설공사',q:'사다리는 상단을 60cm 이상 연장하지 않아도 된다.',a:false,exp:'사다리 상단은 바닥에서 60cm 이상 연장해야 합니다.'}
 ];
 
-/* ================= v5: 기출 기반 OX 퀴즈 ================= */
-var OXK = {done:'sanangi_ox_done_v1', seen:'sanangi_ox_seen_v1', bm:'sanangi_ox_bm_v1', mode:'sanangi_qmode_v1', sub:'sanangi_ox_sub_v1'};
-var oxDone = sGet(OXK.done, {});
+/* ================= v6: 기출 기반 OX 퀴즈 — 과목별 한 번에 풀기 ================= */
+var OXK = {seen:'sanangi_ox_seen_v1', bm:'sanangi_ox_bm_v1', mode:'sanangi_qmode_v1', prog:'sanangi_ox_prog_v1'};
 var oxSeen = sGet(OXK.seen, {});
 var oxBm   = sGet(OXK.bm, {});
-if (!oxDone || typeof oxDone !== 'object') oxDone = {};
+var oxProgRaw = sGet(OXK.prog, {});
 if (!oxSeen || typeof oxSeen !== 'object') oxSeen = {};
 if (!oxBm   || typeof oxBm   !== 'object') oxBm = {};
+var oxProg = {};
+(function(){
+  if (!oxProgRaw || typeof oxProgRaw !== 'object') return;
+  for (var k in oxProgRaw){
+    var p = oxProgRaw[k];
+    if (!p || typeof p !== 'object') continue;
+    oxProg[k] = {a: (p.a && typeof p.a === 'object') ? p.a : {},
+                 done: !!p.done, round: (typeof p.round === 'number' && p.round > 0) ? p.round : 1};
+  }
+})();
 
-var OX_SUB_SHORT = {1:'1과목 산업재해', 2:'2과목 인간공학', 3:'3과목 기계·기구', 4:'4과목 전기·화학', 5:'5과목 건설공사'};
-var OX_TOPIC = {};      /* topic id -> {id, sub, ch, no, title, chTitle, count} */
-var OX_BY = {};         /* topic id -> [question] */
-var OX_LOOK = {};       /* q.id -> question */
+/* 소단원 데이터(통계·검증용) */
+var OX_TOPIC = {};
+var OX_BY = {};
 (function(){
   for (var c = 0; c < OXMAP.length; c++){
     var ch = OXMAP[c];
@@ -2769,37 +2810,42 @@ var OX_LOOK = {};       /* q.id -> question */
     }
   }
   for (var i = 0; i < OXQ.length; i++){
-    var q = OXQ[i];
-    OX_LOOK[q.id] = q;
-    if (OX_BY[q.topic]) {
-      OX_BY[q.topic].push(q);
-      OX_TOPIC[q.topic].count++;
-    }
+    if (OX_BY[OXQ[i].topic]) { OX_BY[OXQ[i].topic].push(OXQ[i]); OX_TOPIC[OXQ[i].topic].count++; }
   }
 })();
 
-var oxSubSaved = sGet(OXK.sub, 1);
-var oxs = {sub:(oxSubSaved >= 1 && oxSubSaved <= 5) ? oxSubSaved : 1, open:{}, list:[], idx:0,
-           answered:false, correct:0, wrong:[], mode:'topic', tid:''};
+/* 과목 단위 목록: '0'(전체) + '1'~'5' */
+var OX_LISTS = {'0': OXQ.slice()};
+(function(){
+  for (var s = 1; s <= 5; s++){
+    var arr = [];
+    for (var i = 0; i < OXQ.length; i++) if (OXQ[i].sub === s) arr.push(OXQ[i]);
+    OX_LISTS[String(s)] = arr;
+  }
+})();
+var OX_KEYS = ['0', '1', '2', '3', '4', '5'];
 
-function oxTopicStats(tid){
-  var arr = OX_BY[tid] || [], seen = 0, ok = 0;
-  for (var i = 0; i < arr.length; i++){
-    if (arr[i].id in oxSeen){ seen++; if (oxSeen[arr[i].id]) ok++; }
-  }
-  return {total: arr.length, seen: seen, ok: ok};
+function oxKeyName(key){
+  key = String(key);
+  return key === '0' ? '전체' : key + '과목';
 }
-function oxSubStats(sub){
-  var total = 0, seen = 0, topics = 0, done = 0;
-  for (var k in OX_TOPIC){
-    var tp = OX_TOPIC[k];
-    if (tp.sub !== sub) continue;
-    topics++;
-    if (oxDone[k]) done++;
-    var st = oxTopicStats(k);
-    total += st.total; seen += st.seen;
+function oxProgOf(key){
+  key = String(key);
+  if (!oxProg[key]) oxProg[key] = {a:{}, done:false, round:1};
+  var p = oxProg[key];
+  if (!p.a || typeof p.a !== 'object') p.a = {};
+  if (typeof p.round !== 'number' || p.round < 1) p.round = 1;
+  return p;
+}
+function oxStat(key){
+  key = String(key);
+  var list = OX_LISTS[key] || [], p = oxProgOf(key), seen = 0, ok = 0;
+  for (var i = 0; i < list.length; i++){
+    var id = list[i].id;
+    if (id in p.a) { seen++; if (p.a[id] === 1) ok++; }
   }
-  return {total: total, seen: seen, topics: topics, done: done};
+  var pct = seen ? Math.round(ok / seen * 100) : 0;
+  return {total:list.length, seen:seen, ok:ok, pct:pct, done:!!p.done, round:p.round};
 }
 function oxSavedList(){
   var out = [];
@@ -2811,87 +2857,46 @@ function oxUpdateSavedCount(){
   var b = $('oxSavedN'); if (b) b.textContent = n;
   var m = $('oxShMeta'); if (m) m.textContent = n + '문항';
 }
-
-/* ---------- 홈: 과목 탭 · 단원 아코디언 · 소단원 카드 ---------- */
-function oxEnsureOpen(sub){
-  for (var k in oxs.open){ if (k.indexOf(sub + '-') === 0) return; }
-  oxs.open[sub + '-1'] = true;
-}
 function oxCheckSvg(){
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
 }
-function oxSubjEdges(){
-  var box = $('oxSubj');
-  if (!box) return;
-  var l = box.scrollLeft > 2;
-  var r = box.scrollLeft + box.clientWidth < box.scrollWidth - 2;
-  box.className = 'oxsubj' + (l ? ' lft' : '') + (r ? ' rgt' : '');
+
+/* ---------- 홈: 과목 카드 6장 ---------- */
+function oxCardHtml(key){
+  key = String(key);
+  var list = OX_LISTS[key] || [];
+  var st = oxStat(key);
+  var isAll = key === '0';
+  var nm = isAll ? '전체' : key + '과목';
+  var sbj = isAll ? ('5과목 ' + st.total + '문항을 한 번에')
+                  : (SUBJECTS[parseInt(key, 10) - 1] || {}).name || '';
+  var dot = isAll ? 'var(--accent)' : 'var(--s' + key + ')';
+  var pctW = st.total ? Math.round(st.seen / st.total * 100) : 0;
+  var cta = st.done ? '한 번 더 풀기' : (st.seen > 0 ? '이어서 풀기' : '바로 풀기');
+  var h = '<button class="oxsc' + (isAll ? ' all' : '') + (st.done ? ' done' : '') + '" data-k="' + key +
+          '" aria-label="' + escapeHtml(nm + ' ' + st.total + '문항 ' + cta) + '">';
+  h += '<span class="oxsc-top"><i class="oxsc-dot" style="background:' + dot + '"></i>' +
+       '<b class="oxsc-nm">' + escapeHtml(nm) + '</b>' +
+       '<span class="oxsc-ct">' + st.total + '문항</span>';
+  if (st.done) h += '<span class="oxsc-badge">' + oxCheckSvg() + st.round + '회차 완료</span>';
+  h += '</span>';
+  h += '<span class="oxsc-sbj">' + escapeHtml(sbj) + '</span>';
+  h += '<span class="oxsc-mt"><b>진행률 ' + st.seen + '/' + st.total + '</b>' +
+       '<i class="sep">·</i><span>' + (st.seen ? '정답률 ' + st.pct + '%' : '정답률 -') + '</span></span>';
+  h += '<i class="oxsc-bar"><b class="' + (st.done ? '' : (pctW > 0 ? 'half' : '')) +
+       '" style="width:' + pctW + '%"></b></i>';
+  h += '<span class="oxsc-go">' + cta + '<em>\u203A</em></span>';
+  h += '</button>';
+  return h;
 }
 function renderOxHome(){
   if (!$('oxList')) return;
-  var s = oxs.sub;
-  oxEnsureOpen(s);
-
   var h = '';
-  for (var i = 0; i < SUBJECTS.length; i++){
-    var sj = SUBJECTS[i];
-    h += '<button class="oxsj' + (sj.id === s ? ' active' : '') + '" data-s="' + sj.id +
-         '" role="tab" aria-selected="' + (sj.id === s ? 'true' : 'false') + '">' +
-         escapeHtml(OX_SUB_SHORT[sj.id] || sj.short) + '</button>';
-  }
-  $('oxSubj').innerHTML = h;
-  /* 선택한 과목 탭이 잘리지 않도록 가운데로 스크롤 */
-  var ab = $('oxSubj').querySelector('.oxsj.active');
-  if (ab){
-    var box = $('oxSubj');
-    var target = ab.offsetLeft - (box.clientWidth - ab.offsetWidth) / 2;
-    box.scrollLeft = Math.max(0, Math.min(target, box.scrollWidth - box.clientWidth));
-  }
-  oxSubjEdges();
-
-  var ss = oxSubStats(s);
-  $('oxSum').textContent = '전체 ' + OXQ.length + '지문 · ' + ss.total + '지문 · ' + ss.done + '/' + ss.topics + '단원 완료';
-
-  var list = '';
-  for (var c = 0; c < OXMAP.length; c++){
-    var ch = OXMAP[c];
-    if (ch.sub !== s) continue;
-    var key = s + '-' + ch.ch;
-    var open = !!oxs.open[key];
-    var cnt = 0, doneN = 0;
-    for (var t = 0; t < ch.topics.length; t++){
-      var tid = 'p' + s + ch.ch + (t + 1);
-      cnt += (OX_BY[tid] || []).length;
-      if (oxDone[tid]) doneN++;
-    }
-    list += '<div class="oxch' + (open ? ' open' : '') + '">';
-    list += '<button class="oxch-hd" data-ch="' + key + '" aria-expanded="' + (open ? 'true' : 'false') + '">' +
-            '<span class="oxch-no">' + ch.ch + '.</span>' +
-            '<span class="oxch-nm">' + escapeHtml(ch.title) + '</span>' +
-            '<span class="oxch-ct">' + cnt + '문항</span>' +
-            '<span class="oxch-ar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>' +
-            '</button>';
-    list += '<div class="oxch-bd">';
-    for (var t2 = 0; t2 < ch.topics.length; t2++){
-      var tid2 = 'p' + s + ch.ch + (t2 + 1);
-      var st = oxTopicStats(tid2);
-      if (!st.total) continue;
-      var done = !!oxDone[tid2];
-      var pct = Math.round(st.seen / st.total * 100);
-      var barCls = pct >= 100 ? ' full' : (pct > 0 ? ' half' : '');
-      list += '<button class="oxt' + (done ? ' done' : '') + '" data-t="' + tid2 + '">';
-      list += '<div class="oxt-hd"><span class="oxt-nm">' + escapeHtml(ch.topics[t2]) +
-              '</span><span class="oxt-ar">\u203A</span></div>';
-      list += '<div class="oxt-mt"><span class="oxt-ct">' + st.total + '문항</span>';
-      if (done) list += '<span class="oxt-done">1회차 완료' + oxCheckSvg() + '</span>';
-      if (st.seen > 0) list += '<span class="oxt-acc">정답 ' + Math.round(st.ok / st.seen * 100) + '%</span>';
-      list += '</div>';
-      list += '<i class="oxt-bar"><b class="' + barCls.trim() + '" style="width:' + pct + '%"></b></i>';
-      list += '</button>';
-    }
-    list += '</div></div>';
-  }
-  $('oxList').innerHTML = list;
+  for (var i = 0; i < OX_KEYS.length; i++) h += oxCardHtml(OX_KEYS[i]);
+  $('oxList').innerHTML = h;
+  var doneN = 0;
+  for (var s = 1; s <= 5; s++) if (oxProgOf(String(s)).done) doneN++;
+  $('oxSum').textContent = '전체 ' + OXQ.length + '지문 · 1회차 완료 ' + doneN + '/5과목';
   oxUpdateSavedCount();
 }
 
@@ -2922,12 +2927,14 @@ $('qSeg').addEventListener('click', function(e){
 function oxLock(on){
   document.body.style.overflow = on ? 'hidden' : '';
 }
-function oxOpenPlayer(list, mode, tid){
+var oxs = {key:'1', list:[], idx:0, answered:false, correct:0, wrong:[], mode:'subject'};
+
+function oxOpenPlayer(list, mode, key, start){
   if (!list || !list.length) return;
   oxs.list = list;
   oxs.mode = mode;
-  oxs.tid = tid || '';
-  oxs.idx = 0;
+  oxs.key = String(key);
+  oxs.idx = (start && start > 0 && start < list.length) ? start : 0;
   oxs.answered = false;
   oxs.correct = 0;
   oxs.wrong = [];
@@ -2938,18 +2945,37 @@ function oxOpenPlayer(list, mode, tid){
   oxLock(true);
   renderOxQ();
 }
-function oxOpenTopic(tid){
-  var t = OX_TOPIC[tid];
-  if (!t) return;
-  oxOpenPlayer((OX_BY[tid] || []).slice(), 'topic', tid);
+function oxOpenKey(key, force){
+  key = String(key);
+  var list = OX_LISTS[key];
+  if (!list || !list.length) return;
+  var p = oxProgOf(key);
+  if (p.done || force === 'restart'){
+    if (p.done && p.round < 99) p.round = p.round + 1;
+    p.a = {};
+    p.done = false;
+    sSet(OXK.prog, oxProg);
+  }
+  var start = -1;
+  for (var i = 0; i < list.length; i++){
+    if (!(list[i].id in p.a)){ start = i; break; }
+  }
+  if (start < 0){
+    p.a = {}; p.done = false; start = 0;
+    sSet(OXK.prog, oxProg);
+  }
+  oxOpenPlayer(list, 'subject', key, start);
+}
+function oxPlayerTitle(){
+  if (oxs.mode === 'saved') return '저장한 문제';
+  if (oxs.mode === 'wrong') return '오답 복습';
+  var key = String(oxs.key);
+  return oxKeyName(key) + ' ' + (OX_LISTS[key] || []).length + '문항';
 }
 function renderOxQ(){
   var q = oxs.list[oxs.idx], n = oxs.list.length;
   if (!q) return;
-  var title = (oxs.mode === 'saved') ? '저장한 문제'
-    : (oxs.mode === 'wrong') ? '오답 복습'
-    : (OX_TOPIC[oxs.tid] ? OX_TOPIC[oxs.tid].title : '');
-  $('oxTopTitle').textContent = title;
+  $('oxTopTitle').textContent = oxPlayerTitle();
   $('oxPos').textContent = (oxs.idx + 1) + ' / ' + n;
   $('oxPBar').style.width = Math.round((oxs.idx + 1) / n * 100) + '%';
   $('oxSrc').textContent = q.src;
@@ -2975,6 +3001,11 @@ function answerOx(a){
   if (ok) oxs.correct++; else oxs.wrong.push(q.id);
   oxSeen[q.id] = ok ? 1 : 0;
   sSet(OXK.seen, oxSeen);
+  if (oxs.mode === 'subject'){
+    var p = oxProgOf(oxs.key);
+    p.a[q.id] = ok ? 1 : 0;
+    sSet(OXK.prog, oxProg);
+  }
   var bO = $('oxO'), bX = $('oxX');
   var picked = a ? bO : bX;
   var right = q.a ? bO : bX;
@@ -3001,43 +3032,56 @@ function oxNextQ(){
 function oxWrongList(){
   var out = [];
   for (var i = 0; i < oxs.wrong.length; i++){
-    var q = OX_LOOK[oxs.wrong[i]];
+    var q = null;
+    for (var j = 0; j < OXQ.length; j++) if (OXQ[j].id === oxs.wrong[i]){ q = OXQ[j]; break; }
     if (q) out.push(q);
   }
   return out;
 }
 function oxFinish(){
-  var n = oxs.list.length, c = oxs.correct;
-  var pct = n ? Math.round(c / n * 100) : 0;
-  if (oxs.mode === 'topic' && oxs.tid){
-    oxDone[oxs.tid] = true;
-    sSet(OXK.done, oxDone);
+  var isSub = (oxs.mode === 'subject');
+  var n, c, wrongIds, round = 0;
+  if (isSub){
+    var key = String(oxs.key), list = OX_LISTS[key] || [], p = oxProgOf(key);
+    n = list.length; c = 0; wrongIds = [];
+    for (var i = 0; i < list.length; i++){
+      var v = p.a[list[i].id];
+      if (v === 1) c++; else if (v === 0) wrongIds.push(list[i].id);
+    }
+    p.done = true;
+    sSet(OXK.prog, oxProg);
+    oxs.correct = c;
+    oxs.wrong = wrongIds.slice();
+    round = p.round;
+  } else {
+    n = oxs.list.length; c = oxs.correct; wrongIds = oxs.wrong.slice();
   }
+  var pct = n ? Math.round(c / n * 100) : 0;
   $('oxFinEm').textContent = pct === 100 ? '\uD83C\uDF89' : (pct >= 70 ? '\uD83D\uDCAA' : '\uD83D\uDCCC');
   $('oxFinSc').textContent = c + ' / ' + n;
   $('oxFinSub').textContent = (oxs.mode === 'saved')
     ? '저장한 문제 복습 완료 \u00B7 정답률 ' + pct + '%'
     : (oxs.mode === 'wrong')
       ? '오답 복습 완료 \u00B7 정답률 ' + pct + '%'
-      : '1회차 완료 \u00B7 정답률 ' + pct + '%';
+      : round + '회차 완료 \u00B7 정답률 ' + pct + '%';
   var msg;
-  if (pct === 100 && oxs.mode === 'wrong') msg = '틀렸던 지문을 모두 맞혔습니다. 이제 다음 단원으로 넘어가세요.';
-  else if (pct === 100) msg = '이 단원은 완벽합니다. 다음 단원으로 넘어가세요.';
+  if (pct === 100 && oxs.mode === 'wrong') msg = '틀렸던 지문을 모두 맞혔습니다. 이제 다음 과목으로 넘어가세요.';
+  else if (pct === 100 && isSub) msg = oxKeyName(oxs.key) + ' ' + n + '문항을 모두 맞혔습니다. 다음 과목으로 넘어가세요.';
+  else if (pct === 100) msg = '완벽합니다. 헷갈리는 지문만 저장해 두고 넘어가세요.';
   else if (pct >= 70) msg = '거의 잡혔습니다. 틀린 지문만 한 번 더 읽으면 됩니다.';
-  else msg = '헷갈리는 지문을 모아두고 두 번째 회차에서 다시 확인해 보세요.';
+  else msg = '틀린 지문을 저장해 두고 두 번째 회차에서 다시 확인해 보세요.';
   $('oxFinMsg').textContent = msg;
   var h = '';
-  if (oxs.wrong.length){
-    for (var i = 0; i < oxs.wrong.length; i++){
-      var q = OX_LOOK[oxs.wrong[i]];
-      if (!q) continue;
-      h += '<div class="oxfin-it"><p class="oxfin-q">' + escapeHtml(q.q) + '</p>' +
-           '<p class="oxfin-a">정답 ' + (q.a ? 'O' : 'X') + '</p>' +
-           '<p class="oxfin-e">' + escapeHtml(q.exp) + '</p></div>';
-    }
+  for (var w = 0; w < wrongIds.length; w++){
+    var q = null;
+    for (var k = 0; k < OXQ.length; k++) if (OXQ[k].id === wrongIds[w]){ q = OXQ[k]; break; }
+    if (!q) continue;
+    h += '<div class="oxfin-it"><p class="oxfin-q">' + escapeHtml(q.q) + '</p>' +
+         '<p class="oxfin-a">정답 ' + (q.a ? 'O' : 'X') + '</p>' +
+         '<p class="oxfin-e">' + escapeHtml(q.exp) + '</p></div>';
   }
   $('oxFinList').innerHTML = h;
-  var rb = $('oxFinRetry'), wr = oxs.wrong.length;
+  var rb = $('oxFinRetry'), wr = wrongIds.length;
   if (wr){
     rb.textContent = '오답만 풀기 (' + wr + '문제)';
     rb.className = 'btn oxfin-wr';
@@ -3070,10 +3114,14 @@ $('oxFinRetry').addEventListener('click', function(){
   if (oxs.wrong.length){
     var wl = oxWrongList();
     if (!wl.length) return;
-    oxOpenPlayer(wl, 'wrong', oxs.tid);  /* 이번 회차에서 틀린 지문만 */
+    oxOpenPlayer(wl, 'wrong', oxs.key, 0);  /* 이번 회차에서 틀린 지문만 */
     return;
   }
-  oxOpenPlayer(oxs.list.slice(), oxs.mode, oxs.tid);
+  if (oxs.mode === 'subject'){
+    oxOpenKey(oxs.key, 'restart');
+    return;
+  }
+  oxOpenPlayer(oxs.list.slice(), oxs.mode, oxs.key, 0);
 });
 $('oxBm').addEventListener('click', function(){
   var q = oxs.list[oxs.idx];
@@ -3087,25 +3135,8 @@ $('oxQWrap').addEventListener('click', function(){
   if (oxs.answered) oxNextQ();
 });
 $('oxList').addEventListener('click', function(e){
-  var hd = closestEl(e.target, '.oxch-hd');
-  if (hd){
-    var key = hd.getAttribute('data-ch');
-    oxs.open[key] = !oxs.open[key];
-    renderOxHome();
-    return;
-  }
-  var card = closestEl(e.target, '.oxt');
-  if (card) oxOpenTopic(card.getAttribute('data-t'));
-});
-$('oxSubj').addEventListener('scroll', oxSubjEdges, {passive:true});
-window.addEventListener('resize', oxSubjEdges);
-$('oxSubj').addEventListener('click', function(e){
-  var b = closestEl(e.target, '.oxsj');
-  if (!b) return;
-  oxs.sub = parseInt(b.getAttribute('data-s'), 10) || 1;
-  sSet(OXK.sub, oxs.sub);
-  renderOxHome();
-  window.scrollTo(0, 0);
+  var card = closestEl(e.target, '.oxsc');
+  if (card) oxOpenKey(card.getAttribute('data-k'));
 });
 
 /* ---------- 저장한 문제 ---------- */
@@ -3151,7 +3182,7 @@ $('oxShPlay').addEventListener('click', function(){
   var list = oxSavedList();
   if (!list.length) return;
   $('oxSheet').className = 'oxsheet';
-  oxOpenPlayer(list, 'saved', '');
+  oxOpenPlayer(list, 'saved', '0', 0);
 });
 
 /* ---------- 키보드 ---------- */
@@ -3168,6 +3199,84 @@ document.addEventListener('keydown', function(e){
     e.preventDefault(); oxClose();
   }
 });
+
+/* ================= v6: 암기카드 화면 고정 (페이지 스크롤·카드 내부 스크롤 0) ================= */
+(function(){
+  function round2(n){ return Math.round(n * 100) / 100; }
+
+  function syncTabH(){
+    var t = document.querySelector('nav.tabs');
+    var h = t ? Math.round(t.getBoundingClientRect().height) : 55;
+    if (!(h > 20)) h = 55;
+    document.documentElement.style.setProperty('--tabh', h + 'px');
+  }
+
+  /* 한 면(앞/뒤)이 넘치면 --cf(0.64~1)를 낮춰 정확히 맞춘다 */
+  function fitFace(body){
+    if (!body) return 1;
+    var inner = body.querySelector('.face-inner');
+    if (!inner) return 1;
+    if (body.clientHeight < 60) return 1;      /* 화면에 없을 때는 건너뜀 */
+    inner.style.setProperty('--cf', '1');
+    var cf = 1, guard = 0;
+    while (body.scrollHeight > body.clientHeight && cf > 0.64 && guard++ < 40){
+      cf = round2(cf - 0.02);
+      inner.style.setProperty('--cf', String(cf));
+    }
+    return cf;
+  }
+
+  function fitCards(){
+    if (!document.documentElement.classList.contains('ht-cards')) return;
+    syncTabH();
+    fitFace(document.querySelector('.face.front .face-body'));
+    fitFace(document.querySelector('.face.back .face-body'));
+  }
+  window.fitCards = fitCards;
+
+  /* 카드/탭/글자 크기가 바뀔 때마다 다시 맞춤 */
+  var _renderCards = renderCards;
+  renderCards = function(){
+    _renderCards.apply(this, arguments);
+    fitCards();
+  };
+  var _switchTab = switchTab;
+  switchTab = function(name){
+    var cards = (name === 'cards');
+    document.documentElement.classList.toggle('ht-cards', cards);
+    document.body.classList.toggle('tab-cards', cards);
+    _switchTab.apply(this, arguments);
+    if (cards){
+      syncTabH();
+      fitCards();
+    }
+  };
+  var _applyFont = applyFont;
+  applyFont = function(){
+    _applyFont.apply(this, arguments);
+    window.setTimeout(fitCards, 0);
+  };
+
+  var rt = 0;
+  function onResize(){
+    if (rt) window.cancelAnimationFrame(rt);
+    rt = window.requestAnimationFrame(function(){ rt = 0; fitCards(); });
+  }
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', function(){ window.setTimeout(fitCards, 120); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+
+  /* 초기 상태: 기본 탭이 암기카드 */
+  if (state.tab === 'cards'){
+    document.documentElement.classList.add('ht-cards');
+    document.body.classList.add('tab-cards');
+  }
+  syncTabH();
+  window.addEventListener('load', function(){ syncTabH(); fitCards(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ fitCards(); });
+  window.setTimeout(fitCards, 0);
+  window.setTimeout(fitCards, 250);
+})();
 
 
 /* ---------- v5: 핵심 4지선다 과목 칩(문항 수 포함) ---------- */
