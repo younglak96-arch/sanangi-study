@@ -855,7 +855,7 @@ const BAGCAT = {mom:"산모용품",baby:"아기용품",bag:"출산가방"};
     var w = st.w, out = [], f = S.funds, b = S.boxes;
     function add(t, d, tab, urgent, done) { out.push({ t: t, d: d, tab: tab, urgent: !!urgent, done: !!done }); }
     var transportDone = f["seoul-pass"] && f["seoul-pass"].done;
-    if (!transportDone) add("서울시 임산부 교통비 70만 원 신청", "임신 주차 제한이 없어졌어요. 지금 신청 가능하고, 못 받으면 그냥 0원이에요.", "fund", w >= 12);
+    if (!transportDone) add("서울시 임산부 교통비 70만 원 신청", "2026년 7월부터 임신 주차 제한이 없어졌어요. 지금 신청하면 첫째 70만 원을 받아요.", "fund", w >= 12);
     if (w <= 12) add("보건소 임산부 등록", "엽산제·임산부 수첩·초기 혈액검사(12주 이내)를 무료로 받아요.", "fund", w >= 7, f["gc-reg"] && f["gc-reg"].done);
     if (!(b["apta"] && b["apta"].done)) add("출산박스 100% 지급형 신청", "압타클럽·하기스·체험키트는 신청하면 받을 수 있어요.", "fund", false);
     if (w <= 13) add("엽산 복용 챙기기", "하루 400~800㎍. 12주까지는 꼭 챙기세요.", "home", false);
