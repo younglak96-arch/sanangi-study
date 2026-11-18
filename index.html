@@ -1166,6 +1166,47 @@ body.fs-3 .fcard.dia .diagram{padding:7px 7px 6px}
 .diagram .dg-g4{fill:rgba(52,211,153,.3)}
 
 </style>
+<style id="v10-diag">
+/* ===================== v10: 🖼️ 도해 탭 ===================== */
+/* 하단 탭 6개: 375px 폭에서도 라벨이 줄바꿈·잘림 없이 한 줄 */
+nav.tabs .tab{padding:8px 1px 6px;font-size:10.4px;gap:2px;letter-spacing:-.35px;white-space:nowrap}
+nav.tabs .tab .ic{font-size:18px}
+@media (max-width:370px){
+  nav.tabs .tab{font-size:9.8px;letter-spacing:-.45px}
+  nav.tabs .tab .ic{font-size:17px}
+}
+.view#viewDiag{padding-bottom:4px}
+.dgbar{margin:0}
+.dgbar .metaline{margin:0 0 8px}
+.dgsearch{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:12px;padding:10px 12px;font-size:13.5px;margin:0 0 10px;
+  -webkit-appearance:none;appearance:none;font-family:inherit}
+.dgsearch::placeholder{color:var(--muted)}
+.dgbar .chips{padding-bottom:10px}
+.dgbar .chip small{margin-left:3px;font-size:10.5px;font-weight:800;color:var(--muted)}
+.dgbar .chip.active small{color:var(--accent)}
+.dgcard{border:1px solid var(--line);border-radius:18px;background:var(--surface);
+  padding:12px 12px 11px;margin:0 0 11px;box-shadow:var(--shadow)}
+.dgh{display:flex;align-items:center;gap:7px;margin:0 1px 6px}
+.dgn{font-size:11px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.dgs{flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--accent);
+  background:var(--accent-soft);border-radius:999px;padding:3px 8px;line-height:1.3}
+.dgt{font-size:14.5px;font-weight:800;letter-spacing:-.3px;line-height:1.25;min-width:0}
+.dgcard .diagram{width:100%;margin:0;padding:6px 2px 4px;background:transparent;border:0;display:block}
+.dgcard .diagram svg{display:block;width:100%!important;height:auto!important;
+  max-width:100%!important;max-height:none!important;overflow:visible}
+.dgpl{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.dgpl li{position:relative;padding-left:12px;font-size:13px;line-height:1.45;color:var(--text)}
+.dgpl li:before{content:'';position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:50%;
+  background:var(--accent)}
+.dgcard .diagram .dg-dimt{font-size:12px}
+/* 카드 제목과 겹치는 도해 안 제목은 도해 탭에서 숨긴다 */
+#viewDiag .dg-ttl{display:none}
+.dgn2{margin:7px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.dgempty{border:1px dashed var(--line);border-radius:16px;padding:26px 12px;text-align:center;
+  font-size:13px;color:var(--muted)}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -1643,6 +1684,18 @@ body.fs-3 .fcard.dia .diagram{padding:7px 7px 6px}
         수식은 산업안전기사 필기 기출 계산문제 기준입니다. 계산 문제는 공식 → 대입 순서로 풀이가 열립니다.<br>법령 수치·기준값은 개정될 수 있으니 응시 전 원문으로 확인하세요.
       </footer>
     </section>
+    <!-- ============ 도해 ============ -->
+    <section class="view" id="viewDiag">
+      <div class="dgbar">
+        <div class="metaline"><span id="dgTotal">도해 0개</span><span id="dgNow"></span></div>
+        <input class="dgsearch" id="dgSearch" type="search" autocomplete="off"
+               placeholder="도해 검색 (예: 감지기, 접지, 안전모)">
+        <div class="chips" id="dgChips"></div>
+      </div>
+      <div id="dgList"></div>
+      <footer class="foot" id="dgFoot">암기카드에 흩어져 있던 도해를 한곳에 모으고, 그림으로 이해해야 빠른 개념을 더했습니다. 그림을 크게 보고 수치를 확인하세요.</footer>
+    </section>
+
   </main>
 
   <!-- ============ OX 플레이어 ============ -->
@@ -1791,6 +1844,7 @@ body.fs-3 .fcard.dia .diagram{padding:7px 7px 6px}
       <button class="tab active" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
       <button class="tab" data-tab="quiz"><span class="ic">✅</span>핵심 퀴즈</button>
       <button class="tab" data-tab="cbt"><span class="ic">📝</span>CBT</button>
+      <button class="tab" data-tab="diag"><span class="ic">🖼️</span>도해</button>
       <button class="tab" data-tab="formula"><span class="ic">📐</span>공식</button>
       <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
     </div>
@@ -2258,7 +2312,7 @@ function renderFormulas(){
 
 function switchTab(name){
   state.tab = name;
-  var views = {cards:'viewCards', quiz:'viewQuiz', roadmap:'viewRoadmap', cbt:'viewCbt', formula:'viewFormula'};
+  var views = {cards:'viewCards', quiz:'viewQuiz', roadmap:'viewRoadmap', cbt:'viewCbt', formula:'viewFormula', diag:'viewDiag'};
   for (var k in views){
     var el = $(views[k]);
     if (el) el.className = 'view' + (k === name ? ' active' : '');
@@ -5199,6 +5253,101 @@ renderEff();
       for (var i = 0; i < bodies.length; i++) bodies[i].scrollTop = 0;
     };
   }
+})();
+</script>
+
+<script>
+/* ===================== v10: 🖼️ 도해 모음 ===================== */
+var DG_TITLES = {"c1":"하인리히 1:29:300 · 버드 1:10:30:600","c2":"버드 신도미노 5단계","c10":"위험성평가 6단계","c19":"안전보건표지 4종","c22":"소음 노출기준 (5dB 교환율)","c23":"FTA 결함수 분석 게이트","c35":"프레스 방호장치 4종","c37":"연삭기 덮개 · 작업대 틈 3mm","c56":"방폭지역 0종 · 1종 · 2종","c62":"가연성가스 폭발범위 LEL · UEL","c63":"인화점 · 연소점 · 발화점","c70":"안전난간 90cm · 발끝막이판 10cm","c74":"이동식 비계","c82":"사다리식 통로 75도"};
+var DG_EXTRA = [{"s":1,"t":"안전색채 6색","g":"<svg viewBox=\"0 0 300 190\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"안전색채 여섯 가지와 각 색의 뜻\"><g class=\"dg-ttl\"><text x=\"150\" y=\"14\" text-anchor=\"middle\" class=\"dg-kb\">안전색채 — 색이 곧 뜻<\/text><\/g><rect x=\"8\" y=\"24\" width=\"92\" height=\"62\" rx=\"10\" style=\"fill:rgba(248,113,113,.22);stroke:var(--red);stroke-width:1.6\"/><text x=\"18\" y=\"46\" class=\"dg-kb\">빨강<\/text><text x=\"18\" y=\"66\" class=\"dg-tm\">정지·금지<\/text><text x=\"18\" y=\"82\" class=\"dg-tm\">소화설비<\/text><rect x=\"104\" y=\"24\" width=\"92\" height=\"62\" rx=\"10\" style=\"fill:rgba(251,146,60,.22);stroke:#fb923c;stroke-width:1.6\"/><text x=\"114\" y=\"46\" class=\"dg-kb\">주황<\/text><text x=\"114\" y=\"66\" class=\"dg-tm\">위험<\/text><text x=\"114\" y=\"82\" class=\"dg-tm\">기계·항공<\/text><rect x=\"200\" y=\"24\" width=\"92\" height=\"62\" rx=\"10\" style=\"fill:rgba(250,204,21,.20);stroke:#facc15;stroke-width:1.6\"/><text x=\"210\" y=\"46\" class=\"dg-kb\">노랑<\/text><text x=\"210\" y=\"66\" class=\"dg-tm\">주의·경고<\/text><text x=\"210\" y=\"82\" class=\"dg-tm\">위험 표시<\/text><rect x=\"8\" y=\"94\" width=\"92\" height=\"62\" rx=\"10\" style=\"fill:rgba(52,211,153,.20);stroke:var(--green);stroke-width:1.6\"/><text x=\"18\" y=\"116\" class=\"dg-kb\">초록<\/text><text x=\"18\" y=\"136\" class=\"dg-tm\">안전·구급<\/text><text x=\"18\" y=\"152\" class=\"dg-tm\">피난 방향<\/text><rect x=\"104\" y=\"94\" width=\"92\" height=\"62\" rx=\"10\" style=\"fill:rgba(93,140,255,.20);stroke:var(--accent);stroke-width:1.6\"/><text x=\"114\" y=\"116\" class=\"dg-kb\">파랑<\/text><text x=\"114\" y=\"136\" class=\"dg-tm\">지시<\/text><text x=\"114\" y=\"152\" class=\"dg-tm\">보호구 착용<\/text><rect x=\"200\" y=\"94\" width=\"92\" height=\"62\" rx=\"10\" style=\"fill:rgba(167,139,250,.22);stroke:#a78bfa;stroke-width:1.6\"/><text x=\"210\" y=\"116\" class=\"dg-kb\">보라<\/text><text x=\"210\" y=\"136\" class=\"dg-tm\">방사능<\/text><text x=\"210\" y=\"152\" class=\"dg-tm\">위험물<\/text><\/svg>","p":["빨강=정지·금지·소화설비, 주황=위험, 노랑=주의·경고","초록=안전·구급·피난, 파랑=지시, 보라=방사능"]},{"s":1,"t":"안전모 A·B·AB형","g":"<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"보호구 안전모 A형 B형 AB형과 시험 4종\"><g class=\"dg-ttl\"><text x=\"150\" y=\"14\" text-anchor=\"middle\" class=\"dg-kb\">안전모 A · B · AB형<\/text><\/g><path d=\"M40,58 a22,20 0 0 1 44,0 z\" style=\"fill:rgba(93,140,255,.18);stroke:var(--accent);stroke-width:1.8\"/><rect class=\"dg-bx\" x=\"32\" y=\"56\" width=\"60\" height=\"8\" rx=\"4\"/><line class=\"dg-acc\" x1=\"46\" y1=\"53\" x2=\"78\" y2=\"53\" style=\"stroke-width:2\"/><text x=\"62\" y=\"84\" text-anchor=\"middle\" class=\"dg-kb\">A형<\/text><text x=\"62\" y=\"102\" text-anchor=\"middle\" class=\"dg-tm\">낙하·비래<\/text><text x=\"62\" y=\"118\" text-anchor=\"middle\" class=\"dg-tm\"><\/text><path d=\"M128,58 a22,20 0 0 1 44,0 z\" style=\"fill:rgba(93,140,255,.18);stroke:var(--accent);stroke-width:1.8\"/><rect class=\"dg-bx\" x=\"120\" y=\"56\" width=\"60\" height=\"8\" rx=\"4\"/><line class=\"dg-acc\" x1=\"134\" y1=\"53\" x2=\"166\" y2=\"53\" style=\"stroke-width:2\"/><text x=\"150\" y=\"84\" text-anchor=\"middle\" class=\"dg-kb\">B형<\/text><text x=\"150\" y=\"102\" text-anchor=\"middle\" class=\"dg-tm\">추락 충격<\/text><text x=\"150\" y=\"118\" text-anchor=\"middle\" class=\"dg-tm\"><\/text><path d=\"M216,58 a22,20 0 0 1 44,0 z\" style=\"fill:rgba(93,140,255,.18);stroke:var(--accent);stroke-width:1.8\"/><rect class=\"dg-bx\" x=\"208\" y=\"56\" width=\"60\" height=\"8\" rx=\"4\"/><line class=\"dg-acc\" x1=\"222\" y1=\"53\" x2=\"254\" y2=\"53\" style=\"stroke-width:2\"/><text x=\"238\" y=\"84\" text-anchor=\"middle\" class=\"dg-kb\">AB형<\/text><text x=\"238\" y=\"102\" text-anchor=\"middle\" class=\"dg-tm\">A + B 겸용<\/text><text x=\"238\" y=\"118\" text-anchor=\"middle\" class=\"dg-tm\"><\/text><text x=\"150\" y=\"138\" text-anchor=\"middle\" class=\"dg-tm\">머리 보호구 시험 4종<\/text><rect class=\"dg-bx2\" x=\"6\" y=\"146\" width=\"68\" height=\"30\" rx=\"7\"/><text x=\"40\" y=\"166\" text-anchor=\"middle\" class=\"dg-tm\">내관통성<\/text><rect class=\"dg-bx2\" x=\"76\" y=\"146\" width=\"68\" height=\"30\" rx=\"7\"/><text x=\"110\" y=\"166\" text-anchor=\"middle\" class=\"dg-tm\">내압성<\/text><rect class=\"dg-bx2\" x=\"146\" y=\"146\" width=\"68\" height=\"30\" rx=\"7\"/><text x=\"180\" y=\"166\" text-anchor=\"middle\" class=\"dg-tm\">충격흡수<\/text><rect class=\"dg-bx2\" x=\"216\" y=\"146\" width=\"68\" height=\"30\" rx=\"7\"/><text x=\"250\" y=\"166\" text-anchor=\"middle\" class=\"dg-tm\">내전압성<\/text><text x=\"150\" y=\"192\" text-anchor=\"middle\" class=\"dg-tm\">교체: 합성수지 2년 · FRP 3년<\/text><\/svg>","p":["A형은 물체 낙하·비래, B형은 추락 시 머리 보호, AB형은 겸용","시험: 내관통성·내압성·충격흡수성·내전압성","합성수지 2년 · FRP 3년, 파손·변형되면 즉시 교체"]},{"s":1,"t":"산업재해 코스트 1 : 4","g":"<svg viewBox=\"0 0 300 196\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"산업재해 직접비와 간접비 1대 4\"><text x=\"24\" y=\"18\" class=\"dg-tm\">하인리히 코스트 비율 1 : 4<\/text><text x=\"24\" y=\"48\" class=\"dg-kb\">직접비 1<\/text><rect class=\"dg-am\" x=\"24\" y=\"56\" width=\"60\" height=\"32\" rx=\"6\"/><text x=\"100\" y=\"72\" class=\"dg-t\">보험급여 · 요양비<\/text><text x=\"100\" y=\"88\" class=\"dg-tm\">눈에 보이는 비용<\/text><text x=\"24\" y=\"120\" class=\"dg-kb\">간접비 4<\/text><rect class=\"dg-g3\" x=\"24\" y=\"128\" width=\"240\" height=\"32\" rx=\"6\"/><text x=\"252\" y=\"150\" text-anchor=\"end\" class=\"dg-k\">4배<\/text><text x=\"24\" y=\"180\" class=\"dg-tm\">생산 중단 · 인력 손실 · 재해 조사 · 대체 인력<\/text><\/svg>","p":["직접비 1 (보험급여·요양비) : 간접비 4 (생산 중단·인력 손실·조사·교육)","눈에 보이는 직접비는 전체 코스트의 1/5뿐"]},{"s":3,"t":"와이어로프 폐기·안전율","g":"<svg viewBox=\"0 0 300 220\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"와이어로프 폐기 기준과 안전율\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">와이어로프 폐기 기준<\/text><\/g><path class=\"dg-ln\" d=\"M24,44 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0 q9,-9 18,0\"/><path class=\"dg-ln\" d=\"M24,52 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0 q9,9 18,0\"/><line class=\"dg-danger\" d=\"M250,34 L250,62\"/><text x=\"250\" y=\"78\" text-anchor=\"middle\" class=\"dg-tm\">폐기<\/text><circle class=\"dg-cdot\" cx=\"26\" cy=\"102\" r=\"4\"/><text x=\"38\" y=\"106\" class=\"dg-t\">1꼬임 소선 단선이 10% 이상<\/text><circle class=\"dg-cdot\" cx=\"26\" cy=\"128\" r=\"4\"/><text x=\"38\" y=\"132\" class=\"dg-t\">지름이 7% 이상 감소<\/text><circle class=\"dg-cdot\" cx=\"26\" cy=\"154\" r=\"4\"/><text x=\"38\" y=\"158\" class=\"dg-t\">킹크 · 꼬임 · 심한 부식<\/text><circle class=\"dg-cdot\" cx=\"26\" cy=\"180\" r=\"4\"/><text x=\"38\" y=\"184\" class=\"dg-t\">단말부 고정 3개월마다 점검<\/text><\/svg>","p":["1꼬임에서 소선 단선 10% 이상, 지름 7% 이상 감소면 폐기","킹크·꼬임·이완, 심한 부식도 폐기 / 단말부는 3개월마다 점검","안전율: 근로자 탑승용 10 이상, 그 외 5 이상"]},{"s":5,"t":"추락방호망 설치 기준","g":"<svg viewBox=\"0 0 300 204\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"추락방호망 그물코 지지점 간격 면적\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">추락방호망<\/text><\/g><rect class=\"dg-bx\" x=\"24\" y=\"26\" width=\"252\" height=\"12\" rx=\"3\"/><rect x=\"118\" y=\"26\" width=\"64\" height=\"12\" style=\"fill:var(--surface);stroke:var(--line);stroke-width:1.4\"/><text x=\"190\" y=\"24\" class=\"dg-dimt\">개구부<\/text><line class=\"dg-dim\" x1=\"40\" y1=\"66\" x2=\"260\" y2=\"66\"/><path class=\"dg-ahd\" d=\"M40,66 l9,-4 v8 z\"/><path class=\"dg-ahd\" d=\"M260,66 l-9,-4 v8 z\"/><text x=\"150\" y=\"60\" text-anchor=\"middle\" class=\"dg-dimt\">지지점 간격 2.5m 이하<\/text><rect class=\"dg-bz\" x=\"40\" y=\"78\" width=\"220\" height=\"68\" rx=\"4\"/><line class=\"dg-bx\" x1=\"60\" y1=\"78\" x2=\"60\" y2=\"146\"/><line class=\"dg-bx\" x1=\"80\" y1=\"78\" x2=\"80\" y2=\"146\"/><line class=\"dg-bx\" x1=\"100\" y1=\"78\" x2=\"100\" y2=\"146\"/><line class=\"dg-bx\" x1=\"120\" y1=\"78\" x2=\"120\" y2=\"146\"/><line class=\"dg-bx\" x1=\"140\" y1=\"78\" x2=\"140\" y2=\"146\"/><line class=\"dg-bx\" x1=\"160\" y1=\"78\" x2=\"160\" y2=\"146\"/><line class=\"dg-bx\" x1=\"180\" y1=\"78\" x2=\"180\" y2=\"146\"/><line class=\"dg-bx\" x1=\"200\" y1=\"78\" x2=\"200\" y2=\"146\"/><line class=\"dg-bx\" x1=\"220\" y1=\"78\" x2=\"220\" y2=\"146\"/><line class=\"dg-bx\" x1=\"240\" y1=\"78\" x2=\"240\" y2=\"146\"/><line class=\"dg-bx\" x1=\"260\" y1=\"78\" x2=\"260\" y2=\"146\"/><line class=\"dg-bx\" x1=\"40\" y1=\"92\" x2=\"260\" y2=\"92\"/><line class=\"dg-bx\" x1=\"40\" y1=\"106\" x2=\"260\" y2=\"106\"/><line class=\"dg-bx\" x1=\"40\" y1=\"120\" x2=\"260\" y2=\"120\"/><line class=\"dg-bx\" x1=\"40\" y1=\"134\" x2=\"260\" y2=\"134\"/><circle class=\"dg-cdet\" cx=\"40\" cy=\"78\" r=\"4.5\"/><circle class=\"dg-cdet\" cx=\"40\" cy=\"146\" r=\"4.5\"/><circle class=\"dg-cdet\" cx=\"150\" cy=\"78\" r=\"4.5\"/><circle class=\"dg-cdet\" cx=\"150\" cy=\"146\" r=\"4.5\"/><circle class=\"dg-cdet\" cx=\"260\" cy=\"78\" r=\"4.5\"/><circle class=\"dg-cdet\" cx=\"260\" cy=\"146\" r=\"4.5\"/><text x=\"24\" y=\"180\" class=\"dg-tm\">발판 걸치기 금지 · 가장자리 로프 고정<\/text><\/svg>","p":["그물코 10cm 이하, 방호망 면적 10㎡ 이하","지지점 간격 2.5m 이하, 방호망에 발판을 걸치지 않는다"]},{"s":5,"t":"개구부 방호 4가지","g":"<svg viewBox=\"0 0 300 206\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"개구부 방호 덮개 울타리 경보표지 감시인\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">개구부 방호 4가지<\/text><\/g><rect class=\"dg-bx\" x=\"24\" y=\"30\" width=\"252\" height=\"12\" rx=\"3\"/><rect x=\"120\" y=\"30\" width=\"60\" height=\"12\" style=\"fill:var(--surface);stroke:var(--red);stroke-width:1.6\"/><line class=\"dg-danger\" d=\"M120,30 L120,56\"/><line class=\"dg-danger\" d=\"M180,30 L180,56\"/><text x=\"150\" y=\"70\" text-anchor=\"middle\" class=\"dg-tm\">수직 개구부 75cm 이상 → 방호 필요<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"84\" width=\"140\" height=\"46\" rx=\"10\"/><text x=\"20\" y=\"103\" class=\"dg-kb\">덮개<\/text><text x=\"20\" y=\"121\" class=\"dg-tm\">뒤집히지 않게 고정<\/text><rect class=\"dg-bx2\" x=\"156\" y=\"84\" width=\"140\" height=\"46\" rx=\"10\"/><text x=\"168\" y=\"103\" class=\"dg-kb\">울타리·안전난간<\/text><text x=\"168\" y=\"121\" class=\"dg-tm\">90cm 이상<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"138\" width=\"140\" height=\"46\" rx=\"10\"/><text x=\"20\" y=\"157\" class=\"dg-kb\">경보·표지<\/text><text x=\"20\" y=\"175\" class=\"dg-tm\">추락 위험 표시<\/text><rect class=\"dg-bx2\" x=\"156\" y=\"138\" width=\"140\" height=\"46\" rx=\"10\"/><text x=\"168\" y=\"157\" class=\"dg-kb\">감시인 배치<\/text><text x=\"168\" y=\"175\" class=\"dg-tm\">작업 중 지켜봄<\/text><text x=\"24\" y=\"200\" class=\"dg-tm\">개구부 주변 정리 · 조명 확보<\/text><\/svg>","p":["덮개 · 울타리(안전난간) · 경보표지 · 감시인 중 하나","수직 개구부가 75cm 이상이면 반드시 방호","덮개는 뒤집히지 않도록 견고하게 고정"]},{"s":4,"t":"활선작업 3종","g":"<svg viewBox=\"0 0 300 206\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"활선작업 직접활선 간접활선 근접활선\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">활선작업 3종<\/text><\/g><rect class=\"dg-bx\" x=\"8\" y=\"26\" width=\"284\" height=\"148\" rx=\"12\"/><text x=\"20\" y=\"46\" class=\"dg-acc-t\">근접활선<\/text><text x=\"280\" y=\"46\" text-anchor=\"end\" class=\"dg-tm\">충전부 2m 이내 접근 · 감시인<\/text><rect class=\"dg-am\" x=\"36\" y=\"56\" width=\"228\" height=\"106\" rx=\"10\"/><text x=\"48\" y=\"76\" class=\"dg-acc-t\">간접활선<\/text><text x=\"252\" y=\"76\" text-anchor=\"end\" class=\"dg-tm\">절연 방호구·기구 사용<\/text><rect class=\"dg-rd\" x=\"72\" y=\"88\" width=\"156\" height=\"62\" rx=\"8\"/><text x=\"150\" y=\"112\" text-anchor=\"middle\" class=\"dg-kb\">직접활선<\/text><text x=\"150\" y=\"134\" text-anchor=\"middle\" class=\"dg-tm\">충전부 직접 접촉<\/text><\/svg>","p":["직접활선(충전부 접촉) → 간접활선(절연 방호구·기구) → 근접활선(2m 이내)","겹겹이 안전조치를 두는 구조, 공통으로 절연 보호구+감시인"]},{"s":4,"t":"접지공사 4종","g":"<svg viewBox=\"0 0 300 194\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"접지공사 1종 2종 3종 특별3종 접지저항\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">접지공사 종류와 접지저항<\/text><\/g><rect class=\"dg-bx2\" x=\"8\" y=\"30\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"50\" text-anchor=\"middle\" class=\"dg-tm\">1종 접지<\/text><text x=\"110\" y=\"51\" class=\"dg-kb\">10Ω 이하<\/text><text x=\"200\" y=\"50\" class=\"dg-tm\">고압·특고압 기기<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"64\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"84\" text-anchor=\"middle\" class=\"dg-tm\">2종 접지<\/text><text x=\"110\" y=\"85\" class=\"dg-kb\">5Ω 이하<\/text><text x=\"200\" y=\"84\" class=\"dg-tm\">400V 미만 100Ω<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"98\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"118\" text-anchor=\"middle\" class=\"dg-tm\">3종 접지<\/text><text x=\"110\" y=\"119\" class=\"dg-kb\">100Ω 이하<\/text><text x=\"200\" y=\"118\" class=\"dg-tm\">저압 기기·철주<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"132\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"152\" text-anchor=\"middle\" class=\"dg-tm\">특별3종<\/text><text x=\"110\" y=\"153\" class=\"dg-kb\">10Ω 이하<\/text><text x=\"200\" y=\"152\" class=\"dg-tm\">위험 장소 접지<\/text><\/svg>","p":["1종 10Ω, 2종 5Ω(400V 미만 100Ω), 3종 100Ω, 특별3종 10Ω 이하","목적은 감전 방지·기기 보호·정전기 제거"]},{"s":4,"t":"분진폭발 5요소","g":"<svg viewBox=\"0 0 300 206\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"분진폭발 5요소\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">분진폭발 5요소<\/text><\/g><circle class=\"dg-csoft\" cx=\"150\" cy=\"98\" r=\"34\"/><text x=\"150\" y=\"96\" text-anchor=\"middle\" class=\"dg-kb\">분진<\/text><text x=\"150\" y=\"114\" text-anchor=\"middle\" class=\"dg-kb\">폭발<\/text><rect class=\"dg-bx2\" x=\"108\" y=\"28\" width=\"84\" height=\"34\" rx=\"9\"/><text x=\"150\" y=\"50\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">①연소성 분진<\/text><rect class=\"dg-bx\" x=\"208\" y=\"72\" width=\"84\" height=\"34\" rx=\"9\"/><text x=\"250\" y=\"94\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">②산소<\/text><rect class=\"dg-bx\" x=\"208\" y=\"120\" width=\"84\" height=\"34\" rx=\"9\"/><text x=\"250\" y=\"142\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">③점화원<\/text><rect class=\"dg-bx\" x=\"8\" y=\"120\" width=\"84\" height=\"34\" rx=\"9\"/><text x=\"50\" y=\"142\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">④분진운<\/text><rect class=\"dg-bx\" x=\"8\" y=\"72\" width=\"84\" height=\"34\" rx=\"9\"/><text x=\"50\" y=\"94\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">⑤밀폐·구획<\/text><text x=\"150\" y=\"178\" text-anchor=\"middle\" class=\"dg-tm\">분진운 + 점화원 + 산소 + 밀폐가 겹칠 때<\/text><text x=\"150\" y=\"196\" text-anchor=\"middle\" class=\"dg-tm\">바닥에 쌓인 가연성 분진이 다시 날리면 폭발<\/text><\/svg>","p":["연소성 분진 · 산소 · 점화원 · 분진운 형성 · 밀폐(구획) 조건","퇴적 분진이 날려 분진운이 되면 2차 폭발로 이어진다"]},{"s":2,"t":"위험성 추정 매트릭스","g":"<svg viewBox=\"0 0 300 202\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"위험성 추정 빈도 강도 매트릭스\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">위험성 추정 = 빈도 × 강도<\/text><text x=\"105\" y=\"36\" text-anchor=\"middle\" class=\"dg-tm\">높음<\/text><text x=\"175\" y=\"36\" text-anchor=\"middle\" class=\"dg-tm\">보통<\/text><text x=\"245\" y=\"36\" text-anchor=\"middle\" class=\"dg-tm\">낮음<\/text><rect class=\"dg-rd\" x=\"70\" y=\"40\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"105\" y=\"66\" text-anchor=\"middle\" class=\"dg-tm\">불허용<\/text><rect class=\"dg-rd\" x=\"140\" y=\"40\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"175\" y=\"66\" text-anchor=\"middle\" class=\"dg-tm\">불허용<\/text><rect class=\"dg-am\" x=\"210\" y=\"40\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"245\" y=\"66\" text-anchor=\"middle\" class=\"dg-tm\">조건부<\/text><rect class=\"dg-rd\" x=\"70\" y=\"80\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"105\" y=\"106\" text-anchor=\"middle\" class=\"dg-tm\">불허용<\/text><rect class=\"dg-am\" x=\"140\" y=\"80\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"175\" y=\"106\" text-anchor=\"middle\" class=\"dg-tm\">조건부<\/text><rect class=\"dg-gr\" x=\"210\" y=\"80\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"245\" y=\"106\" text-anchor=\"middle\" class=\"dg-tm\">허용<\/text><rect class=\"dg-am\" x=\"70\" y=\"120\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"105\" y=\"146\" text-anchor=\"middle\" class=\"dg-tm\">조건부<\/text><rect class=\"dg-gr\" x=\"140\" y=\"120\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"175\" y=\"146\" text-anchor=\"middle\" class=\"dg-tm\">허용<\/text><rect class=\"dg-gr\" x=\"210\" y=\"120\" width=\"70\" height=\"40\" rx=\"4\"/><text x=\"245\" y=\"146\" text-anchor=\"middle\" class=\"dg-tm\">허용<\/text><text x=\"60\" y=\"64\" text-anchor=\"end\" class=\"dg-tm\">중대<\/text><text x=\"60\" y=\"104\" text-anchor=\"end\" class=\"dg-tm\">중간<\/text><text x=\"60\" y=\"144\" text-anchor=\"end\" class=\"dg-tm\">경미<\/text><text x=\"30\" y=\"30\" class=\"dg-dimt\">강도<\/text><\/svg>","p":["빈도(가능성) 높고 강도(중대성) 크면 불허용 → 즉시 감소대책","허용 수준이어도 관찰·기록은 남기고 주기적으로 재검토"]}];
+(function(){
+  var DG_CLS = 'diagram on';
+  var SHORT = {};
+  for (var i = 0; i < SUBJECTS.length; i++) SHORT[SUBJECTS[i].id] = SUBJECTS[i].short;
+
+  var ALL = [], i, j;
+  for (i = 0; i < CARDS.length; i++){
+    var c = CARDS[i], g = c.d || c.g;      /* 산안기 = CARD_DIAGRAM(c.d) · 소방 = 카드 안 g */
+    if (!g) continue;
+    ALL.push({s:c.s, t:(DG_TITLES[c.i] || c.q), g:g, p:[c.a], n:(c.n || '')});
+  }
+  for (j = 0; j < DG_EXTRA.length; j++){
+    var e = DG_EXTRA[j];
+    ALL.push({s:e.s, t:e.t, g:e.g, p:(e.p || []), n:''});
+  }
+  ALL.sort(function(a, b){ return a.s - b.s; });   /* ES2019 안정 정렬: 과목 안에서는 원래 순서 */
+
+  var ds = {s:0, q:''};
+  function esc(s){
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function chips(){
+    var h = '<button class="chip active" data-s="0">전체<small>' + ALL.length + '</small></button>';
+    var cnt = {}, k;
+    for (var n = 0; n < ALL.length; n++) cnt[ALL[n].s] = (cnt[ALL[n].s] || 0) + 1;
+    for (k in cnt) h += '<button class="chip" data-s="' + k + '">' + (SHORT[k] || (k + '과목'))
+      + '<small>' + cnt[k] + '</small></button>';
+    return h;
+  }
+  function render(){
+    var h = '', n = 0, q = ds.q;
+    for (var i = 0; i < ALL.length; i++){
+      var it = ALL[i];
+      if (ds.s && (+it.s !== +ds.s)) continue;
+      if (q){
+        var hay = (it.t + ' ' + (it.p || []).join(' ') + ' ' + (it.n || '') + ' '
+                   + (SHORT[it.s] || '')).toLowerCase();
+        if (hay.indexOf(q) < 0) continue;
+      }
+      n++;
+      var pts = (it.p && it.p.length)
+        ? '<ul class="dgpl">' + it.p.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'
+        : '';
+      h += '<article class="dgcard"><div class="dgh">'
+         + '<span class="dgn">' + (n < 10 ? '0' + n : n) + '</span>'
+         + '<span class="dgs">' + (SHORT[it.s] || '') + '</span>'
+         + '<b class="dgt">' + esc(it.t) + '</b></div>'
+         + '<div class="' + DG_CLS + '">' + it.g + '</div>'
+         + pts
+         + (it.n ? '<p class="dgn2">' + esc(it.n) + '</p>' : '')
+         + '</article>';
+    }
+    if (!n) h = '<div class="dgempty">맞는 도해가 없습니다.<br>다른 낱말로 찾아보세요.</div>';
+    $('dgList').innerHTML = h;
+    $('dgTotal').textContent = '도해 ' + ALL.length + '개';
+    $('dgNow').textContent = ds.s ? ((SHORT[ds.s] || '') + ' ' + n + '개')
+                                  : (ds.q ? (n + '개 찾음') : ('전체 ' + ALL.length + '개'));
+    var bs = document.querySelectorAll('#dgChips .chip');
+    for (var b = 0; b < bs.length; b++)
+      bs[b].className = 'chip' + ((+bs[b].getAttribute('data-s') === +ds.s) ? ' active' : '');
+  }
+  window.renderDiag = render;
+
+  function init(){
+    var wrap = document.getElementById('dgChips');
+    if (!wrap) return;
+    wrap.innerHTML = chips();
+    wrap.addEventListener('click', function(ev){
+      var el = ev.target;
+      while (el && el !== wrap && !el.getAttribute('data-s')) el = el.parentNode;
+      if (!el || el === wrap) return;
+      ds.s = +el.getAttribute('data-s');
+      render();
+      window.scrollTo(0, 0);
+    });
+    var si = document.getElementById('dgSearch');
+    si.addEventListener('input', function(){ ds.q = this.value.trim().toLowerCase(); render(); });
+    render();
+  }
+
+  /* 탭 전환 · 시작 시 렌더 */
+  var _st = switchTab;
+  switchTab = function(name){
+    _st.apply(this, arguments);
+    if (name === 'diag') render();
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 </body>

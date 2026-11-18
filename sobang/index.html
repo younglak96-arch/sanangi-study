@@ -1174,6 +1174,47 @@ body.fs-3 .fcard.dia .diag{padding:7px 7px 6px}
 .diag .dg-g4{fill:rgba(52,211,153,.3)}
 
 </style>
+<style id="v10-diag">
+/* ===================== v10: 🖼️ 도해 탭 ===================== */
+/* 하단 탭 6개: 375px 폭에서도 라벨이 줄바꿈·잘림 없이 한 줄 */
+nav.tabs .tab{padding:8px 1px 6px;font-size:10.4px;gap:2px;letter-spacing:-.35px;white-space:nowrap}
+nav.tabs .tab .ic{font-size:18px}
+@media (max-width:370px){
+  nav.tabs .tab{font-size:9.8px;letter-spacing:-.45px}
+  nav.tabs .tab .ic{font-size:17px}
+}
+.view#viewDiag{padding-bottom:4px}
+.dgbar{margin:0}
+.dgbar .metaline{margin:0 0 8px}
+.dgsearch{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:12px;padding:10px 12px;font-size:13.5px;margin:0 0 10px;
+  -webkit-appearance:none;appearance:none;font-family:inherit}
+.dgsearch::placeholder{color:var(--muted)}
+.dgbar .chips{padding-bottom:10px}
+.dgbar .chip small{margin-left:3px;font-size:10.5px;font-weight:800;color:var(--muted)}
+.dgbar .chip.active small{color:var(--accent)}
+.dgcard{border:1px solid var(--line);border-radius:18px;background:var(--surface);
+  padding:12px 12px 11px;margin:0 0 11px;box-shadow:var(--shadow)}
+.dgh{display:flex;align-items:center;gap:7px;margin:0 1px 6px}
+.dgn{font-size:11px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.dgs{flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--accent);
+  background:var(--accent-soft);border-radius:999px;padding:3px 8px;line-height:1.3}
+.dgt{font-size:14.5px;font-weight:800;letter-spacing:-.3px;line-height:1.25;min-width:0}
+.dgcard .diag{width:100%;margin:0;padding:6px 2px 4px;background:transparent;border:0;display:block}
+.dgcard .diag svg{display:block;width:100%!important;height:auto!important;
+  max-width:100%!important;max-height:none!important;overflow:visible}
+.dgpl{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.dgpl li{position:relative;padding-left:12px;font-size:13px;line-height:1.45;color:var(--text)}
+.dgpl li:before{content:'';position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:50%;
+  background:var(--accent)}
+.dgcard .diag .dg-dimt{font-size:12px}
+/* 카드 제목과 겹치는 도해 안 제목은 도해 탭에서 숨긴다 */
+#viewDiag .dg-ttl{display:none}
+.dgn2{margin:7px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.dgempty{border:1px dashed var(--line);border-radius:16px;padding:26px 12px;text-align:center;
+  font-size:13px;color:var(--muted)}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -1731,6 +1772,18 @@ body.fs-3 .fcard.dia .diag{padding:7px 7px 6px}
         학습용 요약 자료입니다. 법령·화재안전기준 수치는 개정될 수 있으니<br>응시 전 Q-Net 공고와 국가법령정보센터 원문으로 확인하세요.
       </footer>
     </section>
+    <!-- ============ 도해 ============ -->
+    <section class="view" id="viewDiag">
+      <div class="dgbar">
+        <div class="metaline"><span id="dgTotal">도해 0개</span><span id="dgNow"></span></div>
+        <input class="dgsearch" id="dgSearch" type="search" autocomplete="off"
+               placeholder="도해 검색 (예: 감지기, 접지, 안전모)">
+        <div class="chips" id="dgChips"></div>
+      </div>
+      <div id="dgList"></div>
+      <footer class="foot" id="dgFoot">암기카드에 흩어져 있던 도해를 한곳에 모으고, 그림으로 이해해야 빠른 개념을 더했습니다. 그림을 크게 보고 수치를 확인하세요.</footer>
+    </section>
+
   </main>
 
   <!-- ============ 계산 문제 플레이어 ============ -->
@@ -1950,6 +2003,7 @@ body.fs-3 .fcard.dia .diag{padding:7px 7px 6px}
       <button class="tab" data-tab="cards"><span class="ic">🃏</span>암기카드</button>
       <button class="tab" data-tab="commute"><span class="ic">✅</span>핵심 퀴즈</button>
       <button class="tab active" data-tab="quiz"><span class="ic">📝</span>CBT</button>
+      <button class="tab" data-tab="diag"><span class="ic">🖼️</span>도해</button>
       <button class="tab" data-tab="formula"><span class="ic">📐</span>공식</button>
       <button class="tab" data-tab="roadmap"><span class="ic">🗺️</span>로드맵</button>
     </div>
@@ -2278,7 +2332,7 @@ $('fontBtn').addEventListener('click', function(){
 var state = {tab:'quiz'};
 function switchTab(name){
   state.tab = name;
-  var views = {cards:'viewCards', commute:'viewCommute', quiz:'viewQuiz', formula:'viewFormula', roadmap:'viewRoadmap'};
+  var views = {cards:'viewCards', commute:'viewCommute', quiz:'viewQuiz', formula:'viewFormula', roadmap:'viewRoadmap', diag:'viewDiag'};
   for (var k in views){
     var el = $(views[k]);
     if (el) el.className = 'view' + (k === name ? ' active' : '');
@@ -5748,6 +5802,101 @@ setQMode(qxMode);
       for (var i = 0; i < bodies.length; i++) bodies[i].scrollTop = 0;
     };
   }
+})();
+</script>
+
+<script>
+/* ===================== v10: 🖼️ 도해 모음 ===================== */
+var DG_TITLES = {"a1":"연소의 3요소 · 4요소","b10":"RLC 임피던스 삼각형","b12":"3상 Y결선 · Δ결선","b21":"AND · OR · NOT 게이트","d1":"경계구역 600㎡ · 한 변 50m","d6":"감지기 이격거리 0.6m","d8":"종단저항 위치","d10":"발신기 · 비상콘센트 높이","d20":"유도등 3선식 배선","d23":"비상콘센트 위치 · 거리","d32":"P형 발신기 기본 7가닥"};
+var DG_EXTRA = [{"s":4,"t":"부착높이별 감지기","g":"<svg viewBox=\"0 0 300 204\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"부착높이별 감지기 종류: 4미터 8미터 15미터 20미터 기준\"><g class=\"dg-ttl\"><text x=\"150\" y=\"14\" text-anchor=\"middle\" class=\"dg-kb\">부착높이별 쓸 수 있는 감지기<\/text><\/g><line class=\"dg-ln2\" x1=\"30\" y1=\"22\" x2=\"30\" y2=\"176\"/><line class=\"dg-dim\" x1=\"26\" y1=\"46\" x2=\"34\" y2=\"46\"/><text x=\"24\" y=\"50\" text-anchor=\"end\" class=\"dg-dimt\">20m<\/text><line class=\"dg-dim\" x1=\"26\" y1=\"78\" x2=\"34\" y2=\"78\"/><text x=\"24\" y=\"82\" text-anchor=\"end\" class=\"dg-dimt\">15m<\/text><line class=\"dg-dim\" x1=\"26\" y1=\"124\" x2=\"34\" y2=\"124\"/><text x=\"24\" y=\"128\" text-anchor=\"end\" class=\"dg-dimt\">8m<\/text><line class=\"dg-dim\" x1=\"26\" y1=\"150\" x2=\"34\" y2=\"150\"/><text x=\"24\" y=\"154\" text-anchor=\"end\" class=\"dg-dimt\">4m<\/text><line class=\"dg-dim\" x1=\"26\" y1=\"176\" x2=\"34\" y2=\"176\"/><text x=\"24\" y=\"180\" text-anchor=\"end\" class=\"dg-dimt\">0<\/text><rect class=\"dg-rd\" x=\"36\" y=\"22\" width=\"256\" height=\"24\" rx=\"5\"/><text x=\"46\" y=\"39\" class=\"dg-tm\">20m 이상 — 불꽃 · 아날로그 광전식<\/text><rect class=\"dg-am\" x=\"36\" y=\"46\" width=\"256\" height=\"32\" rx=\"5\"/><text x=\"46\" y=\"67\" class=\"dg-tm\">15~20m — 연기감지기 1종만<\/text><rect class=\"dg-bx\" x=\"36\" y=\"78\" width=\"256\" height=\"46\" rx=\"5\"/><text x=\"46\" y=\"106\" class=\"dg-tm\">8~15m — 연기 1·2종 · 차동식분포형<\/text><rect class=\"dg-bx2\" x=\"36\" y=\"124\" width=\"256\" height=\"26\" rx=\"5\"/><text x=\"46\" y=\"142\" class=\"dg-tm\">4~8m — 연기 1·2종 · 정온 특종·1종<\/text><rect class=\"dg-bx2\" x=\"36\" y=\"150\" width=\"256\" height=\"26\" rx=\"5\"/><text x=\"46\" y=\"168\" class=\"dg-tm\">4m 미만 — 열·연기 전 종류<\/text><text x=\"150\" y=\"196\" text-anchor=\"middle\" class=\"dg-tm\">8m가 넘으면 스포트형 열감지기는 쓸 수 없다<\/text><\/svg>","p":["4m 미만은 열·연기 전 종류, 4~8m는 연기 1·2종·정온 특종·1종","8~15m는 연기 1·2종·차동식분포형, 15~20m는 연기 1종만","20m 이상은 불꽃감지기·아날로그 광전식"]},{"s":4,"t":"자동화재탐지설비 P형 배선","g":"<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"P형 수신기 공통선 회로선 종단저항 배선\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">자동화재탐지설비 P형 배선<\/text><\/g><rect class=\"dg-bx\" x=\"8\" y=\"60\" width=\"74\" height=\"66\" rx=\"10\"/><text x=\"45\" y=\"98\" text-anchor=\"middle\" class=\"dg-t\">수신기<\/text><line class=\"dg-acc\" x1=\"82\" y1=\"76\" x2=\"292\" y2=\"76\"/><text x=\"88\" y=\"68\" class=\"dg-tm\">공통선 (−)<\/text><line class=\"dg-ln\" x1=\"82\" y1=\"116\" x2=\"246\" y2=\"116\"/><text x=\"88\" y=\"136\" class=\"dg-tm\">회로선 (+)<\/text><line class=\"dg-ln\" x1=\"146\" y1=\"79\" x2=\"146\" y2=\"107\"/><line class=\"dg-ln\" x1=\"186\" y1=\"79\" x2=\"186\" y2=\"107\"/><circle class=\"dg-cdet\" cx=\"146\" cy=\"116\" r=\"9\"/><circle class=\"dg-cdet\" cx=\"186\" cy=\"116\" r=\"9\"/><text x=\"146\" y=\"148\" text-anchor=\"middle\" class=\"dg-tm\">감지기<\/text><text x=\"186\" y=\"148\" text-anchor=\"middle\" class=\"dg-tm\">발신기<\/text><rect class=\"dg-bx2\" x=\"248\" y=\"104\" width=\"44\" height=\"24\" rx=\"5\"/><text x=\"270\" y=\"120\" text-anchor=\"middle\" class=\"dg-tm\">종단저항<\/text><text x=\"150\" y=\"172\" text-anchor=\"middle\" class=\"dg-t\">경계구역 1개 = 회로선 1가닥 + 공통선<\/text><text x=\"150\" y=\"192\" text-anchor=\"middle\" class=\"dg-acc-t\">공통선 하나에 담당 경계구역 7개 이하<\/text><\/svg>","p":["수신기에서 공통선 1가닥 + 경계구역마다 회로선 1가닥","회로 끝에는 종단저항, 도통을 감시한다","공통선 하나가 담당하는 경계구역은 7개 이하"]},{"s":4,"t":"누전경보기 계통","g":"<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"누전경보기 변류기 ZCT 수신부 계통\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">누전경보기 계통<\/text><\/g><rect class=\"dg-bx\" x=\"8\" y=\"40\" width=\"50\" height=\"40\" rx=\"8\"/><text x=\"33\" y=\"65\" text-anchor=\"middle\" class=\"dg-tm\">전원<\/text><rect class=\"dg-bx\" x=\"208\" y=\"40\" width=\"58\" height=\"40\" rx=\"8\"/><text x=\"237\" y=\"65\" text-anchor=\"middle\" class=\"dg-tm\">부하<\/text><line class=\"dg-ln\" x1=\"58\" y1=\"52\" x2=\"208\" y2=\"52\"/><line class=\"dg-ln\" x1=\"58\" y1=\"60\" x2=\"208\" y2=\"60\"/><line class=\"dg-ln\" x1=\"58\" y1=\"68\" x2=\"208\" y2=\"68\"/><circle class=\"dg-csoft\" cx=\"152\" cy=\"60\" r=\"20\"/><text x=\"152\" y=\"65\" text-anchor=\"middle\" class=\"dg-tm\">ZCT<\/text><line class=\"dg-dash\" x1=\"152\" y1=\"80\" x2=\"152\" y2=\"104\"/><rect class=\"dg-bx2\" x=\"108\" y=\"104\" width=\"90\" height=\"40\" rx=\"9\"/><text x=\"153\" y=\"129\" text-anchor=\"middle\" class=\"dg-t\">누전경보기<\/text><rect class=\"dg-bx\" x=\"234\" y=\"110\" width=\"58\" height=\"28\" rx=\"7\"/><text x=\"263\" y=\"129\" text-anchor=\"middle\" class=\"dg-tm\">경보<\/text><line class=\"dg-acc\" x1=\"198\" y1=\"124\" x2=\"228\" y2=\"124\"/><path class=\"dg-ahd\" d=\"M228,124 l-8,-4 v8 z\"/><text x=\"150\" y=\"170\" text-anchor=\"middle\" class=\"dg-tm\">변류기가 누설전류를 검출 → 수신부가 경보<\/text><text x=\"150\" y=\"190\" text-anchor=\"middle\" class=\"dg-acc-t\">1급 60A 초과 · 2급 60A 이하<\/text><\/svg>","p":["변류기(ZCT)가 경계전로의 누설전류를 검출 → 수신부가 경보","경계전로 60A 초과는 1급, 60A 이하는 1급 또는 2급","가연성 증기·먼지가 있는 곳은 차단기구가 있는 수신부"]},{"s":4,"t":"비상방송설비 계통","g":"<svg viewBox=\"0 0 300 184\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"비상방송설비 음원장치 증폭기 조작부 확성기 계통\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">비상방송설비 계통<\/text><\/g><rect class=\"dg-bx2\" x=\"8\" y=\"34\" width=\"64\" height=\"44\" rx=\"9\"/><text x=\"40\" y=\"54\" text-anchor=\"middle\" class=\"dg-t\">음원장치<\/text><text x=\"40\" y=\"70\" text-anchor=\"middle\" class=\"dg-tm\">음원<\/text><rect class=\"dg-bx2\" x=\"80\" y=\"34\" width=\"64\" height=\"44\" rx=\"9\"/><text x=\"112\" y=\"54\" text-anchor=\"middle\" class=\"dg-t\">증폭기<\/text><text x=\"112\" y=\"70\" text-anchor=\"middle\" class=\"dg-tm\">증폭<\/text><rect class=\"dg-bx2\" x=\"152\" y=\"34\" width=\"64\" height=\"44\" rx=\"9\"/><text x=\"184\" y=\"54\" text-anchor=\"middle\" class=\"dg-t\">조작부<\/text><text x=\"184\" y=\"70\" text-anchor=\"middle\" class=\"dg-tm\">선택<\/text><rect class=\"dg-bx2\" x=\"224\" y=\"34\" width=\"64\" height=\"44\" rx=\"9\"/><text x=\"256\" y=\"54\" text-anchor=\"middle\" class=\"dg-t\">확성기<\/text><text x=\"256\" y=\"70\" text-anchor=\"middle\" class=\"dg-tm\">스피커<\/text><path class=\"dg-ahd\" d=\"M72,51 l7,5 l-7,5 z\"/><path class=\"dg-ahd\" d=\"M144,51 l7,5 l-7,5 z\"/><path class=\"dg-ahd\" d=\"M216,51 l7,5 l-7,5 z\"/><text x=\"20\" y=\"102\" class=\"dg-t\">기동장치 작동 → 10초 이내 자동 방송<\/text><text x=\"20\" y=\"126\" class=\"dg-tm\">확성기 음성입력 3W 이상 (실내 1W)<\/text><text x=\"20\" y=\"148\" class=\"dg-tm\">층마다 수평거리 25m 이하<\/text><text x=\"20\" y=\"170\" class=\"dg-tm\">11층 이상(공동주택 16층)은 우선경보<\/text><\/svg>","p":["음원장치 → 증폭기 → 조작부 → 확성기 순으로 음성 신호가 흐른다","확성기 음성입력 3W 이상(실내 1W), 층마다 수평거리 25m 이하","11층 이상(공동주택 16층)은 우선경보: 발화층 + 직상 4개층"]},{"s":4,"t":"유도등 4종과 유도표지","g":"<svg viewBox=\"0 0 300 194\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"유도등 종류 피난구 통로 객석 계단통로 유도표지\"><g class=\"dg-ttl\"><text x=\"150\" y=\"14\" text-anchor=\"middle\" class=\"dg-kb\">유도등 4종 + 유도표지<\/text><\/g><rect class=\"dg-bx\" x=\"8\" y=\"24\" width=\"92\" height=\"56\" rx=\"10\"/><rect class=\"dg-gr\" x=\"42\" y=\"35\" width=\"16\" height=\"22\" rx=\"2\"/><path class=\"dg-acc\" d=\"M58,46 l10,0\" style=\"stroke:var(--green)\"/><path class=\"dg-ahd\" d=\"M70,46 l-7,-4 v8 z\" style=\"fill:var(--green)\"/><text x=\"54\" y=\"72\" text-anchor=\"middle\" class=\"dg-tm\">피난구유도등<\/text><rect class=\"dg-bx\" x=\"104\" y=\"24\" width=\"92\" height=\"56\" rx=\"10\"/><line class=\"dg-acc\" x1=\"134\" y1=\"46\" x2=\"160\" y2=\"46\"/><path class=\"dg-ahd\" d=\"M166,46 l-8,-5 v10 z\" style=\"fill:var(--accent)\"/><text x=\"150\" y=\"72\" text-anchor=\"middle\" class=\"dg-tm\">통로유도등<\/text><rect class=\"dg-bx\" x=\"200\" y=\"24\" width=\"92\" height=\"56\" rx=\"10\"/><rect class=\"dg-am\" x=\"231\" y=\"37\" width=\"14\" height=\"4\" rx=\"2\"/><rect class=\"dg-am\" x=\"231\" y=\"45\" width=\"14\" height=\"4\" rx=\"2\"/><rect class=\"dg-am\" x=\"231\" y=\"53\" width=\"14\" height=\"4\" rx=\"2\"/><text x=\"246\" y=\"72\" text-anchor=\"middle\" class=\"dg-tm\">객석유도등<\/text><rect class=\"dg-bx\" x=\"56\" y=\"88\" width=\"92\" height=\"56\" rx=\"10\"/><path class=\"dg-acc\" d=\"M87,120 h9 v-7 h9 v-7 h9 v-7 h9\"/><text x=\"102\" y=\"136\" text-anchor=\"middle\" class=\"dg-tm\">계단통로유도등<\/text><rect class=\"dg-bx\" x=\"152\" y=\"88\" width=\"92\" height=\"56\" rx=\"10\"/><line class=\"dg-acc\" x1=\"184\" y1=\"110\" x2=\"206\" y2=\"110\"/><circle class=\"dg-cdet\" cx=\"212\" cy=\"110\" r=\"6\"/><text x=\"198\" y=\"136\" text-anchor=\"middle\" class=\"dg-tm\">유도표지<\/text><text x=\"150\" y=\"164\" text-anchor=\"middle\" class=\"dg-tm\">피난구·통로·객석·계단통로 + 유도표지<\/text><text x=\"150\" y=\"184\" text-anchor=\"middle\" class=\"dg-tm\">비상조명등은 복도·계단에 별도로 설치<\/text><\/svg>","p":["피난구·통로·객석·계단통로 유도등 + 유도표지","비상조명등은 유도등과 별도로 복도·계단에 설치"]},{"s":3,"t":"소방시설 5대 분류","g":"<svg viewBox=\"0 0 300 206\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"소방시설 5대 분류 소화 경보 피난구조 소화용수 소화활동\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">소방시설 5대 분류<\/text><\/g><rect class=\"dg-bx2\" x=\"8\" y=\"30\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"50\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">소화설비<\/text><text x=\"104\" y=\"50\" class=\"dg-tm\">소화기 · 옥내소화전 · 스프링클러<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"64\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"84\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">경보설비<\/text><text x=\"104\" y=\"84\" class=\"dg-tm\">자동화재탐지 · 비상방송<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"98\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"118\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">피난구조설비<\/text><text x=\"104\" y=\"118\" class=\"dg-tm\">유도등 · 비상조명등 · 완강기<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"132\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"152\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">소화용수설비<\/text><text x=\"104\" y=\"152\" class=\"dg-tm\">상수도소화용수 · 소화수조<\/text><rect class=\"dg-bx2\" x=\"8\" y=\"166\" width=\"88\" height=\"30\" rx=\"8\"/><text x=\"52\" y=\"186\" text-anchor=\"middle\" class=\"dg-tm\" style=\"font-size:12px\">소화활동설비<\/text><text x=\"104\" y=\"186\" class=\"dg-tm\">제연 · 비상콘센트 · 연결송수관<\/text><\/svg>","p":["소화설비·경보설비·피난구조설비·소화용수설비·소화활동설비","헷갈리는 비상콘센트는 소화활동설비, 유도등은 피난구조설비"]},{"s":4,"t":"옥내소화전설비 기동 계통","g":"<svg viewBox=\"0 0 300 214\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"옥내소화전설비 기동 계통 수원 가압펌프 방수구 압력스위치\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">옥내소화전설비 기동 계통<\/text><\/g><rect class=\"dg-bx\" x=\"8\" y=\"30\" width=\"60\" height=\"38\" rx=\"9\"/><text x=\"38\" y=\"54\" text-anchor=\"middle\" class=\"dg-tm\">수원<\/text><rect class=\"dg-bx\" x=\"82\" y=\"30\" width=\"60\" height=\"38\" rx=\"9\"/><text x=\"112\" y=\"54\" text-anchor=\"middle\" class=\"dg-tm\">가압펌프<\/text><rect class=\"dg-bx\" x=\"156\" y=\"30\" width=\"60\" height=\"38\" rx=\"9\"/><text x=\"186\" y=\"54\" text-anchor=\"middle\" class=\"dg-tm\">배관<\/text><rect class=\"dg-bx\" x=\"230\" y=\"30\" width=\"60\" height=\"38\" rx=\"9\"/><text x=\"260\" y=\"54\" text-anchor=\"middle\" class=\"dg-tm\">방수구<\/text><path class=\"dg-ahd\" d=\"M70,49 l7,5 l-7,5 z\"/><path class=\"dg-ahd\" d=\"M144,49 l7,5 l-7,5 z\"/><path class=\"dg-ahd\" d=\"M218,49 l7,5 l-7,5 z\"/><text x=\"24\" y=\"100\" class=\"dg-t\">① 방수구 개방 → 관내 압력 저하<\/text><text x=\"24\" y=\"128\" class=\"dg-t\">② 기동용 수압개폐장치(압력스위치) 작동<\/text><text x=\"24\" y=\"156\" class=\"dg-t\">③ 가압송수장치(펌프) 기동<\/text><text x=\"24\" y=\"184\" class=\"dg-t\">④ 수신기 표시등 점등 · 경종 울림<\/text><text x=\"150\" y=\"208\" text-anchor=\"middle\" class=\"dg-tm\">압력챔버·압력스위치가 펌프 기동 신호를 만든다<\/text><\/svg>","p":["방수구 개방 → 압력 저하 → 기동용 수압개폐장치(압력스위치) → 펌프 기동","펌프가 돌면 수신기 표시등이 켜지고 경종이 울린다"]},{"s":4,"t":"P형 · R형 수신기 비교","g":"<svg viewBox=\"0 0 300 206\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"P형과 R형 수신기 전송방식 신호 전선 비교\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">P형 · R형 수신기<\/text><\/g><text x=\"124\" y=\"46\" text-anchor=\"middle\" class=\"dg-kb\">P형<\/text><text x=\"238\" y=\"46\" text-anchor=\"middle\" class=\"dg-kb\">R형<\/text><line class=\"dg-dash\" x1=\"64\" y1=\"30\" x2=\"64\" y2=\"178\"/><line class=\"dg-dash\" x1=\"184\" y1=\"30\" x2=\"184\" y2=\"178\"/><text x=\"10\" y=\"72\" class=\"dg-tm\">전송방식<\/text><text x=\"124\" y=\"72\" text-anchor=\"middle\" class=\"dg-tm\">개별 (1:1)<\/text><text x=\"238\" y=\"72\" text-anchor=\"middle\" class=\"dg-tm\">다중전송<\/text><text x=\"10\" y=\"98\" class=\"dg-tm\">신호<\/text><text x=\"124\" y=\"98\" text-anchor=\"middle\" class=\"dg-tm\">공통신호<\/text><text x=\"238\" y=\"98\" text-anchor=\"middle\" class=\"dg-tm\">고유신호<\/text><text x=\"10\" y=\"124\" class=\"dg-tm\">전선<\/text><text x=\"124\" y=\"124\" text-anchor=\"middle\" class=\"dg-tm\">많고 복잡<\/text><text x=\"238\" y=\"124\" text-anchor=\"middle\" class=\"dg-tm\">4가닥 고정<\/text><text x=\"10\" y=\"150\" class=\"dg-tm\">규모<\/text><text x=\"124\" y=\"150\" text-anchor=\"middle\" class=\"dg-tm\">소규모 빌딩<\/text><text x=\"238\" y=\"150\" text-anchor=\"middle\" class=\"dg-tm\">초고층·대단지<\/text><text x=\"10\" y=\"176\" class=\"dg-tm\">도통시험<\/text><text x=\"124\" y=\"176\" text-anchor=\"middle\" class=\"dg-tm\">수동<\/text><text x=\"238\" y=\"176\" text-anchor=\"middle\" class=\"dg-tm\">자동<\/text><text x=\"150\" y=\"198\" text-anchor=\"middle\" class=\"dg-tm\">P형 수신기 고장 → 전체 시스템 마비<\/text><\/svg>","p":["P형은 개별전송·공통신호·전선이 많고, R형은 다중전송·고유신호·4가닥","도통시험은 P형 수동, R형 자동 / R형은 수신기 고장에도 중계기가 살아 있다"]},{"s":1,"t":"화재 진행 4단계","g":"<svg viewBox=\"0 0 300 216\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"화재 진행 4단계 점화 성장 최성기 감퇴 플래시오버 백드래프트\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">화재 진행 4단계<\/text><\/g><text x=\"132\" y=\"40\" text-anchor=\"middle\" class=\"dg-dimt\">플래시오버<\/text><text x=\"240\" y=\"40\" text-anchor=\"middle\" class=\"dg-dimt\">백드래프트<\/text><path class=\"dg-acc\" d=\"M30,172 C70,164 118,76 156,54 L198,54 C226,70 250,156 280,170\" style=\"stroke-width:2.6\"/><line class=\"dg-dash\" x1=\"30\" y1=\"176\" x2=\"282\" y2=\"176\"/><line class=\"dg-dash\" x1=\"132\" y1=\"46\" x2=\"132\" y2=\"174\"/><line class=\"dg-dash\" x1=\"210\" y1=\"46\" x2=\"210\" y2=\"174\"/><text x=\"56\" y=\"192\" text-anchor=\"middle\" class=\"dg-t\">점화<\/text><text x=\"104\" y=\"192\" text-anchor=\"middle\" class=\"dg-t\">성장<\/text><text x=\"176\" y=\"192\" text-anchor=\"middle\" class=\"dg-t\">최성기<\/text><text x=\"254\" y=\"192\" text-anchor=\"middle\" class=\"dg-t\">감퇴<\/text><text x=\"150\" y=\"210\" text-anchor=\"middle\" class=\"dg-tm\">백드래프트: 공기 유입 순간 폭발적 연소<\/text><\/svg>","p":["점화 → 성장 → 최성기 → 감퇴, 성장기 끝이 플래시오버","백드래프트는 산소 부족으로 꺼질 듯한 화재에 공기가 들어올 때 폭발"]},{"s":2,"t":"직렬 · 병렬 연결","g":"<svg viewBox=\"0 0 300 196\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"직렬 병렬 저항 콘덴서 합성\"><g class=\"dg-ttl\"><text x=\"150\" y=\"16\" text-anchor=\"middle\" class=\"dg-kb\">직렬 · 병렬 연결<\/text><\/g><text x=\"77\" y=\"40\" text-anchor=\"middle\" class=\"dg-kb\">직렬<\/text><text x=\"223\" y=\"40\" text-anchor=\"middle\" class=\"dg-kb\">병렬<\/text><line class=\"dg-dash\" x1=\"150\" y1=\"28\" x2=\"150\" y2=\"172\"/><line class=\"dg-ln\" x1=\"18\" y1=\"62\" x2=\"20\" y2=\"62\"/><rect class=\"dg-bx2\" x=\"20\" y=\"54\" width=\"42\" height=\"16\" rx=\"3\"/><line class=\"dg-ln\" x1=\"62\" y1=\"62\" x2=\"76\" y2=\"62\"/><rect class=\"dg-bx2\" x=\"76\" y=\"54\" width=\"42\" height=\"16\" rx=\"3\"/><line class=\"dg-ln\" x1=\"118\" y1=\"62\" x2=\"138\" y2=\"62\"/><text x=\"41\" y=\"88\" text-anchor=\"middle\" class=\"dg-tm\">R1<\/text><text x=\"97\" y=\"88\" text-anchor=\"middle\" class=\"dg-tm\">R2<\/text><line class=\"dg-ln\" x1=\"168\" y1=\"48\" x2=\"168\" y2=\"96\"/><line class=\"dg-ln\" x1=\"278\" y1=\"48\" x2=\"278\" y2=\"96\"/><line class=\"dg-ln\" x1=\"168\" y1=\"48\" x2=\"196\" y2=\"48\"/><line class=\"dg-ln\" x1=\"240\" y1=\"48\" x2=\"278\" y2=\"48\"/><line class=\"dg-ln\" x1=\"168\" y1=\"96\" x2=\"196\" y2=\"96\"/><line class=\"dg-ln\" x1=\"240\" y1=\"96\" x2=\"278\" y2=\"96\"/><rect class=\"dg-bx2\" x=\"196\" y=\"40\" width=\"44\" height=\"16\" rx=\"3\"/><rect class=\"dg-bx2\" x=\"196\" y=\"88\" width=\"44\" height=\"16\" rx=\"3\"/><text x=\"262\" y=\"44\" class=\"dg-tm\">R1<\/text><text x=\"262\" y=\"92\" class=\"dg-tm\">R2<\/text><text x=\"77\" y=\"122\" text-anchor=\"middle\" class=\"dg-acc-t\">R = R1 + R2<\/text><text x=\"77\" y=\"146\" text-anchor=\"middle\" class=\"dg-tm\">C: 1/C = 1/C1 + 1/C2<\/text><text x=\"223\" y=\"122\" text-anchor=\"middle\" class=\"dg-acc-t\">1/R = 1/R1 + 1/R2<\/text><text x=\"223\" y=\"146\" text-anchor=\"middle\" class=\"dg-tm\">C = C1 + C2<\/text><text x=\"150\" y=\"176\" text-anchor=\"middle\" class=\"dg-tm\">저항은 직렬이 커지고, 콘덴서는 병렬이 커진다<\/text><\/svg>","p":["저항은 직렬 R1+R2, 병렬은 1/R = 1/R1 + 1/R2","콘덴서는 반대: 직렬이 1/C = 1/C1 + 1/C2, 병렬이 C1 + C2"]}];
+(function(){
+  var DG_CLS = 'diag';
+  var SHORT = {};
+  for (var i = 0; i < SUBJECTS.length; i++) SHORT[SUBJECTS[i].id] = SUBJECTS[i].short;
+
+  var ALL = [], i, j;
+  for (i = 0; i < CARDS.length; i++){
+    var c = CARDS[i], g = c.d || c.g;      /* 산안기 = CARD_DIAGRAM(c.d) · 소방 = 카드 안 g */
+    if (!g) continue;
+    ALL.push({s:c.s, t:(DG_TITLES[c.i] || c.q), g:g, p:[c.a], n:(c.n || '')});
+  }
+  for (j = 0; j < DG_EXTRA.length; j++){
+    var e = DG_EXTRA[j];
+    ALL.push({s:e.s, t:e.t, g:e.g, p:(e.p || []), n:''});
+  }
+  ALL.sort(function(a, b){ return a.s - b.s; });   /* ES2019 안정 정렬: 과목 안에서는 원래 순서 */
+
+  var ds = {s:0, q:''};
+  function esc(s){
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function chips(){
+    var h = '<button class="chip active" data-s="0">전체<small>' + ALL.length + '</small></button>';
+    var cnt = {}, k;
+    for (var n = 0; n < ALL.length; n++) cnt[ALL[n].s] = (cnt[ALL[n].s] || 0) + 1;
+    for (k in cnt) h += '<button class="chip" data-s="' + k + '">' + (SHORT[k] || (k + '과목'))
+      + '<small>' + cnt[k] + '</small></button>';
+    return h;
+  }
+  function render(){
+    var h = '', n = 0, q = ds.q;
+    for (var i = 0; i < ALL.length; i++){
+      var it = ALL[i];
+      if (ds.s && (+it.s !== +ds.s)) continue;
+      if (q){
+        var hay = (it.t + ' ' + (it.p || []).join(' ') + ' ' + (it.n || '') + ' '
+                   + (SHORT[it.s] || '')).toLowerCase();
+        if (hay.indexOf(q) < 0) continue;
+      }
+      n++;
+      var pts = (it.p && it.p.length)
+        ? '<ul class="dgpl">' + it.p.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'
+        : '';
+      h += '<article class="dgcard"><div class="dgh">'
+         + '<span class="dgn">' + (n < 10 ? '0' + n : n) + '</span>'
+         + '<span class="dgs">' + (SHORT[it.s] || '') + '</span>'
+         + '<b class="dgt">' + esc(it.t) + '</b></div>'
+         + '<div class="' + DG_CLS + '">' + it.g + '</div>'
+         + pts
+         + (it.n ? '<p class="dgn2">' + esc(it.n) + '</p>' : '')
+         + '</article>';
+    }
+    if (!n) h = '<div class="dgempty">맞는 도해가 없습니다.<br>다른 낱말로 찾아보세요.</div>';
+    $('dgList').innerHTML = h;
+    $('dgTotal').textContent = '도해 ' + ALL.length + '개';
+    $('dgNow').textContent = ds.s ? ((SHORT[ds.s] || '') + ' ' + n + '개')
+                                  : (ds.q ? (n + '개 찾음') : ('전체 ' + ALL.length + '개'));
+    var bs = document.querySelectorAll('#dgChips .chip');
+    for (var b = 0; b < bs.length; b++)
+      bs[b].className = 'chip' + ((+bs[b].getAttribute('data-s') === +ds.s) ? ' active' : '');
+  }
+  window.renderDiag = render;
+
+  function init(){
+    var wrap = document.getElementById('dgChips');
+    if (!wrap) return;
+    wrap.innerHTML = chips();
+    wrap.addEventListener('click', function(ev){
+      var el = ev.target;
+      while (el && el !== wrap && !el.getAttribute('data-s')) el = el.parentNode;
+      if (!el || el === wrap) return;
+      ds.s = +el.getAttribute('data-s');
+      render();
+      window.scrollTo(0, 0);
+    });
+    var si = document.getElementById('dgSearch');
+    si.addEventListener('input', function(){ ds.q = this.value.trim().toLowerCase(); render(); });
+    render();
+  }
+
+  /* 탭 전환 · 시작 시 렌더 */
+  var _st = switchTab;
+  switchTab = function(name){
+    _st.apply(this, arguments);
+    if (name === 'diag') render();
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 </body>
