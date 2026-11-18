@@ -5738,6 +5738,16 @@ setQMode(qxMode);
   scene.addEventListener('animationend', function(){
     scene.classList.remove('sw-next', 'sw-prev');
   });
+
+  /* 카드가 바뀌거나 뒤집힐 때 카드 안 스크롤은 항상 맨 위부터 */
+  if (typeof renderCards === 'function'){
+    var baseRender = renderCards;
+    renderCards = function(){
+      baseRender.apply(this, arguments);
+      var bodies = document.querySelectorAll('#fcCard .face-body');
+      for (var i = 0; i < bodies.length; i++) bodies[i].scrollTop = 0;
+    };
+  }
 })();
 </script>
 </body>
