@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>임신·출산 준비 트래커</title>
+<meta name="description" content="임신 주차별 아기 발달, 금천구·서울·정부 지원금과 출산박스, 산전 검진 타임라인, 음식 검색과 출산가방 체크리스트를 한 곳에서.">
+<meta name="theme-color" content="#fdf8f8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="임신트래커">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23fdeaf1'/><text x='50' y='72' font-size='58' text-anchor='middle'>🤰</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23fdeaf1'/><text x='50' y='72' font-size='58' text-anchor='middle'>🤰</text></svg>">
+<style>:root{
+  --pink:#e2587f; --pink-d:#c84068; --pink-l:#fdeaf1; --pink-m:#f8b9cc;
+  --ink:#2b2024; --sub:#8a767c; --line:#f2e4e8; --bg:#fdf8f8;
+  --ok:#16795a; --ok-bg:#e8f6ef; --warn:#94620a; --warn-bg:#fdf3dc; --bad:#b3363b; --bad-bg:#fdeced;
+  --shadow:0 1px 6px rgba(90,60,70,.05);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:contain;
+}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;touch-action:manipulation}
+input,textarea,select{font-family:inherit;font-size:16px}
+h1,h2,h3,p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+.muted{color:var(--sub)}
+.tiny{font-size:12px;line-height:1.45}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+#app{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+
+/* ── 상단 헤더 ── */
+#top{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+  padding:calc(12px + env(safe-area-inset-top)) 16px 10px;
+  background:rgba(253,248,248,.93);-webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+#top .ttl{flex:1;min-width:0}
+#top .ttl b{display:block;font-size:17px;letter-spacing:-.4px;line-height:1.25}
+#top .ttl span{display:block;font-size:11.5px;color:var(--sub);margin-top:1px}
+#top .wkchip{
+  flex:0 0 auto;background:var(--pink-l);color:var(--pink-d);font-weight:700;font-size:12.5px;
+  padding:6px 11px;border-radius:99px;letter-spacing:-.2px;white-space:nowrap
+}
+#top .gear{flex:0 0 auto;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;background:#fff;border:1px solid var(--line)}
+
+/* ── 공통 카드 ── */
+.wrap{padding:0 14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;margin:12px 0;box-shadow:var(--shadow)}
+.card>h2{font-size:14.5px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.card>h2 .em{font-size:16px}
+.card .lead{font-size:12.5px;color:var(--sub);margin-bottom:10px}
+.hr{height:1px;background:var(--line);margin:12px 0}
+
+/* ── 히어로 ── */
+.hero{
+  position:relative;overflow:hidden;margin:14px 0 4px;padding:18px 16px 16px;border-radius:22px;
+  background:linear-gradient(140deg,#ffe0ea 0%,#fff1f5 55%,#fff7ef 100%);
+  border:1px solid #fbd7e2;box-shadow:0 6px 18px rgba(226,88,127,.10)
+}
+.hero .lbl{font-size:12px;font-weight:700;color:var(--pink-d);letter-spacing:-.2px}
+.hero .big{font-size:36px;font-weight:850;letter-spacing:-1.6px;line-height:1.1;margin:2px 0 0}
+.hero .big small{font-size:16px;font-weight:700;letter-spacing:-.4px;margin-left:2px}
+.hero .sub2{font-size:12.5px;color:#8a6a74;margin-top:2px;letter-spacing:-.2px}
+.hero .dday{
+  position:absolute;right:14px;top:16px;text-align:center;background:rgba(255,255,255,.78);
+  border:1px solid #f8cddb;border-radius:14px;padding:7px 11px;min-width:66px
+}
+.hero .dday b{display:block;font-size:19px;font-weight:850;color:var(--pink-d);letter-spacing:-.8px;line-height:1.15}
+.hero .dday span{display:block;font-size:10px;color:#96707c;margin-top:1px}
+.hero .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.hero .meta i{font-style:normal;font-size:11.5px;background:rgba(255,255,255,.8);border:1px solid #f9d5e0;color:#7c5a66;border-radius:9px;padding:3px 8px}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.75);overflow:hidden;margin-top:12px;border:1px solid #f8d3df}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f79bb8,#e2587f);transition:width .3s}
+.bar-txt{display:flex;justify-content:space-between;font-size:10.5px;color:#96707c;margin-top:4px}
+
+/* ── 아기 발달 ── */
+.baby{display:flex;gap:14px;align-items:center}
+.baby .fruit{
+  flex:0 0 auto;width:74px;height:74px;border-radius:22px;display:flex;align-items:center;justify-content:center;
+  font-size:36px;background:linear-gradient(140deg,#fff2f6,#ffe6ee);border:1px solid #fbd5e1
+}
+.baby .info{min-width:0;flex:1}
+.baby .info .fn{font-size:19px;font-weight:800;letter-spacing:-.6px;line-height:1.2}
+.baby .info .sz{font-size:12.5px;color:var(--sub);margin-top:2px}
+.baby .info .ds{font-size:12.5px;color:#5c4b51;margin-top:6px;line-height:1.5}
+.wknav{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:11px;border-top:1px dashed var(--line)}
+.wknav .btn-s{flex:0 0 auto;width:38px;height:34px;border-radius:11px;border:1px solid var(--line);background:#fdf6f8;font-size:14px;color:var(--pink-d);font-weight:700}
+.wknav .btn-s:disabled{opacity:.35}
+.wknav .mid{flex:1;text-align:center;font-size:12px;color:var(--sub)}
+.wknav .mid b{color:var(--ink);font-size:13px}
+.wknav .now{flex:0 0 auto;font-size:11.5px;color:var(--pink-d);border:1px solid #f6c9d8;background:#fff;border-radius:99px;padding:5px 10px;font-weight:700}
+.inline .in.setnum{flex:0 0 66px;min-width:66px;text-align:center;padding-left:4px;padding-right:4px}
+.mini{flex:0 0 auto;font-size:12.5px;font-weight:800;color:#fff;background:var(--pink);border-radius:11px;padding:0 14px;height:42px}
+.strip button.sel{background:#fff0f5;border-color:var(--pink-m);color:var(--pink-d)}
+
+/* 주차 선택 스트립 */
+.strip{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip button{
+  flex:0 0 auto;width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:#fff;
+  font-size:12px;font-weight:700;color:var(--sub);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1
+}
+.strip button span{font-size:9px;font-weight:600;opacity:.75}
+.strip button.cur{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 2px 8px rgba(226,88,127,.35)}
+.strip button.cur span{opacity:.9}
+.strip button.ok{background:#f3f0f8;border-color:#e6dff2}
+
+/* ── 체크포인트 ── */
+.cp{display:flex;gap:9px;padding:10px 0;border-top:1px solid var(--line)}
+.cp:first-of-type{border-top:0;padding-top:2px}
+.cp .who{flex:0 0 auto;font-size:11px;font-weight:800;border-radius:8px;padding:3px 7px;height:fit-content}
+.cp .who.m{background:var(--pink-l);color:var(--pink-d)}
+.cp .who.f{background:#e7eefb;color:#3a5f9e}
+.cp .tx{font-size:13px;line-height:1.45;color:#4b3c42;letter-spacing:-.1px}
+
+/* ── 오늘 할 일 ── */
+.todo{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-top:8px;background:#fffdfd;display:flex;gap:10px}
+.todo:first-of-type{margin-top:0}
+.todo .dot{flex:0 0 auto;width:8px;height:8px;border-radius:99px;margin-top:6px;background:var(--pink)}
+.todo.urgent{background:#fff7f9;border-color:#f8ccd9}
+.todo.urgent .dot{background:#e2587f;box-shadow:0 0 0 4px #fde3ec}
+.todo.done{opacity:.55}
+.todo.done .dot{background:#bbb}
+.todo .t{font-size:13.5px;font-weight:750;letter-spacing:-.2px;line-height:1.4}
+.todo .d{font-size:12px;color:var(--sub);margin-top:2px;line-height:1.45}
+.todo .go{flex:0 0 auto;align-self:center;font-size:11px;color:var(--pink-d);border:1px solid #f7c9d7;border-radius:99px;padding:5px 9px;background:#fff;font-weight:700;white-space:nowrap}
+
+/* ── 탭 세그먼트 ── */
+.seg{display:flex;gap:4px;background:#f6ebee;border-radius:13px;padding:4px;margin:14px 0 2px}
+.seg button{flex:1;padding:8px 4px;border-radius:10px;font-size:13px;font-weight:700;color:var(--sub);letter-spacing:-.3px}
+.seg button.on{background:#fff;color:var(--pink-d);box-shadow:0 1px 4px rgba(90,60,70,.10)}
+
+/* ── 칩 ── */
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;font-size:12.5px;font-weight:650;color:var(--sub);background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 12px;letter-spacing:-.2px}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* ── 리스트 아이템 ── */
+.item{border:1px solid var(--line);border-radius:16px;padding:13px;margin:10px 0;background:#fff;box-shadow:var(--shadow)}
+.item.done{border-color:#dfeee7;background:#fbfefc}
+.item .hd{display:flex;gap:8px;align-items:flex-start}
+.item .hd .tt{flex:1;min-width:0;font-size:14.5px;font-weight:800;letter-spacing:-.4px;line-height:1.35}
+.item .amt{font-size:12.5px;font-weight:800;color:var(--pink-d);margin-top:4px}
+.item .ds{font-size:12.5px;color:#544349;margin-top:7px;line-height:1.55;letter-spacing:-.1px}
+.item .kv{display:flex;gap:7px;font-size:12px;margin-top:6px;line-height:1.5;color:#6b585f}
+.item .kv b{flex:0 0 auto;color:#9a848b;font-weight:700;min-width:38px}
+.item .tip{font-size:11.5px;background:#fdf6f8;border-radius:10px;padding:8px 10px;margin-top:8px;color:#7d6470;line-height:1.5}
+.badge{flex:0 0 auto;font-size:10.5px;font-weight:800;border-radius:7px;padding:3px 7px;letter-spacing:-.2px;white-space:nowrap}
+.b-ok{background:var(--ok-bg);color:var(--ok)}
+.b-warn{background:var(--warn-bg);color:var(--warn)}
+.b-bad{background:var(--bad-bg);color:var(--bad)}
+.b-info{background:#eef2fb;color:#45608f}
+.b-gray{background:#f3f1f2;color:#8b7d82}
+.b-hot{background:#fde8e3;color:#c0442b}
+
+/* 체크박스 행 */
+.cbrow{display:flex;align-items:center;gap:9px;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);flex-wrap:wrap}
+.cb{
+  width:25px;height:25px;border-radius:9px;border:1.6px solid #e4ccd4;background:#fff;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;transition:.15s
+}
+.cb.on{background:var(--pink);border-color:var(--pink)}
+.cbrow .lbl2{font-size:12.5px;font-weight:700;color:#6b585f}
+
+/* 입력 */
+.in{width:100%;border:1px solid var(--line);border-radius:11px;padding:9px 11px;font-size:14px;background:#fcf8f9;color:var(--ink);outline:none;letter-spacing:-.2px}
+.in:focus{border-color:var(--pink-m);background:#fff}
+textarea.in{min-height:42px;resize:vertical;line-height:1.5}
+.inline{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.inline .in{flex:1;min-width:130px}
+.inline .dt{flex:0 0 auto;width:135px}
+.lbl-s{font-size:11.5px;font-weight:700;color:#9a848b;margin-bottom:4px;display:block}
+
+/* 진행률 */
+.prow{display:flex;align-items:center;gap:9px;margin:9px 0 3px}
+.prow .pn{flex:0 0 auto;font-size:12.5px;font-weight:750;min-width:66px;color:#5b4a50}
+.prow .pb{flex:1;height:7px;border-radius:99px;background:#f3e7eb;overflow:hidden}
+.prow .pb>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f7a3bd,#e2587f);transition:width .3s}
+.prow .pc{flex:0 0 auto;font-size:11px;color:var(--sub);font-variant-numeric:tabular-nums;min-width:34px;text-align:right}
+
+/* 검진 타임라인 */
+.item .when{font-size:11.5px;color:var(--pink-d);font-weight:700;margin-top:3px}
+.item .why{font-size:12.5px;color:#544349;margin-top:6px;line-height:1.55}
+.item .prep{font-size:11.5px;color:#7d6470;margin-top:7px;background:#fbf6f8;border-radius:10px;padding:8px 10px;line-height:1.5}
+.item .ds.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.more{margin-top:5px;font-size:11.5px;font-weight:800;color:var(--pink-d)}
+.bagwrap{background:#fff;border:1px solid var(--line);border-radius:16px;padding:2px 13px;box-shadow:var(--shadow);margin:6px 0 14px}
+.grp{display:flex;align-items:center;gap:8px;margin:18px 2px 6px}
+.grp b{font-size:13.5px;letter-spacing:-.3px}
+.grp span{font-size:11.5px;color:var(--sub)}
+.grp::after{content:"";flex:1;height:1px;background:var(--line)}
+.ck{display:flex;gap:11px;padding:13px 0;border-top:1px solid var(--line)}
+.ck:first-child{border-top:0}
+.ck .body{flex:1;min-width:0}
+.ck .name{font-size:14px;font-weight:800;letter-spacing:-.35px;line-height:1.35}
+.ck .when{font-size:11.5px;color:var(--pink-d);font-weight:700;margin-top:2px}
+.ck .why{font-size:12px;color:#5c4b51;margin-top:5px;line-height:1.5}
+.ck .prep{font-size:11.5px;color:#7d6470;margin-top:5px;background:#fbf6f8;border-radius:9px;padding:7px 9px;line-height:1.5}
+.ck.done .name{color:#8d7a80;text-decoration:line-through;text-decoration-color:#d8c3c9}
+.ck .fields{margin-top:8px;display:flex;gap:7px;flex-wrap:wrap}
+
+/* 음식 */
+.food{border:1px solid var(--line);border-left-width:4px;border-radius:13px;padding:11px 12px;margin:8px 0;background:#fff}
+.food.good{border-left-color:#39a97c}
+.food.caution{border-left-color:#e0a72b}
+.food.avoid{border-left-color:#dc5b5f}
+.food .top{display:flex;gap:8px;align-items:center}
+.food .nm{flex:1;min-width:0;font-size:14px;font-weight:800;letter-spacing:-.3px}
+.food .rs{font-size:12px;color:#5c4b51;margin-top:5px;line-height:1.5}
+.food .ct{font-size:10.5px;color:#a39097;margin-top:4px}
+.empty{text-align:center;padding:26px 10px;color:var(--sub);font-size:13px}
+.searchbox{position:relative;margin-top:12px}
+.searchbox .in{padding-left:36px;height:44px;border-radius:13px}
+.searchbox .ic{position:absolute;left:12px;top:12px;font-size:15px;opacity:.5}
+
+/* 준비물 */
+.bagadd{display:flex;gap:7px;margin-top:9px}
+.bagadd select{flex:0 0 auto;width:104px;border:1px solid var(--line);border-radius:11px;padding:9px 8px;background:#fcf8f9;font-size:13px}
+.bagadd .in{flex:1}
+.bagadd button{flex:0 0 auto;padding:0 14px;border-radius:11px;background:var(--pink);color:#fff;font-weight:800;font-size:13px}
+.bgit{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.bgit:first-child{border-top:0}
+.bgit .tx{flex:1;font-size:13.5px;letter-spacing:-.2px;line-height:1.4}
+.bgit.on .tx{color:#a08e94;text-decoration:line-through;text-decoration-color:#dcc8ce}
+.bgit .del{flex:0 0 auto;font-size:15px;color:#c8b3b9;padding:2px 4px}
+
+/* 설정 시트 */
+#modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(43,32,36,.34);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+#modal.hide{display:none}
+.sheet{width:100%;max-width:520px;background:#fff;border-radius:22px 22px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;animation:up .22s ease}
+@keyframes up{from{transform:translateY(18px);opacity:.6}to{transform:none;opacity:1}}
+.sheet h3{font-size:16px;font-weight:850;letter-spacing:-.5px;margin-bottom:4px}
+.sheet .row2{margin-top:13px}
+.sheet .foot{display:flex;gap:8px;margin-top:18px}
+.sheet .foot button{flex:1;height:46px;border-radius:14px;font-weight:800;font-size:14px}
+.sheet .foot .pri{background:var(--pink);color:#fff}
+.sheet .foot .sec{background:#f6ebee;color:#6b585f}
+.sheet .foot .ghost{flex:0 0 92px;background:#fff;border:1px solid var(--line);color:#8a767c}
+.grab{width:38px;height:4px;border-radius:99px;background:#e8dade;margin:-6px auto 10px}
+
+/* 하단 탭 */
+#tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  display:flex;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);padding:6px 0 calc(6px + env(safe-area-inset-bottom));
+}
+#tabs .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;color:#a08e94}
+#tabs .tb .ic{font-size:19px;line-height:1.1;filter:grayscale(1) opacity(.65)}
+#tabs .tb .lb{font-size:10.5px;font-weight:700;letter-spacing:-.3px}
+#tabs .tb.on{color:var(--pink-d)}
+#tabs .tb.on .ic{filter:none}
+#tabs .tb.on .lb{font-weight:800}
+.note{font-size:11.5px;color:#9a848b;line-height:1.5;padding:10px 4px 0}
+.foot-note{text-align:center;font-size:11px;color:#b6a3a9;padding:14px 10px 6px;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="ttl"><b>임신·출산 준비</b><span>금천구 · 우리 아기 트래커</span></div>
+    <span class="wkchip" id="wkchip">8주 0일</span>
+    <button class="gear" data-act="openSet" aria-label="설정">⚙️</button>
+  </header>
+  <main id="view"></main>
+  <nav id="tabs">
+    <button class="tb on" data-act="tab" data-tab="home"><span class="ic">🏠</span><span class="lb">홈</span></button>
+    <button class="tb" data-act="tab" data-tab="fund"><span class="ic">🎁</span><span class="lb">지원금·박스</span></button>
+    <button class="tb" data-act="tab" data-tab="check"><span class="ic">🩺</span><span class="lb">검진</span></button>
+    <button class="tb" data-act="tab" data-tab="food"><span class="ic">🍽️</span><span class="lb">음식·준비물</span></button>
+  </nav>
+</div>
+
+<div id="modal" class="hide">
+  <div class="sheet" role="dialog" aria-label="설정">
+    <div class="grab"></div>
+    <h3>설정</h3>
+    <p class="tiny muted" id="setInfo">주차를 직접 바꿀 수 있어요.</p>
+
+    <div class="row2">
+      <span class="lbl-s">출산예정일로 맞추기</span>
+      <div class="inline" style="margin-top:0">
+        <input type="date" id="setDue" class="in">
+        <button class="mini" data-act="saveDue">적용</button>
+      </div>
+    </div>
+
+    <div class="row2">
+      <span class="lbl-s">오늘 기준 주차로 맞추기</span>
+      <div class="inline" style="margin-top:0">
+        <input type="number" id="setW" class="in setnum" min="4" max="42" inputmode="numeric">
+        <span class="tiny muted">주</span>
+        <input type="number" id="setD" class="in setnum" min="0" max="6" inputmode="numeric">
+        <span class="tiny muted">일</span>
+        <button class="mini" data-act="saveWeek">적용</button>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:14px">기본값은 <b>2026년 11월 18일 = 8주 0일</b>이에요. 병원에서 들은 예정일로 바꾸면 D-Day와 주차가 함께 맞춰져요.</div>
+
+    <div class="foot">
+      <button class="ghost" data-act="resetSet">기본값</button>
+      <button class="sec" data-act="closeSet">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>/* ─────────────────────────────────────────────
+   주차별 발달 데이터 (4~40주)
+   n: 과일/사물 비유, cm·g: 평균 크기·무게
+   d: 이번 주 아기, m: 엄마 체크포인트, p: 아빠 체크포인트
+   ───────────────────────────────────────────── */
+const WEEKS = [
+{w:4,f:"🌾",n:"양귀비 씨앗",cm:"약 0.1cm",g:"1g 미만",
+ d:"자궁 내막에 막 착상한 시기예요. 아직 사람 모습은 아니고 심장이 될 세포가 만들어지기 시작합니다.",
+ m:"임신 테스트 양성 확인 → 산부인과 첫 방문 예약",p:"엽산 챙겨주기, 집안 담배·음주 환경 정리"},
+{w:5,f:"🌱",n:"참깨",cm:"약 0.2cm",g:"1g 미만",
+ d:"신경관이 만들어지고 심장이 뛰기 시작해요. 초음파로는 아직 잘 보이지 않을 수 있어요.",
+ m:"엽산 복용 시작·유지(하루 400~800㎍), 무리한 운동·사우나 금지",p:"집안일 대신 맡기, 임산부가 먹는 약 함께 확인"},
+{w:6,f:"🫘",n:"렌틸콩",cm:"약 0.4cm",g:"1g 미만",
+ d:"팔·다리 싹이 돋고 심장 박동이 확인되는 시기예요. 첫 초음파에서 아기집을 확인합니다.",
+ m:"첫 초음파, 보건소 임산부 등록 준비(신분증+임신확인서)",p:"병원 첫 방문 동행, 임신확인서 챙기기"},
+{w:7,f:"🫐",n:"블루베리",cm:"약 0.8cm",g:"약 1g",
+ d:"뇌와 얼굴이 빠르게 자라 눈·코·입 윤곽이 생겨요. 입덧이 본격적으로 시작되는 때입니다.",
+ m:"입덧 대비 — 소량씩 자주, 수분 충분히, 냄새 피하기",p:"냄새 나는 요리·청소 맡기, 먹을 수 있는 음식 찾아주기"},
+{w:8,f:"🍇",n:"라즈베리",cm:"약 1.6cm",g:"약 2g",
+ d:"손가락·발가락이 나뉘고 주요 장기가 형성되는 중요한 시기예요. 지금이 기형 예방에 가장 민감한 때입니다.",
+ m:"보건소 등록(엽산제 수령), 약·영양제는 반드시 의사와 확인",p:"출산박스·지원금 목록 함께 정리, 아내 약 복용 체크"},
+{w:9,f:"🍒",n:"체리",cm:"약 2.3cm",g:"약 2g",
+ d:"얼굴이 사람 모습을 갖추고 몸을 움직이기 시작해요. 아직 태동은 느껴지지 않아요.",
+ m:"치과 검진·스케일링 가능 시기, 복용 중인 약 점검",p:"산전검사 일정 달력에 함께 표시"},
+{w:10,f:"🍓",n:"딸기",cm:"약 3.1cm",g:"약 4g",
+ d:"손톱·발톱이 자라기 시작하고 주요 장기가 거의 완성 단계예요. 이제 '태아'라고 부릅니다.",
+ m:"NIPT(비침습 산전검사) 상담, 산전검사 예약",p:"검사 항목·비용 미리 확인, 예산 정리"},
+{w:11,f:"🍑",n:"무화과",cm:"약 4.1cm",g:"약 7g",
+ d:"머리와 몸 크기가 비슷해지고 양수를 삼키며 움직여요. 1차 기형아 검사 시기가 다가옵니다.",
+ m:"1차 기형아 검사(목투명대) 예약 — 11~13주 6일 사이",p:"검사 당일 동행·일정 조정"},
+{w:12,f:"🍈",n:"라임",cm:"약 5.4cm",g:"약 14g",
+ d:"태아 반사운동이 발달하고 유산 위험이 크게 줄어드는 시기예요. 입덧도 조금씩 가라앉습니다.",
+ m:"★서울시 임산부 교통비 신청 가능(주차 제한 없음), 보건소 엽산제 마무리",p:"교통비 신청 함께 하기, 임신 소식 알릴 시점 정하기"},
+{w:13,f:"🍋",n:"레몬",cm:"약 7.4cm",g:"약 23g",
+ d:"지문이 생기고 손가락을 빨기도 해요. 1차 기형아 검사는 13주 6일까지이니 마감을 꼭 확인하세요.",
+ m:"1차 기형아 검사 마감 확인, 초기 검사 결과 병원에서 듣기",p:"검사 결과 함께 듣기, 안정기 여행 계획"},
+{w:14,f:"🍑",n:"복숭아",cm:"약 8.7cm",g:"약 43g",
+ d:"표정 근육이 발달해 찡그리고 웃는 표정을 지어요. 입덧이 줄어드는 안정기 시작입니다.",
+ m:"안정기 — 걷기·수영 같은 가벼운 운동 시작, 철분제 준비",p:"함께 걷기 운동, 출산가방 리스트 시작"},
+{w:15,f:"🍎",n:"사과",cm:"약 10.1cm",g:"약 70g",
+ d:"뼈가 단단해지고 양수가 늘어나요. 성별이 초음파로 보이기 시작하는 때입니다.",
+ m:"2차 기형아(쿼드) 검사 15~20주 예약, 몸무게 기록 시작",p:"아기용품 예산 짜기, 큰 가전·가구 우선순위 정하기"},
+{w:16,f:"🥑",n:"아보카도",cm:"약 11.6cm",g:"약 100g",
+ d:"청각이 발달해 엄마 목소리·심장 소리에 반응해요. 태동을 처음 느끼는 사람도 있어요.",
+ m:"보건소 철분제 수령(16주~), 배가 나오기 시작 — 임부복 준비",p:"태교 음악·책 준비, 편한 신발·임부복 챙겨주기"},
+{w:17,f:"🍐",n:"배",cm:"약 13cm",g:"약 140g",
+ d:"피부를 보호하는 태지가 생기고 뼈가 굳어져요. 엄마 뱃속 움직임이 점점 또렷해집니다.",
+ m:"체중 관리(주 0.3~0.5kg), 단백질·칼슘 챙기기",p:"식단 함께 맞추기, 야식 줄이기"},
+{w:18,f:"🫑",n:"파프리카",cm:"약 14.2cm",g:"약 190g",
+ d:"소리에 반응해 움직이고 엄마 몸에서 태동을 느끼기 시작해요. 보건소 2차 기형아 검사 시기이기도 해요.",
+ m:"태동 느끼기 시작, 정밀초음파 예약, 금천구 보건소 기형아 검사(16~18주, 사전예약)",p:"태동 함께 느껴보기, 아기방·수납 구상"},
+{w:19,f:"🥭",n:"망고",cm:"약 15.3cm",g:"약 240g",
+ d:"피부에 솜털이 나고 감각이 발달해요. 이 시기부터 성별 확인이 비교적 정확해집니다.",
+ m:"정밀초음파 준비, 빈혈·부종 확인",p:"산후조리원·산후도우미 정보 알아보기"},
+{w:20,f:"🍌",n:"바나나",cm:"약 16.4cm",g:"약 300g",
+ d:"임신 기간의 절반을 지났어요! 양수를 삼키고 소변으로 배출하는 연습을 합니다.",
+ m:"정밀초음파(20~24주) 수검 — 장기 구조를 자세히 확인",p:"정밀초음파 동행, 성별 확인 후 준비 방향 정하기"},
+{w:21,f:"🥕",n:"당근",cm:"약 26.7cm",g:"약 360g",
+ d:"태동이 확실해지고 눈썹·속눈썹이 자라요. 이제 몸 길이는 머리부터 발끝까지로 잽니다.",
+ m:"임신성 당뇨 예방 식사 — 정제 탄수화물·단 음료 줄이기",p:"야식·단 음료 함께 줄이기"},
+{w:22,f:"🍈",n:"파파야",cm:"약 27.8cm",g:"약 430g",
+ d:"오감이 발달해 바깥 소리를 구분하고 엄마 목소리에 반응해요. 얼굴이 통통해집니다.",
+ m:"빈혈 검사, 철분 복용 점검",p:"태교 대화 시간 정해 매일 말 걸기"},
+{w:23,f:"🍊",n:"자몽",cm:"약 28.9cm",g:"약 500g",
+ d:"폐포가 만들어지기 시작해요. 아직 이르지만 살아갈 준비가 빠르게 진행됩니다.",
+ m:"체중·혈압 기록, 손발 저림(손목터널증후군) 주의",p:"집안 정리·아기방 구상, 무거운 것 들지 않기"},
+{w:24,f:"🌽",n:"옥수수",cm:"약 30cm",g:"약 600g",
+ d:"딸꾹질을 하고 엄마가 그 떨림을 느낄 수 있어요. 생존 가능성이 커지는 시기입니다.",
+ m:"임신성 당뇨 검사(24~28주) 일정 잡기 — 전날 8시간 금식",p:"검사 당일 차로 이동, 금식 후 식사 준비"},
+{w:25,f:"🥦",n:"콜리플라워",cm:"약 34.6cm",g:"약 660g",
+ d:"피부가 두꺼워지고 주름이 줄어요. 손·발이 쭉 펴지는 모습이 초음파에 보입니다.",
+ m:"임신성 당뇨 검사 수검, 단백질 섭취 늘리기",p:"식단 일지 함께 쓰기"},
+{w:26,f:"🥬",n:"양상추",cm:"약 35.6cm",g:"약 760g",
+ d:"눈을 뜨고 주변을 살펴요. 폐가 빠르게 발달해 호흡 준비를 합니다.",
+ m:"출산교육(아기 돌보기·모유수유) 신청",p:"출산교육 함께 수강, 부부 역할 나누기"},
+{w:27,f:"🥦",n:"브로콜리",cm:"약 36.6cm",g:"약 875g",
+ d:"2분기 마지막 주예요. 뇌 발달이 활발하고 소리에 놀라 반응하기도 합니다.",
+ m:"백일해(Tdap) 예방접종 일정 — 27~36주 사이 1회",p:"산모·신생아 건강관리 신청 조건 확인(소득 기준)"},
+{w:28,f:"🍆",n:"가지",cm:"약 37.6cm",g:"약 1kg",
+ d:"3분기 시작! 뇌가 주름을 만들며 빠르게 자라고 눈을 깜빡여요.",
+ m:"태동 체크 시작(하루 10회), 왼쪽으로 누워 자기",p:"태동일지 함께 기록, 출산가방 초안 완성"},
+{w:29,f:"🎃",n:"단호박",cm:"약 38.6cm",g:"약 1.15kg",
+ d:"근육과 폐가 부드러워지고 움직임이 더 강해져요. 엄마 갈비뼈를 차기도 합니다.",
+ m:"적정 체중 유지, 다리 부종·정맥류 관리(다리 올리기)",p:"청소·이불 세탁 맡기, 마사지 해주기"},
+{w:30,f:"🥬",n:"양배추",cm:"약 39.9cm",g:"약 1.3kg",
+ d:"뇌 표면이 주름져 뇌 용량이 늘고 체온 조절을 시작해요.",
+ m:"출산가방 실제로 챙기기, 병원 분만 예약 확인",p:"카시트·유모차 비교하고 결정"},
+{w:31,f:"🥥",n:"코코넛",cm:"약 41.1cm",g:"약 1.5kg",
+ d:"오줌·대소변 조절 근육이 발달하고 엄마 목소리를 기억해요.",
+ m:"빈혈 재검, 철분 유지, 숨참·가슴 답답함 주의",p:"아기 침구·옷 세탁 준비"},
+{w:32,f:"🍐",n:"큰 배",cm:"약 42.4cm",g:"약 1.7kg",
+ d:"뼈는 단단하고 머리카락이 자라요. 대개 머리를 아래로 향하기 시작합니다.",
+ m:"병원 분만 예약·응급 연락처 정리, 태동 체크 계속",p:"산후조리 장소 최종 결정, 비상 연락망 공유"},
+{w:33,f:"🍍",n:"파인애플",cm:"약 43.7cm",g:"약 1.9kg",
+ d:"몸이 둥글둥글해지고 엄마에게서 면역 항체를 받아요.",
+ m:"수면은 왼쪽 옆으로, 배 뭉침(수축) 잦으면 병원",p:"출근·퇴근 시간 조정 미리 상의"},
+{w:34,f:"🍈",n:"멜론",cm:"약 45cm",g:"약 2.1kg",
+ d:"폐 기능이 거의 완성되고 지방이 쌓여 36주면 거의 다 자라요.",
+ m:"B형간염·매독 재검 일정 확인",p:"출산가방에 서류 사본(신분증·임산부수첩) 넣기"},
+{w:35,f:"🍈",n:"허니듀 멜론",cm:"약 46.2cm",g:"약 2.4kg",
+ d:"신생아 모습에 가까워지고 머리가 아래로 자리 잡아요.",
+ m:"GBS(35~37주) 검사, 병원 서류·입원 절차 확인",p:"산후도우미·산후조리 일정 최종 확정"},
+{w:36,f:"🥬",n:"로메인",cm:"약 47.4cm",g:"약 2.6kg",
+ d:"폐가 거의 완성돼 이제 만삭 출산도 가능해요. 막달검사로 출산 준비 상태를 봅니다.",
+ m:"막달검사(혈액·소변·심전도 등), 내진 시작, 진통 신호 익히기",p:"병원까지 경로·소요시간 확인, 야간 연락 대비"},
+{w:37,f:"🥬",n:"근대",cm:"약 48.6cm",g:"약 2.9kg",
+ d:"만기 출산이 가능한 시기예요. 폐가 성숙을 마치고 스스로 숨 쉴 준비를 마칩니다.",
+ m:"매주 병원 방문, 양수·이슬·규칙적 통증 구분 익히기",p:"가방을 현관이나 차에 두기, 휴대폰 항상 켜두기"},
+{w:38,f:"🥬",n:"대파",cm:"약 49.8cm",g:"약 3.1kg",
+ d:"지방이 15% 정도로 피부가 매끈해져요. 언제 나와도 이상하지 않은 때입니다.",
+ m:"진통·양수 파수 신호 체크, 입원 가방 차에 두기",p:"출근·퇴근 대응 계획 정하기, 대기 연락 체계"},
+{w:39,f:"🍉",n:"작은 수박",cm:"약 50.7cm",g:"약 3.3kg",
+ d:"출산이 임박했어요. 뼈는 부드럽게, 머리는 산도에 맞게 준비합니다.",
+ m:"1~2일 간격 진찰, 멀리 나가지 않기",p:"가까이 있기, 전화 즉시 받기"},
+{w:40,f:"🎃",n:"작은 호박",cm:"약 51.2cm",g:"약 3.5kg",
+ d:"출산 예정일이에요. 예정일을 넘겨도 대부분 건강하게 태어나니 병원 안내를 따르세요.",
+ m:"예정일이 지나면 태아 상태·유도분만 상담",p:"출산 후 첫 한 달 돌봄 분담 계획 정하기"}
+];
+
+const WMAP = {}; WEEKS.forEach(x => WMAP[x.w] = x);
+
+/* ─────────────────────────────────────────────
+   지원금·바우처
+   startW: 이 주차부터 신청 가능(없으면 출산 후)
+   ───────────────────────────────────────────── */
+const FUNDS = [
+{id:"gc-reg",g:"금천구",t:"보건소 임산부 등록",amt:"엽산·철분제·검사 무료",
+ startW:5,when:"임신 확인 직후 (초기검사는 12주 이내)",
+ where:"금천아이맘건강센터(보건소 4층) · 정부24 맘편한임신 / e보건소 온라인",
+ need:"신분증, 출산예정일이 적힌 임신확인서",
+ d:"등록하면 임산부 수첩, 엽산제(12주까지 최대 3개월분), 철분제(16주~분만 전 최대 5개월분), 임신 초기 혈액검사(풍진·빈혈·매독·AIDS·B형간염), 16~18주 2차 기형아(쿼드) 검사와 복부초음파, 34~36주 막달검사를 무료로 받아요.",
+ tip:"검사는 금천구 주민만 가능. 기형아 검사는 사전예약(월·목 14~16시 방문) 필요. 온라인으로 엽산·철분제를 받으면 택배비는 본인 부담이에요.",
+ tel:"02-2627-2643"},
+{id:"seoul-pass",g:"서울시",t:"임산부 교통비",amt:"첫째 70만 · 둘째 80만 · 셋째 100만 원",
+ startW:5,when:"임신 확인 후 ~ 출산 후 6개월 (2026.7.1부터 임신 주차 제한 폐지)",
+ where:"탄생육아 몽땅정보통(umppa.seoul.go.kr) 온라인 신청 또는 동주민센터",
+ need:"임신확인서, 본인 명의 카드(신한·삼성·KB·우리·하나·BC), 본인 명의 휴대폰",
+ d:"임산부 본인 명의 카드에 교통 포인트로 지급돼요. 버스·지하철·택시·코레일 승차권, 서울 시내 주유에 쓸 수 있어요. 소득 기준은 없고, 신청일 기준 서울시 3개월 이상 계속 거주해야 합니다.",
+ tip:"온라인 교육 1편을 먼저 들어야 신청할 수 있어요. 국민행복카드 '전용카드'는 바우처 지급이 안 돼요. 사용기한은 분만예정일부터 12개월이 되는 달의 말일까지.",
+ tel:"120"},
+{id:"happy-card",g:"정부",t:"국민행복카드 임신·출산 진료비",amt:"단태아 100만 · 다태아 140만 원",
+ startW:5,when:"임신 확인 후 ~ 분만예정일 전 (이후에는 '출산'으로 신청)",
+ where:"산부인과에서 신청서 발급 → 국민건강보험공단·카드사·정부24 맘편한임신",
+ need:"건강보험 임신·출산 진료비 지급 신청서(병원 확인), 신분증",
+ d:"산전검사·진료비 본인부담금을 국민행복카드 포인트로 결제해요. 분만예정일부터 2년까지 쓸 수 있고, 신청일 이후 진료비부터 적용돼요(소급 없음).",
+ tip:"병원에서 '임신'으로 확인받아야 하고, 분만예정일이 지나면 '출산'으로 다시 신청해야 해요. 첫 방문 때 카드까지 한 번에 준비하면 편해요.",
+ tel:"1577-1000"},
+{id:"seoul-aftercare",g:"서울시",t:"서울형 산후조리경비",amt:"중위소득 기준 차등 지급",
+ birth:true,when:"출산 후 (출생일부터 60일 이내 신청 권장)",
+ where:"탄생육아 몽땅정보통 온라인 신청",
+ need:"신분증, 출생증명서(출생신고 확인)",
+ d:"산후조리원이나 산후도우미 이용 비용을 지원해요. 소득·가구 기준이 있어 신청 전 자격을 확인해야 합니다.",
+ tip:"금천구는 민간산후조리원 이용비 감면도 따로 운영해요. 두 제도를 함께 확인하세요.",
+ tel:"120"},
+{id:"care-worker",g:"정부",t:"산모·신생아 건강관리 (산후도우미)",amt:"서비스 이용권 · 본인부담 차등",
+ startW:35,when:"출산예정일 40일 전 ~ 출산 후 60일 이내",
+ where:"복지로 또는 동주민센터",
+ need:"신분증, 출생(예정) 증명, 건강보험 자격 확인",
+ d:"건강관리사가 집으로 와서 산모 회복 관리와 신생아 돌봄을 도와줘요. 소득 기준(중위 150% 이하 등)에 따라 본인부담금이 달라집니다.",
+ tip:"인기 지역은 예약이 빨리 차요. 출산 전에 미리 신청해 두는 게 좋아요.",
+ tel:"129"},
+{id:"first-meet",g:"정부",t:"첫만남이용권",amt:"첫째 200만 · 둘째 이상 300만 원",
+ birth:true,when:"출생신고 후 (출생일부터 2년 이내 사용)",
+ where:"동주민센터 방문 또는 복지로·정부24 행복출산 원스톱",
+ need:"출생신고 시 함께 신청 가능",
+ d:"국민행복카드 포인트로 한 번 지급돼요. 기저귀·분유·유아용품 등 거의 모든 업종에서 쓸 수 있어요.",
+ tip:"출생신고와 동시에 신청하면 한 번에 처리돼요. 사용기한이 지나면 남은 포인트는 소멸합니다.",
+ tel:"129"},
+{id:"parent-benefit",g:"정부",t:"부모급여",amt:"0세 월 100만 · 1세 월 50만 원",
+ birth:true,when:"출생일 포함 60일 이내 신청하면 출생한 달부터 소급",
+ where:"동주민센터(출생신고 시 원스톱) 또는 복지로·정부24",
+ need:"출생신고, 보호자 계좌",
+ d:"만 2세 미만 아동에게 매달 지급돼요. 어린이집을 이용하면 보육료를 뺀 차액만 현금으로 들어옵니다.",
+ tip:"아동수당과 별도로 받아요. 60일이 지나면 신청한 달부터만 지급돼요.",
+ tel:"129"},
+{id:"child-allow",g:"정부",t:"아동수당",amt:"월 10만 원 (2026년 9세 미만)",
+ birth:true,when:"출생신고 후 (60일 이내 신청 시 출생한 달부터)",
+ where:"동주민센터 또는 복지로·정부24",
+ need:"출생신고",
+ d:"소득·재산 기준 없이 매월 25일에 지급돼요. 지급 연령은 해마다 한 살씩 올라 2030년에는 13세 미만까지 확대됩니다.",
+ tip:"부모급여와 함께 받을 수 있어요.",
+ tel:"129"},
+{id:"gc-gift",g:"금천구",t:"출생축하용품 (5만 원 상당 6종 택1)",amt:"5만 원 상당 육아물품",
+ birth:true,when:"출생일부터 1년 이내 · 2026년 신청은 12.18까지",
+ where:"주민등록지 주민센터 또는 정부24 출산서비스 통합처리",
+ need:"금천구 출생신고 + 보호자 중 1명이 금천구 거주",
+ d:"2026년 품목 — A 건강세트(귀체온계·콧물흡입기·온습도계) / B 놀이세트(치발기·동요 사운드북·노리개젖꼭지·미니모빌) / C 생활세트(손수건 10장·거즈블랭킷·아기비데) / D 수유세트(백색소음 수유등·수유시트) / E 안전세트(베이비홈캠) / F 이유식세트(용기·턱받이·흡착식판·스푼포크).",
+ tip:"신청일 기준 2주 이내 택배로 와요. 세트는 해마다 바뀌니 신청 화면에서 확인하세요.",
+ tel:"02-2627-1437"},
+{id:"gc-cash",g:"금천구",t:"출생축하금 (셋째부터)",amt:"셋째 70만 · 넷째 이상 100만 원",
+ birth:true,when:"출생일부터 1년 이내",
+ where:"주민센터 방문 또는 정부24 출산서비스 통합처리",
+ need:"출생신고, 금천구 거주",
+ d:"금천구는 첫째·둘째는 축하금이 없고 셋째부터 지급해요. 첫째 출산이면 이 항목은 건너뛰면 돼요.",
+ tip:"거주기간 1년 미만이면 전입일 기준 1년이 되는 시점부터 1년 이내에 신청해요.",
+ tel:"02-2627-1437"},
+{id:"dad-leave",g:"정부",t:"배우자 출산휴가 20일",amt:"유급 20일",
+ startW:4,when:"출산일부터 120일 이내 사용",
+ where:"회사 인사팀에 신청 (급여는 고용센터)",
+ need:"출생증명서, 배우자 관계 확인",
+ d:"배우자도 20일 유급 출산휴가를 쓸 수 있어요. 한 번에 몰아 쓸 수도, 나눠 쓸 수도 있어요.",
+ tip:"회사 규정과 신청 시점을 미리 확인해 두면 출산 직후 당황하지 않아요.",
+ tel:"1350"}
+];
+
+/* ─────────────────────────────────────────────
+   출산박스 (임신축하박스)
+   type: free = 100% 지급형, first = 선착순형
+   ───────────────────────────────────────────── */
+const BOXES = [
+{id:"apta",type:"free",t:"압타클럽 웰컴기프트",cost:"무료",when:"임신 확인 후 언제든",
+ where:"압타클럽 앱·홈페이지 가입 후 신청",get:"기저귀·물티슈 등 브랜드 샘플",
+ note:"가장 먼저 챙기기 좋은 무료 박스예요."},
+{id:"huggies",type:"free",t:"하기스 맘큐 허그박스",cost:"배송비 3,500원",when:"임신 확인 후",
+ where:"맘큐 앱",get:"기저귀 샘플·육아용품",note:""},
+{id:"primaj",type:"free",t:"쁘리마쥬 체험키트",cost:"무료",when:"임신 중",
+ where:"쁘리마쥬 공식몰 이벤트",get:"베이비 스킨케어 샘플",note:""},
+{id:"mustela",type:"free",t:"무스텔라 체험키트",cost:"무료",when:"임신 중",
+ where:"무스텔라 공식몰 이벤트",get:"베이비 스킨케어 샘플",note:""},
+{id:"mamamang",type:"free",t:"마마망 체험키트",cost:"무료",when:"임신 중",
+ where:"마마망 공식몰 이벤트",get:"임산부·아기 체험 제품",note:""},
+{id:"bebesup",type:"first",t:"베베숲 마음박스",cost:"무료 (선착순)",when:"~2026.11.20 마감",
+ where:"베베숲 공식몰",get:"물티슈·생활용품",note:"마감이 얼마 남지 않았어요. 지금 확인해 보세요.",hot:true},
+{id:"lesome",type:"first",t:"르소메 출산축하박스",cost:"무료 (선착순)",when:"매월 1일 오픈",
+ where:"르소메 공식몰",get:"유아 의류·용품",note:"매월 1일 오전에 열려요. 달력에 표시해 두세요."},
+{id:"penelope",type:"first",t:"페넬로페 임신축하박스",cost:"무료 (선착순)",when:"매월 1일 오픈",
+ where:"페넬로페 공식몰",get:"기저귀·물티슈 샘플",note:"매월 1일 오전 오픈, 조기 마감되는 편이에요."}
+];
+
+/* ─────────────────────────────────────────────
+   산전 검진 타임라인
+   ───────────────────────────────────────────── */
+const CHECKUPS = [
+{id:"visit1",grp:"early",name:"첫 방문 · 임신 확인 초음파",when:"5~8주",
+ why:"자궁 안에 아기집이 제대로 자리 잡았는지(자궁외 임신 감별), 태아 심박이 뛰는지 확인해요.",
+ prep:"마지막 생리 시작일을 정확히 기억해 가세요. 소변을 보고 가지 말고 약간 참은 상태가 초음파에 좋아요.",
+ gc:"이때 '출산예정일이 적힌 임신확인서'를 받아 두면 보건소 등록과 진료비 바우처 신청에 바로 써요."},
+{id:"lab1",grp:"early",name:"임신 초기 혈액·소변검사",when:"8~12주",
+ why:"빈혈, 혈액형, 간·신장 기능, 풍진 항체, 매독·B형간염·AIDS, 갑상선 이상을 확인해요.",
+ prep:"병원 안내에 따라 금식 여부를 확인하세요. 검사 항목이 많아 1시간 정도 걸릴 수 있어요.",
+ gc:"금천구 보건소에 등록하면 12주 이내에 이 검사를 무료로 받을 수 있어요(금천구 주민)."},
+{id:"nt",grp:"early",name:"1차 기형아 검사 (목투명대 초음파)",when:"11~13주 6일",
+ why:"목 뒤 물혹 두께와 코뼈를 보고 다운증후군 등 염색체 이상 위험도를 선별해요.",
+ prep:"주수가 정확해야 해서 예약이 필수예요. 13주 6일을 넘기면 검사할 수 없어요.",
+ gc:""},
+{id:"nipt",grp:"early",name:"NIPT (비침습적 산전검사)",when:"10주 이후 (선택)",
+ why:"엄마 혈액 속 태아 DNA로 주요 염색체 이상을 확인해요. 정확도가 높지만 확진 검사는 아니에요.",
+ prep:"비급여라 병원마다 비용이 달라요. 결과가 '고위험'이면 양수·융모막 검사로 확진해야 해요.",
+ gc:""},
+{id:"cvs",grp:"early",name:"융모막 융모 검사",when:"10~13주 (선택)",
+ why:"태반 조직을 채취해 염색체·유전질환을 확진하는 검사예요.",
+ prep:"유산 위험이 있어 고위험 판정을 받았을 때 전문의와 충분히 상담한 뒤 결정하세요.",
+ gc:""},
+{id:"quad",grp:"mid",name:"2차 기형아(쿼드) 검사",when:"15~20주",
+ why:"혈액 4종으로 신경관 결손과 다운증후군 등의 위험도를 다시 확인해요.",
+ prep:"병원 예약 후 방문하세요.",
+ gc:"금천구 보건소는 16~18주에 무료로 해줘요. 월·목 14~16시 방문, 사전예약이 필요해요."},
+{id:"amnio",grp:"mid",name:"양수 검사",when:"16~20주 (선택)",
+ why:"양수 속 태아 세포로 염색체 이상을 확진해요.",
+ prep:"시술 전 상담, 시술 후 2~3일은 무리하지 마세요.",
+ gc:""},
+{id:"detail",grp:"mid",name:"정밀초음파 (2단계 초음파)",when:"20~24주",
+ why:"뇌·심장·신장·척추 등 장기 구조를 40분 이상 자세히 확인해요. 성별도 이때 확인해요.",
+ prep:"아기 자세에 따라 다 못 보면 다시 부를 수 있어요. 시간 여유를 두고 예약하세요.",
+ gc:""},
+{id:"anemia",grp:"mid",name:"빈혈 재검사",when:"24~28주",
+ why:"철분 요구량이 늘어 빈혈이 생기기 쉬운 시기예요. 철분제 용량을 조절하는 기준이 돼요.",
+ prep:"철분제를 먹고 있다면 복용 시간과 종류를 알려주세요.",
+ gc:""},
+{id:"gdm",grp:"mid",name:"임신성 당뇨 검사",when:"24~28주",
+ why:"임신 중 혈당이 높아지면 아기가 커지고 분만 위험이 커져요. 50g 포도당 검사로 선별해요.",
+ prep:"검사 전 8시간 금식(물은 가능, 병원 안내 확인). 포도당을 마신 뒤 1시간을 병원에서 기다려야 해요.",
+ gc:""},
+{id:"tdap",grp:"late",name:"백일해(Tdap) 예방접종",when:"27~36주",
+ why:"엄마가 만든 항체가 태반을 통해 아기에게 전달돼, 백일해 예방접종 전 신생아를 지켜요.",
+ prep:"임신할 때마다 1회 접종해요. 접종 후 팔이 붓고 아플 수 있어요.",
+ gc:""},
+{id:"flu",grp:"mid",name:"인플루엔자 예방접종",when:"임신 중 언제든 (유행 시기 권장)",
+ why:"임신부는 독감 합병증 위험이 커요. 접종은 엄마와 아기 모두를 보호해요.",
+ prep:"보건소·병원 접종 가능 여부와 시기를 확인하세요.",
+ gc:""},
+{id:"movement",grp:"late",name:"태동 체크 시작",when:"28주~",
+ why:"아기 움직임이 줄어드는 것은 컨디션 이상의 신호일 수 있어요. 규칙적으로 세어 보세요.",
+ prep:"조용한 시간에 옆으로 누워 2시간 안에 10회를 세요. 10회가 안 되면 바로 병원에 연락하세요.",
+ gc:""},
+{id:"nst",grp:"late",name:"태아안녕검사 (NST)",when:"32주~ 필요 시",
+ why:"태아 심박과 자궁 수축을 20~30분 기록해 아기가 잘 지내는지 확인해요.",
+ prep:"검사 전에 간단히 먹으면 아기가 더 움직여요.",
+ gc:""},
+{id:"maldal",grp:"late",name:"막달검사",when:"34~36주",
+ why:"출산 전 빈혈·간기능·소변·B형간염·매독을 다시 확인하고 분만 준비 상태를 점검해요.",
+ prep:"병원마다 항목이 달라요(심전도·흉부촬영 포함). 결과는 분만 때 참고돼요.",
+ gc:"금천구 보건소는 34~36주 막달검사를 무료로 해줘요."},
+{id:"gbs",grp:"late",name:"GBS 검사 (질·항문 배양)",when:"35~37주",
+ why:"B군 사슬알균 보유 여부를 확인해 신생아 감염을 예방해요. 양성이면 분만 중 항생제를 써요.",
+ prep:"내진처럼 짧게 끝나요. 결과는 분만실에 전달돼요.",
+ gc:""},
+{id:"position",grp:"late",name:"태아 위치·골반 검사 (내진)",when:"36주~",
+ why:"아기 머리가 아래로 향했는지(역아 여부), 자궁경부가 얼마나 열렸는지 확인해요.",
+ prep:"내진 후 소량 출혈은 흔해요. 통증·출혈이 심하면 연락하세요.",
+ gc:""},
+{id:"weekly",grp:"late",name:"매주 진찰 · 분만 전 최종 검사",when:"37~40주",
+ why:"양수 양, 태반 상태, 아기 크기를 보며 분만 시점을 정해요.",
+ prep:"진통·양수 파수·이슬 신호를 익혀 두고, 예정일이 지나면 유도분만을 상담해요.",
+ gc:""}
+];
+
+/* ─────────────────────────────────────────────
+   음식·생활 빠른 검색
+   s: good(먹어도 돼요) / caution(조심해요) / avoid(피하세요)
+   ───────────────────────────────────────────── */
+const FOODIS = [
+{c:"sea",s:"good",n:"익힌 연어",r:"단백질과 오메가3가 풍부해요. 속까지 완전히 익혀 드세요."},
+{c:"sea",s:"avoid",n:"날생선회·초밥",r:"리스테리아·기생충 위험이 있어 임신 중에는 생식을 피해요."},
+{c:"sea",s:"avoid",n:"참치회(생)",r:"생식 위험에 더해 참치는 수은 축적이 걱정돼요."},
+{c:"sea",s:"good",n:"익힌 조개·홍합",r:"철분이 많아요. 껍질이 벌어질 때까지 충분히 익히세요."},
+{c:"sea",s:"avoid",n:"생굴",r:"노로바이러스·비브리오 위험이 커요. 굴은 익혀서만 드세요."},
+{c:"sea",s:"good",n:"익힌 새우",r:"저지방 단백질원이에요. 완전히 익혀 드세요."},
+{c:"sea",s:"avoid",n:"간장게장·양념게장",r:"익히지 않은 게는 비브리오·기생충 위험이 있어요."},
+{c:"sea",s:"caution",n:"참치캔",r:"수은이 있어 주 2회 이하, 1회 100g 정도로 제한하세요."},
+{c:"sea",s:"avoid",n:"홍어회",r:"생식에 수은까지 높아 임신 중에는 피하는 게 좋아요."},
+{c:"sea",s:"caution",n:"젓갈·명란젓",r:"염분이 높고 리스테리아 위험이 있어요. 익혀 먹거나 조금만."},
+{c:"sea",s:"caution",n:"어묵",r:"익혀 먹으면 괜찮지만 나트륨이 높아요. 국물은 적게."},
+{c:"sea",s:"good",n:"미역국",r:"철분·요오드가 있어요. 갑상선 질환이 있다면 양을 조절하세요."},
+{c:"sea",s:"good",n:"김·미역",r:"철분과 식이섬유가 많아요. 짠 조미김은 나트륨 주의."},
+{c:"sea",s:"avoid",n:"회·생선초밥 배달",r:"배달 음식은 온도 관리가 어려워 생식 위험이 더 커요."},
+{c:"drink",s:"caution",n:"커피(아메리카노)",r:"하루 카페인 200mg 이하가 기준이에요. 아메리카노 1~2잔 정도."},
+{c:"drink",s:"caution",n:"카페라떼·카푸치노",r:"우유가 들어도 카페인은 같아요. 하루 총량으로 계산하세요."},
+{c:"drink",s:"caution",n:"녹차",r:"카페인이 있어 1~2잔 정도로. 공복에 많이 마시면 철분 흡수를 방해해요."},
+{c:"drink",s:"caution",n:"콜라·탄산음료",r:"카페인과 당분이 있어 자주 마시지 마세요."},
+{c:"drink",s:"avoid",n:"에너지드링크",r:"카페인 과다와 고농도 당분으로 임신 중에는 피해야 해요."},
+{c:"drink",s:"avoid",n:"술 (소주·맥주·와인)",r:"안전한 양이 없어요. 태아 알코올 증후군 위험이 있습니다."},
+{c:"drink",s:"good",n:"생강차",r:"입덧 완화에 도움이 돼요. 당분은 조금만 넣으세요."},
+{c:"drink",s:"caution",n:"캐모마일차",r:"소량은 괜찮지만 대량은 피하세요. 허브차는 종류별로 확인이 필요해요."},
+{c:"drink",s:"caution",n:"페퍼민트차",r:"속 쓰림·가스에는 도움이 되지만 역류가 심하면 줄이세요."},
+{c:"drink",s:"good",n:"우유",r:"칼슘·단백질 공급원이에요. 저온살균 제품을 드세요."},
+{c:"drink",s:"good",n:"두유",r:"단백질 보충에 좋아요. 당이 첨가되지 않은 제품이 좋아요."},
+{c:"drink",s:"caution",n:"이온음료",r:"수분 보충은 되지만 당·나트륨이 있어 입덧 때만 소량."},
+{c:"drink",s:"good",n:"생과일주스(살균)",r:"비타민 보충에 좋아요. 당분이 높으니 하루 1잔 정도."},
+{c:"drink",s:"avoid",n:"비살균 착즙주스·생과일주스",r:"살균하지 않은 주스는 리스테리아 위험이 있어요."},
+{c:"drink",s:"caution",n:"녹즙",r:"채소 세척·보관 상태에 따라 위생 위험이 있어요. 만든 즉시 드세요."},
+{c:"drink",s:"good",n:"탄산수",r:"당이 없으면 괜찮아요. 가스가 불편하면 줄이세요."},
+{c:"dairy",s:"good",n:"저온살균 우유",r:"칼슘 공급원이에요. 유통기한을 확인하세요."},
+{c:"dairy",s:"avoid",n:"비살균(생) 우유",r:"리스테리아 위험이 있어 임신 중에는 마시지 마세요."},
+{c:"dairy",s:"good",n:"체다·모차렐라 등 경성 치즈",r:"저온살균 제품이면 괜찮아요. 칼슘도 챙길 수 있어요."},
+{c:"dairy",s:"avoid",n:"브리·카망베르 등 연성 치즈",r:"리스테리아 위험이 있어 피해야 해요."},
+{c:"dairy",s:"avoid",n:"블루치즈",r:"숙성 연성 치즈로 리스테리아 위험이 있어요."},
+{c:"dairy",s:"avoid",n:"페타치즈",r:"연성 치즈라 가열하지 않으면 피하세요."},
+{c:"dairy",s:"good",n:"플레인 요거트",r:"단백질·칼슘이 좋아요. 당이 적은 제품을 고르세요."},
+{c:"dairy",s:"good",n:"아이스크림",r:"저온살균 제품은 괜찮아요. 당분은 조절하세요."},
+{c:"dairy",s:"caution",n:"생크림 케이크",r:"당분이 높고 보관 온도에 민감해요. 신선한 곳에서 드세요."},
+{c:"dairy",s:"avoid",n:"수제 마요네즈·생란 소스",r:"날달걀이 들어가 살모넬라 위험이 있어요."},
+{c:"meat",s:"good",n:"완전히 익힌 소고기",r:"철분이 풍부해 빈혈 예방에 좋아요. 속까지 익혀 드세요."},
+{c:"meat",s:"avoid",n:"레어·미디엄 스테이크",r:"덜 익은 고기는 톡소플라스마 위험이 있어요."},
+{c:"meat",s:"good",n:"닭가슴살",r:"저지방 단백질원이에요. 속이 하얗게 익을 때까지."},
+{c:"meat",s:"good",n:"구운 삼겹살",r:"충분히 익히면 괜찮아요. 기름진 부분은 조절하세요."},
+{c:"meat",s:"avoid",n:"육회",r:"생고기는 톡소플라스마·리스테리아 위험이 있어요."},
+{c:"meat",s:"caution",n:"햄·소시지",r:"가공육은 나트륨·리스테리아 위험이 있어요. 데워서 드세요."},
+{c:"meat",s:"caution",n:"베이컨",r:"바삭하게 익혀 드세요. 나트륨·지방이 높아요."},
+{c:"meat",s:"caution",n:"핫도그",r:"끓는 물에 데우거나 완전히 가열한 뒤 드세요."},
+{c:"meat",s:"avoid",n:"파테·리엣",r:"가공된 생고기 제품은 리스테리아 위험이 있어요."},
+{c:"meat",s:"good",n:"완숙 달걀",r:"단백질이 좋아요. 흰자·노른자가 완전히 굳어야 해요."},
+{c:"meat",s:"avoid",n:"반숙란·생란",r:"살모넬라 위험이 있어 완숙으로 드세요."},
+{c:"meat",s:"caution",n:"순대",r:"충분히 익혀 드세요. 나트륨이 높아요."},
+{c:"veg",s:"good",n:"사과·배",r:"식이섬유가 좋아요. 흐르는 물에 잘 씻어 드세요."},
+{c:"veg",s:"good",n:"바나나",r:"칼륨이 많아 부종·변비에 도움이 돼요."},
+{c:"veg",s:"good",n:"파인애플",r:"비타민C가 많아요. 속 쓰림이 있으면 줄이세요."},
+{c:"veg",s:"good",n:"망고",r:"비타민A·C가 풍부해요. 당분이 높아 적당히."},
+{c:"veg",s:"caution",n:"덜 익은 파파야",r:"파파인 성분이 자궁 수축을 유발할 수 있어요. 익은 것만 조금."},
+{c:"veg",s:"caution",n:"생채소 샐러드",r:"세척이 충분하지 않으면 리스테리아·톡소플라스마 위험. 흐르는 물 세척."},
+{c:"veg",s:"caution",n:"새싹채소",r:"세척으로 세균을 없애기 어려워요. 익혀 먹는 게 안전해요."},
+{c:"veg",s:"good",n:"감자",r:"삶거나 구워 드세요. 싹이 난 감자는 피해야 해요."},
+{c:"veg",s:"good",n:"시금치",r:"엽산과 철분이 많아요. 데쳐서 밥·나물로 드세요."},
+{c:"veg",s:"good",n:"아보카도",r:"엽산과 건강한 지방이풍부해요."},
+{c:"veg",s:"caution",n:"인삼·홍삼",r:"혈압·체질에 따라 다르니 의사와 상의 후 드세요."},
+{c:"veg",s:"caution",n:"숙주나물(익힌 것)",r:"익혀 드시면 괜찮아요. 생것은 세균 위험이 있어요."},
+{c:"veg",s:"good",n:"브로콜리",r:"엽산·식이섬유가 많아요. 데쳐서 드세요."},
+{c:"veg",s:"caution",n:"한약·쌍화탕",r:"한약재는 전문의 상담 없이 복용하지 마세요."},
+{c:"supp",s:"good",n:"엽산",r:"하루 400~800㎍, 임신 12주까지 꾸준히. 신경관 결손 예방에 가장 중요해요."},
+{c:"supp",s:"good",n:"철분제",r:"16주 이후 빈혈 예방을 위해. 변비·속쓰림이 있으면 의사와 상의하세요."},
+{c:"supp",s:"good",n:"임산부용 종합비타민",r:"임산부용으로 표시된 제품을 드세요. 비타민A 과다에 주의해야 해요."},
+{c:"supp",s:"avoid",n:"비타민A 고함량 제품",r:"하루 3,000㎍RAE를 넘으면 기형 위험이 있어요. 레티놀 성분 확인."},
+{c:"supp",s:"good",n:"오메가3",r:"전문의와 상의 후 복용하세요. 출산 전에는 중단을 권하기도 해요."},
+{c:"supp",s:"good",n:"비타민D",r:"뼈 건강에 도움이 돼요. 권장량 범위로 드세요."},
+{c:"supp",s:"good",n:"칼슘",r:"철분제와 2시간 간격을 두고 드세요."},
+{c:"supp",s:"good",n:"유산균",r:"제품 성분을 확인하고 드세요. 변비 완화에 도움이 돼요."},
+{c:"supp",s:"caution",n:"아세트아미노펜(타이레놀)",r:"필요하면 의사·약사와 상의 후 최소 용량으로."},
+{c:"supp",s:"avoid",n:"이부프로펜(부루펜)",r:"임신 후기 태아 동맥관 조기 폐쇄 위험이 있어 피해야 해요."},
+{c:"supp",s:"avoid",n:"아스피린",r:"의사 처방 없이 복용하지 마세요. 임신 중에는 특별한 경우에만 써요."},
+{c:"supp",s:"caution",n:"항생제",r:"반드시 의사 처방으로. 임신에 안전한 약을 선택해요."},
+{c:"supp",s:"caution",n:"감기약·종합감기약",r:"성분이 여러 개라 약사에게 임신 중임을 알리고 고르세요."},
+{c:"supp",s:"caution",n:"멀미약",r:"성분을 확인하고 의사·약사와 상의하세요."},
+{c:"supp",s:"caution",n:"변비약",r:"자극성 변비약은 피하고, 섬유질·수분·유산균을 먼저 시도하세요."},
+{c:"life",s:"caution",n:"카페인 총량",r:"커피·차·초콜릿·콜라를 합쳐 하루 200mg 이하로."},
+{c:"life",s:"caution",n:"단 음료·디저트",r:"임신성 당뇨 예방을 위해 자주 먹지 마세요."},
+{c:"life",s:"caution",n:"국물·찌개",r:"나트륨이 많아 부종·혈압에 영향. 국물은 적게."},
+{c:"life",s:"avoid",n:"뷔페·샐러드바 생음식",r:"여러 사람이 만진 생음식은 위생 위험이 커요."},
+{c:"life",s:"caution",n:"사우나·온천",r:"체온이 오르면 위험해요. 10분 이내, 미지근한 물로."},
+{c:"life",s:"avoid",n:"찜질방·열탕 목욕",r:"심부 체온 상승은 태아에게 좋지 않아요."},
+{c:"life",s:"caution",n:"반려동물 배변 처리",r:"톡소플라스마 위험이 있어 장갑을 끼고, 다른 사람이 하도록."},
+{c:"life",s:"good",n:"치과 치료(스케일링)",r:"14~28주 안정기에 하는 게 좋아요. 임신 중임을 꼭 알리세요."},
+{c:"life",s:"caution",n:"염색·파마",r:"약품이 두피로 흡수될 수 있어 초기에는 피하는 게 좋아요."},
+{c:"life",s:"good",n:"가벼운 걷기·수영",r:"안정기(14~28주)에 하루 30분 정도가 좋아요. 넘어질 위험이 있는 운동은 피하세요."}
+];
+
+/* ─────────────────────────────────────────────
+   출산가방 & 아기용품 체크리스트
+   ───────────────────────────────────────────── */
+const BAG = [
+{c:"mom",t:"산모 패드 (대형) 10개 이상"},
+{c:"mom",t:"산모 팬티 5~7개"},
+{c:"mom",t:"수유 브라 2개 · 수유 패드"},
+{c:"mom",t:"세면도구 · 수건 2장"},
+{c:"mom",t:"회음부 방수 시트"},
+{c:"mom",t:"수유복·실내복 1~2벌"},
+{c:"mom",t:"미끄러지지 않는 슬리퍼"},
+{c:"mom",t:"보온 양말"},
+{c:"mom",t:"빨대 달린 텀블러"},
+{c:"mom",t:"간식 (출산 후 당 보충)"},
+{c:"mom",t:"산후 보정 속옷"},
+{c:"mom",t:"유축기 (병원 대여 여부 확인)"},
+{c:"mom",t:"마사지 볼·쿠션"},
+{c:"mom",t:"안경 · 렌즈 (렌즈는 빼고 입원)"},
+{c:"mom",t:"긴 충전 케이블 · 보조배터리"},
+{c:"baby",t:"배냇저고리 3~5벌"},
+{c:"baby",t:"우주복 · 겉싸개"},
+{c:"baby",t:"손싸개 · 발싸개"},
+{c:"baby",t:"신생아 기저귀 1팩"},
+{c:"baby",t:"아기 물티슈"},
+{c:"baby",t:"신생아 모자"},
+{c:"baby",t:"아기 수건 3~5장"},
+{c:"baby",t:"젖병 · 젖꼭지 (필요 시)"},
+{c:"baby",t:"분유 (모유수유 시 비상용 1개)"},
+{c:"baby",t:"아기 침대 · 매트리스"},
+{c:"baby",t:"신생아 카시트"},
+{c:"baby",t:"유모차"},
+{c:"baby",t:"아기 욕조 · 목욕 타월"},
+{c:"baby",t:"체온계"},
+{c:"baby",t:"아기 손톱깎이"},
+{c:"baby",t:"아기 세제 · 섬유유연제"},
+{c:"bag",t:"출산가방 (캐리어·백)"},
+{c:"bag",t:"임산부 수첩 · 산전기록"},
+{c:"bag",t:"신분증 · 건강보험증"},
+{c:"bag",t:"병원 예약 확인서 · 분만 동의서"},
+{c:"bag",t:"병원비 카드 · 현금 소액"},
+{c:"bag",t:"남편 여벌옷 · 세면도구"},
+{c:"bag",t:"마스크 · 손소독제"},
+{c:"bag",t:"아기 퇴원복 (계절에 맞게)"},
+{c:"bag",t:"보호자 연락처 메모"}
+];
+const BAGCAT = {mom:"산모용품",baby:"아기용품",bag:"출산가방"};
+
+/* ═══════════════════════════════════════════
+   임신·출산 준비 트래커 — 앱 로직
+   ═══════════════════════════════════════════ */
+(function () {
+  "use strict";
+
+  var KEY = "baby_tracker_v1";
+  var DEFAULT_LMP = "2026-09-23"; /* 2026-11-18 = 8주 0일 기준 */
+
+  /* ── 저장 ── */
+  function load() {
+    var o = {};
+    try { var raw = localStorage.getItem(KEY); if (raw) o = JSON.parse(raw) || {}; } catch (e) { o = {}; }
+    var s = {
+      lmp: o.lmp || DEFAULT_LMP,
+      funds: o.funds || {}, boxes: o.boxes || {}, checks: o.checks || {},
+      bag: o.bag || {}, bagCustom: Array.isArray(o.bagCustom) ? o.bagCustom : []
+    };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(s.lmp)) s.lmp = DEFAULT_LMP;
+    return s;
+  }
+  var S = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+  /* ── 날짜 ── */
+  function pd(s) { var p = s.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function iso(d) {
+    var m = d.getMonth() + 1, dd = d.getDate();
+    return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (dd < 10 ? "0" : "") + dd;
+  }
+  function addDays(d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
+  function dayNum(d) { return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000); }
+  function diff(a, b) { return dayNum(b) - dayNum(a); }
+  function today() { var t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
+  function fmtKo(d) { return d.getFullYear() + "년 " + (d.getMonth() + 1) + "월 " + d.getDate() + "일"; }
+  function fmtDot(d) { return d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate(); }
+
+  /* ── 현재 상태 ── */
+  function calc() {
+    var t = today(), lmp = pd(S.lmp);
+    var days = Math.max(0, diff(lmp, t));
+    var w = Math.floor(days / 7), d = days % 7;
+    var due = addDays(lmp, 280);
+    var dday = diff(t, due);
+    return {
+      w: w, d: d, days: days, due: due, dday: dday,
+      pct: Math.max(0, Math.min(100, (days / 280) * 100)),
+      month: Math.min(10, Math.floor(w / 4) + 1),
+      tri: w < 14 ? "초기" : w < 28 ? "중기" : "후기"
+    };
+  }
+  function curW(st) { return Math.max(4, Math.min(40, st.w)); }
+
+  /* ── UI 상태 ── */
+  var U = { tab: "home", viewW: null, fundSeg: "money", foodSeg: "food", foodCat: "all", foodQ: "", checkFilter: "all" };
+
+  /* ── 유틸 ── */
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function memoVal(key) { return (S.funds[key.slice(5)] && key.slice(0, 5) === "fund:") ? S.funds[key.slice(5)].memo : ""; }
+  function get(key, kind) {
+    if (kind === "fund") { S.funds[key] = S.funds[key] || {}; return S.funds[key]; }
+    if (kind === "box") { S.boxes[key] = S.boxes[key] || {}; return S.boxes[key]; }
+    if (kind === "check") { S.checks[key] = S.checks[key] || {}; return S.checks[key]; }
+    return {};
+  }
+  function stored(kind, id, f) { return (kind === "fund" ? S.funds[id] : kind === "box" ? S.boxes[id] : S.checks[id]) || {}; }
+  function wrange(when) {
+    var m = when.match(/(\d+)/g);
+    if (!m) return [0, 99];
+    var lo = +m[0];
+    var hi = when.indexOf("~") >= 0 && m[1] ? +m[1] : (/이후|언제든/.test(when) ? 99 : lo);
+    return [lo, hi];
+  }
+
+  var GROUPS = [
+    { k: "금천구", em: "🏛" },
+    { k: "서울시", em: "🚇" },
+    { k: "정부", em: "🇰🇷" }
+  ];
+
+  /* ═══════════ 홈 ═══════════ */
+  function todos(st) {
+    var w = st.w, out = [], f = S.funds, b = S.boxes;
+    function add(t, d, tab, urgent, done) { out.push({ t: t, d: d, tab: tab, urgent: !!urgent, done: !!done }); }
+    var transportDone = f["seoul-pass"] && f["seoul-pass"].done;
+    if (!transportDone) add("서울시 임산부 교통비 70만 원 신청", "임신 주차 제한이 없어졌어요. 지금 신청 가능하고, 못 받으면 그냥 0원이에요.", "fund", w >= 12);
+    if (w <= 12) add("보건소 임산부 등록", "엽산제·임산부 수첩·초기 혈액검사(12주 이내)를 무료로 받아요.", "fund", w >= 7, f["gc-reg"] && f["gc-reg"].done);
+    if (!(b["apta"] && b["apta"].done)) add("출산박스 100% 지급형 신청", "압타클럽·하기스·체험키트는 신청하면 받을 수 있어요.", "fund", false);
+    if (w <= 13) add("엽산 복용 챙기기", "하루 400~800㎍. 12주까지는 꼭 챙기세요.", "home", false);
+    else if (w <= 27) add("철분제 복용", "16주부터 시작. 보건소에서 무료로 받을 수 있어요.", "fund", false);
+    if (w >= 11 && w <= 13) add("1차 기형아 검사(목투명대)", "13주 6일을 넘기면 검사할 수 없어요. 예약을 서두르세요.", "check", true);
+    if (w >= 19 && w <= 24) add("정밀초음파 (20~24주)", "장기 구조를 자세히 확인하는 검사예요.", "check", w >= 22);
+    if (w >= 24 && w <= 28) add("임신성 당뇨 검사", "전날 8시간 금식. 포도당 마신 뒤 1시간을 기다려요.", "check", true);
+    if (w >= 27 && w <= 36) add("백일해(Tdap) 예방접종", "27~36주 사이 1회. 신생아를 지키는 항체가 생겨요.", "check", w >= 34);
+    if (w >= 28) add("태동 체크", "2시간 안에 10회. 안 되면 병원에 연락하세요.", "check", false);
+    if (w >= 35 && w <= 37) add("GBS 검사 (35~37주)", "분만 전 신생아 감염 예방을 위해 꼭 받아요.", "check", true);
+    if (w >= 36) add("막달검사 · 분만 예약 확인", "출산 전 마지막 점검이에요.", "check", true);
+    if (w >= 29) add("출산가방 챙기기", "서류·산모용품·아기 퇴원복을 미리 준비해 두세요.", "food", false);
+    if (w >= 16 && w <= 34) add("출산교육 신청", "모유수유·아기 돌보기 교실은 인기가 많아요.", "fund", false);
+    if (diff(today(), pd("2026-11-20")) >= 0) add("베베숲 마음박스 마감 임박", "11월 20일까지. 선착순이라 서둘러야 해요.", "fund", true, b["bebesup"] && b["bebesup"].done);
+    out.sort(function (a, b2) { return (b2.urgent - a.urgent) || (a.done - b.done); });
+    return out.slice(0, 5);
+  }
+
+  function nextCheck(st) {
+    var w = st.w, best = null;
+    for (var i = 0; i < CHECKUPS.length; i++) {
+      var c = CHECKUPS[i], r = wrange(c.when);
+      var done = S.checks[c.id] && S.checks[c.id].done;
+      if (done || r[0] <= 0) continue;
+      if (r[1] >= w || r[1] >= 99) { if (!best || r[0] < best.r[0]) best = { c: c, r: r }; }
+    }
+    return best;
+  }
+
+  function renderHome(st) {
+    var cw = curW(st), view = U.viewW || cw, wk = WMAP[view] || WMAP[cw];
+    var isCur = view === cw;
+    var dd = st.dday > 0 ? "D-" + st.dday : st.dday === 0 ? "D-DAY" : "D+" + (-st.dday);
+    var tl = todos(st);
+    var nx = nextCheck(st);
+
+    var strip = "";
+    for (var i = 4; i <= 40; i++) {
+      var cls = i === cw ? "cur" : (i === view ? "sel" : "");
+      strip += '<button class="' + cls + '" data-act="wk" data-w="' + i + '">' + i + "<span>주</span></button>";
+    }
+
+    /* 준비 현황 */
+    var cks = CHECKUPS.filter(function (c) { return S.checks[c.id] && S.checks[c.id].done; }).length;
+    var fdone = FUNDS.filter(function (f) { return S.funds[f.id] && S.funds[f.id].done; }).length;
+    var bagTotal = BAG.length + S.bagCustom.length;
+    var bagDone = Object.keys(S.bag).filter(function (k) { return S.bag[k]; }).length;
+    function prow(n, a, b) {
+      var p = b ? Math.round((a / b) * 100) : 0;
+      return '<div class="prow"><span class="pn">' + n + '</span><span class="pb"><i style="width:' + p + '%"></i></span><span class="pc">' + a + "/" + b + "</span></div>";
+    }
+
+    return '<div class="wrap">' +
+      '<div class="hero">' +
+        '<div class="lbl">오늘 기준</div>' +
+        '<div class="big">' + st.w + "<small>주</small> " + st.d + "<small>일</small></div>" +
+        '<div class="sub2">' + st.month + "개월 · 임신 " + st.tri + " · 예정일 " + fmtDot(st.due) + "</div>" +
+        '<div class="dday"><b>' + dd + "</b><span>출산까지</span></div>" +
+        '<div class="bar"><i style="width:' + st.pct.toFixed(1) + '%"></i></div>' +
+        '<div class="bar-txt"><span>시작</span><span>' + st.pct.toFixed(0) + "%</span><span>출산</span></div>" +
+      "</div>" +
+
+      '<div class="card">' +
+        "<h2><span class=\"em\">" + wk.f + "</span> " + (isCur ? "이번 주" : view + "주차") + " 아기</h2>" +
+        '<div class="baby">' +
+          '<div class="fruit">' + wk.f + "</div>" +
+          '<div class="info"><div class="fn">' + wk.n + "</div>" +
+          '<div class="sz">크기 ' + wk.cm + " · " + wk.g + "</div>" +
+          '<div class="ds">' + wk.d + "</div></div>" +
+        "</div>" +
+        '<div class="hr"></div>' +
+        '<div class="cp"><span class="who m">엄마</span><div class="tx">' + wk.m + "</div></div>" +
+        '<div class="cp"><span class="who f">아빠</span><div class="tx">' + wk.p + "</div></div>" +
+        '<div class="wknav">' +
+          '<button class="btn-s" data-act="wk" data-w="' + (view - 1) + '"' + (view <= 4 ? " disabled" : "") + ">‹</button>" +
+          '<div class="mid"><b>' + wk.w + "주</b> · " + wk.n + "</div>" +
+          '<button class="btn-s" data-act="wk" data-w="' + (view + 1) + '"' + (view >= 40 ? " disabled" : "") + ">›</button>" +
+          (isCur ? "" : '<button class="now" data-act="wkNow">현재 ' + cw + "주</button>") +
+        "</div>" +
+      "</div>" +
+
+      '<div class="tiny muted" style="margin:10px 4px 0">주차별로 보기 · 눌러서 이동</div>' +
+      '<div class="strip">' + strip + "</div>" +
+
+      '<div class="card">' +
+        '<h2><span class="em">✅</span> 지금 챙길 일</h2>' +
+        '<div class="lead">' + st.w + "주차 기준으로 자동 정리했어요.</div>" +
+        (tl.length ? tl.map(function (x) {
+          return '<div class="todo ' + (x.urgent ? "urgent " : "") + (x.done ? "done" : "") + '">' +
+            '<span class="dot"></span><div style="flex:1;min-width:0"><div class="t">' + x.t + '</div><div class="d">' + x.d + "</div></div>" +
+            (x.tab !== "home" ? '<button class="go" data-act="go" data-tab="' + x.tab + '">' + (x.tab === "fund" ? "지원금" : x.tab === "check" ? "검진" : "준비물") + " ›</button>" : "") +
+            "</div>";
+        }).join("") : '<div class="empty">지금은 특별히 챙길 일이 없어요. 몸조심하세요 🤍</div>') +
+      "</div>" +
+
+      (nx ? '<div class="card"><h2><span class="em">🩺</span> 다음 검진</h2>' +
+        '<div class="todo" style="margin-top:2px"><span class="dot"></span><div style="flex:1"><div class="t">' + nx.c.name + '</div>' +
+        '<div class="d">' + nx.c.when + (nx.r[0] > st.w ? " · " + (nx.r[0] - st.w) + "주 후" : " · 지금 시기") + "</div></div>" +
+        '<button class="go" data-act="go" data-tab="check">검진 ›</button></div></div>' : "") +
+
+      '<div class="card">' +
+        '<h2><span class="em">📊</span> 준비 현황</h2>' +
+        prow("검진", cks, CHECKUPS.length) + prow("지원금", fdone, FUNDS.length) + prow("준비물", bagDone, bagTotal) +
+      "</div>" +
+
+      '<div class="foot-note"> 모든 기록은 이 기기에만 저장돼요.<br>지원금·박스 조건은 바뀔 수 있으니 신청 전 공식 안내를 확인하세요.</div>' +
+      "</div>";
+  }
+
+  /* ═══════════ 지원금 · 박스 ═══════════ */
+  function badgeFund(f, st) {
+    var rec = S.funds[f.id] || {};
+    if (rec.done) return ["b-ok", "완료"];
+    if (f.birth) return ["b-gray", "출산 후"];
+    if (f.startW && st.w < f.startW) return ["b-info", f.startW + "주~"];
+    return ["b-warn", "신청 가능"];
+  }
+
+  function renderFund(st) {
+    var seg = '<div class="seg">' +
+      '<button data-act="fundSeg" data-v="money" class="' + (U.fundSeg === "money" ? "on" : "") + '">지원금·바우처</button>' +
+      '<button data-act="fundSeg" data-v="box" class="' + (U.fundSeg === "box" ? "on" : "") + '">출산박스</button>' +
+      "</div>";
+
+    if (U.fundSeg === "money") {
+      var doneN = FUNDS.filter(function (f) { return S.funds[f.id] && S.funds[f.id].done; }).length;
+      var h = seg + '<p class="note">시기·예산에 따라 변동될 수 있으니 신청 전 공식 안내를 확인하세요. (' + doneN + "/" + FUNDS.length + " 신청 완료)</p>";
+      GROUPS.forEach(function (g) {
+        var list = FUNDS.filter(function (f) { return f.g === g.k; });
+        if (!list.length) return;
+        h += '<div class="grp"><b>' + g.em + " " + g.k + "</b><span>" + list.length + "건</span></div>";
+        list.forEach(function (f) {
+          var rec = S.funds[f.id] || {}, bd = badgeFund(f, st);
+          h += '<div class="item ' + (rec.done ? "done" : "") + '">' +
+            '<div class="hd"><div class="tt">' + f.t + '<div class="amt">' + f.amt + "</div></div>" +
+            '<span class="badge ' + bd[0] + '">' + bd[1] + "</span></div>" +
+            '<div class="ds' + (f.d.length > 110 ? " clamp" : "") + '" id="ds_' + f.id + '">' + f.d + "</div>" +
+            (f.d.length > 110 ? '<button class="more" data-act="more" data-id="' + f.id + '">더 보기 ▾</button>' : "") +
+            '<div class="kv"><b>시기</b><span>' + f.when + "</span></div>" +
+            '<div class="kv"><b>신청</b><span>' + f.where + "</span></div>" +
+            '<div class="kv"><b>준비</b><span>' + f.need + "</span></div>" +
+            (f.tip ? '<div class="tip">💡 ' + f.tip + "</div>" : "") +
+            '<div class="cbrow"><button class="cb ' + (rec.done ? "on" : "") + '" data-act="fund" data-id="' + f.id + '">' + (rec.done ? "✓" : "") + "</button>" +
+            '<span class="lbl2">' + (rec.done ? "신청 완료" : "신청 완료로 표시") + "</span>" +
+            (f.tel ? '<span class="tiny muted" style="margin-left:auto">☎ ' + f.tel + "</span>" : "") + "</div>" +
+            '<div class="inline"><input class="in" data-memo="fund:' + f.id + '" value="' + esc(rec.memo || "") + '" placeholder="메모 (신청일·문의·준비물)"></div>' +
+            "</div>";
+        });
+      });
+      return '<div class="wrap">' + h + "</div>";
+    }
+
+    /* 출산박스 */
+    var bd = BOXES.filter(function (x) { return S.boxes[x.id] && S.boxes[x.id].done; }).length;
+    var out = seg + '<p class="note">신청 시기·재고에 따라 달라질 수 있어요. 브랜드 공식 안내를 꼭 확인하세요. (' + bd + "/" + BOXES.length + " 신청함)</p>";
+    [["free", "100% 지급형", "신청만 하면 받아요 · 배송비가 들 수 있어요"],
+     ["first", "선착순형", "매월 1일 등 정해진 시각에 열려요"]].forEach(function (grp) {
+      var list = BOXES.filter(function (x) { return x.type === grp[0]; });
+      out += '<div class="grp"><b>' + grp[1] + "</b><span>" + list.length + "개</span></div>" +
+        '<div class="tiny muted" style="margin:0 2px 4px">' + grp[2] + "</div>";
+      list.forEach(function (x) {
+        var rec = S.boxes[x.id] || {};
+        out += '<div class="item ' + (rec.done ? "done" : "") + '">' +
+          '<div class="hd"><div class="tt">' + x.t + '<div class="amt">' + x.cost + "</div></div>" +
+          (x.hot ? '<span class="badge b-hot">마감 임박</span>' : "") +
+          (rec.done ? '<span class="badge b-ok">완료</span>' : "") + "</div>" +
+          '<div class="kv"><b>시기</b><span>' + x.when + "</span></div>" +
+          '<div class="kv"><b>신청</b><span>' + x.where + "</span></div>" +
+          '<div class="kv"><b>구성</b><span>' + x.get + "</span></div>" +
+          (x.note ? '<div class="tip">🎁 ' + x.note + "</div>" : "") +
+          '<div class="cbrow"><button class="cb ' + (rec.done ? "on" : "") + '" data-act="box" data-id="' + x.id + '">' + (rec.done ? "✓" : "") + "</button>" +
+          '<span class="lbl2">' + (rec.done ? "신청함" : "신청함으로 표시") + "</span></div>" +
+          '<div class="inline"><input class="in" data-memo="box:' + x.id + '" value="' + esc(rec.memo || "") + '" placeholder="메모 (신청일·받은 것)"></div>' +
+          "</div>";
+      });
+    });
+    return '<div class="wrap">' + out + "</div>";
+  }
+
+  /* ═══════════ 검진 ═══════════ */
+  function renderCheck(st) {
+    var done = CHECKUPS.filter(function (c) { return S.checks[c.id] && S.checks[c.id].done; }).length;
+    var p = Math.round((done / CHECKUPS.length) * 100);
+    var h = '<div class="wrap"><div class="seg">' +
+      [["all", "전체"], ["early", "초기"], ["mid", "중기"], ["late", "후기"]].map(function (x) {
+        return '<button data-act="ckFilter" data-v="' + x[0] + '" class="' + (U.checkFilter === x[0] ? "on" : "") + '">' + x[1] + "</button>";
+      }).join("") + "</div>" +
+      '<div class="card" style="margin-top:10px"><div class="prow" style="margin:0"><span class="pn">검진 완료</span><span class="pb"><i style="width:' + p + '%"></i></span><span class="pc">' + done + "/" + CHECKUPS.length + "</span></div></div>";
+
+    var groups = [["early", "임신 초기", "4~13주"], ["mid", "임신 중기", "14~27주"], ["late", "임신 후기", "28~40주"]];
+    groups.forEach(function (g) {
+      if (U.checkFilter !== "all" && U.checkFilter !== g[0]) return;
+      var list = CHECKUPS.filter(function (c) { return c.grp === g[0]; });
+      if (!list.length) return;
+      h += '<div class="grp"><b>' + g[1] + "</b><span>" + g[2] + "</span></div>";
+      list.forEach(function (c) {
+        var rec = S.checks[c.id] || {}, r = wrange(c.when);
+        var now = st.w >= r[0] && st.w <= r[1] + 0;
+        var bd = rec.done ? ["b-ok", "완료"] : now ? ["b-hot", "지금"] : st.w > r[1] ? ["b-gray", "시기 지남"] : ["b-info", r[0] + "주~"];
+        h += '<div class="item ' + (rec.done ? "done" : "") + '" style="margin:8px 0">' +
+          '<div class="hd"><div class="tt">' + c.name + '<div class="when">' + c.when + "</div></div>" +
+          '<span class="badge ' + bd[0] + '">' + bd[1] + "</span></div>" +
+          '<div class="why">' + c.why + "</div>" +
+          '<div class="prep">준비 · ' + c.prep + "</div>" +
+          (c.gc ? '<div class="tip">🏛 금천구 · ' + c.gc + "</div>" : "") +
+          '<div class="cbrow"><button class="cb ' + (rec.done ? "on" : "") + '" data-act="check" data-id="' + c.id + '">' + (rec.done ? "✓" : "") + "</button>" +
+          '<span class="lbl2">' + (rec.done ? "받았어요" : "완료로 표시") + "</span></div>" +
+          '<div class="inline" style="margin-top:9px"><span class="tiny muted" style="flex:0 0 auto">예약일</span><input type="date" class="in dt" data-date="check:' + c.id + '" value="' + esc(rec.date || "") + '"></div>' +
+          '<div class="inline"><input class="in" data-memo="check:' + c.id + '" value="' + esc(rec.memo || "") + '" placeholder="병원·예약시간·결과 메모"></div>' +
+          "</div>";
+      });
+    });
+    return h + '<p class="note">검진 항목과 시기는 병원·산모 상태에 따라 달라져요. 담당 의사 안내를 우선하세요.</p></div>';
+  }
+
+  /* ═══════════ 음식 · 준비물 ═══════════ */
+  var CATS = [["all", "전체"], ["sea", "해산물·회"], ["drink", "카페인·음료"], ["dairy", "유제품·치즈"], ["meat", "육류·가공육"], ["veg", "과일·채소"], ["supp", "영양제·약"], ["life", "생활·기타"]];
+  var CATN = {}; CATS.forEach(function (c) { CATN[c[0]] = c[1]; });
+  var SMAP = { good: ["good", "b-ok", "먹어도 돼요"], caution: ["caution", "b-warn", "조심해요"], avoid: ["avoid", "b-bad", "피하세요"] };
+
+  function foodRows() {
+    var q = U.foodQ.trim().toLowerCase();
+    return FOODIS.filter(function (f) {
+      if (U.foodCat !== "all" && f.c !== U.foodCat) return false;
+      if (!q) return true;
+      return (f.n + " " + f.r).toLowerCase().indexOf(q) >= 0;
+    }).sort(function (a, b) {
+      var o = { avoid: 0, caution: 1, good: 2 };
+      return o[a.s] - o[b.s];
+    });
+  }
+  function foodListHTML() {
+    var rows = foodRows();
+    if (!rows.length) return '<div class="empty">검색 결과가 없어요.<br>다른 단어로 찾아보세요.</div>';
+    var n = { good: 0, caution: 0, avoid: 0 };
+    rows.forEach(function (f) { n[f.s]++; });
+    var head = '<div class="tiny muted" style="margin:2px 2px 0">' + rows.length + "개 · 피하세요 " + n.avoid + " · 조심해요 " + n.caution + " · 먹어도 돼요 " + n.good + "</div>";
+    return head + rows.map(function (f) {
+      var s = SMAP[f.s];
+      return '<div class="food ' + s[0] + '">' +
+        '<div class="top"><span class="nm">' + f.n + '</span><span class="badge ' + s[1] + '">' + s[2] + "</span></div>" +
+        '<div class="rs">' + f.r + '</div><div class="ct">' + CATN[f.c] + "</div></div>";
+    }).join("");
+  }
+
+  function bagRows() {
+    var rows = BAG.map(function (b, i) { return { id: "b" + i, c: b.c, t: b.t }; });
+    S.bagCustom.forEach(function (x) { rows.push({ id: x.id, c: x.c, t: x.t, custom: true }); });
+    return rows;
+  }
+
+  function renderFood(st) {
+    var seg = '<div class="seg">' +
+      '<button data-act="foodSeg" data-v="food" class="' + (U.foodSeg === "food" ? "on" : "") + '">음식 검색</button>' +
+      '<button data-act="foodSeg" data-v="bag" class="' + (U.foodSeg === "bag" ? "on" : "") + '">출산가방</button>' +
+      "</div>";
+
+    if (U.foodSeg === "food") {
+      return '<div class="wrap">' + seg +
+        '<div class="searchbox"><span class="ic">🔍</span><input id="fq" class="in" type="search" placeholder="음식 이름으로 찾기 (예: 연어, 커피)" value="' + esc(U.foodQ) + '"></div>' +
+        '<div class="chips">' + CATS.map(function (c) {
+          return '<button class="chip ' + (U.foodCat === c[0] ? "on" : "") + '" data-act="fcat" data-v="' + c[0] + '">' + c[1] + "</button>";
+        }).join("") + "</div>" +
+        '<div id="foodList">' + foodListHTML() + "</div>" +
+        '<p class="note">같은 음식도 조리 상태·개인 건강 상태에 따라 달라요. 조리 전 위생과 완전 익힘이 가장 중요하고, 판단이 어려우면 담당 의사에게 물어보세요.</p>' +
+        "</div>";
+    }
+
+    var rows = bagRows();
+    var total = rows.length, done = rows.filter(function (r) { return S.bag[r.id]; }).length;
+    var h = seg + '<p class="note">체크 상태는 자동으로 저장돼요. (' + done + "/" + total + ")</p>";
+    ["mom", "baby", "bag"].forEach(function (c) {
+      var list = rows.filter(function (r) { return r.c === c; });
+      var d = list.filter(function (r) { return S.bag[r.id]; }).length;
+      var p = list.length ? Math.round((d / list.length) * 100) : 0;
+      h += '<div class="card" style="margin:12px 0 6px"><h2><span class="em">' + (c === "mom" ? "🤰" : c === "baby" ? "👶" : "🧳") + "</span> " + BAGCAT[c] + "</h2>" +
+        '<div class="prow" style="margin:4px 0 0"><span class="pb"><i style="width:' + p + '%"></i></span><span class="pc">' + d + "/" + list.length + "</span></div></div>";
+      h += '<div class="bagwrap">' + list.map(function (r) {
+        return '<div class="bgit ' + (S.bag[r.id] ? "on" : "") + '">' +
+          '<button class="cb ' + (S.bag[r.id] ? "on" : "") + '" data-act="bag" data-id="' + r.id + '">' + (S.bag[r.id] ? "✓" : "") + "</button>" +
+          '<span class="tx">' + esc(r.t) + "</span>" +
+          (r.custom ? '<button class="del" data-act="delBag" data-id="' + r.id + '">✕</button>' : "") + "</div>";
+      }).join("") + "</div>";
+      if (c === "bag") {
+        h += '<div class="bagwrap" style="padding:12px 13px"><div class="bagadd" style="margin:0"><select id="bagCat"><option value="mom">산모</option><option value="baby">아기</option><option value="bag">가방</option></select>' +
+          '<input id="bagNew" class="in" placeholder="직접 추가할 준비물"><button data-act="addBag">추가</button></div></div>';
+      }
+    });
+    return '<div class="wrap">' + h + "</div>";
+  }
+
+  /* ═══════════ 렌더 ═══════════ */
+  function render(keep) {
+    var y = window.scrollY;
+    var st = calc();
+    document.getElementById("wkchip").textContent = st.w + "주 " + st.d + "일";
+    var v = document.getElementById("view");
+    if (U.tab === "home") v.innerHTML = renderHome(st);
+    else if (U.tab === "fund") v.innerHTML = renderFund(st);
+    else if (U.tab === "check") v.innerHTML = renderCheck(st);
+    else v.innerHTML = renderFood(st);
+    [].forEach.call(document.querySelectorAll("#tabs .tb"), function (b) {
+      b.className = "tb" + (b.dataset.tab === U.tab ? " on" : "");
+    });
+    if (keep) window.scrollTo(0, y); else window.scrollTo(0, 0);
+    if (U.tab === "home") {
+      var el = document.querySelector(".strip button.sel") || document.querySelector(".strip button.cur");
+      if (el) {
+        var strip = el.parentNode;
+        strip.scrollLeft = el.offsetLeft - strip.clientWidth / 2 + el.offsetWidth / 2;
+      }
+    }
+  }
+
+  /* ═══════════ 이벤트 ═══════════ */
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-act]");
+    if (!t) return;
+    var act = t.dataset.act, id = t.dataset.id, r;
+
+    if (act === "tab" || act === "go") { U.tab = t.dataset.tab; U.viewW = null; render(); return; }
+    if (act === "wk") { var w = +t.dataset.w; if (w >= 4 && w <= 40) { U.viewW = w; render(); } return; }
+    if (act === "wkNow") { U.viewW = null; render(); return; }
+    if (act === "fundSeg") { U.fundSeg = t.dataset.v; render(); return; }
+    if (act === "foodSeg") { U.foodSeg = t.dataset.v; render(); return; }
+    if (act === "ckFilter") { U.checkFilter = t.dataset.v; render(); return; }
+    if (act === "fcat") { U.foodCat = t.dataset.v; render(); return; }
+    if (act === "more") {
+      var ds = document.getElementById("ds_" + id);
+      if (ds) {
+        var open = ds.classList.toggle("clamp");
+        t.textContent = open ? "더 보기 ▾" : "접기 ▴";
+      }
+      return;
+    }
+
+    if (act === "fund") { r = get(id, "fund"); r.done = !r.done; save(); render(true); return; }
+    if (act === "box") { r = get(id, "box"); r.done = !r.done; save(); render(true); return; }
+    if (act === "check") { r = get(id, "check"); r.done = !r.done; save(); render(true); return; }
+    if (act === "bag") { S.bag[id] = !S.bag[id]; save(); render(true); return; }
+    if (act === "delBag") {
+      S.bagCustom = S.bagCustom.filter(function (x) { return x.id !== id; });
+      delete S.bag[id]; save(); render(true); return;
+    }
+    if (act === "addBag") {
+      var inp = document.getElementById("bagNew"), sel = document.getElementById("bagCat");
+      var v2 = (inp && inp.value || "").trim();
+      if (!v2) { if (inp) inp.focus(); return; }
+      S.bagCustom.push({ id: "c" + Date.now(), c: sel ? sel.value : "mom", t: v2 });
+      save(); render(true); return;
+    }
+    if (act === "openSet") { openSet(); return; }
+    if (act === "closeSet") { document.getElementById("modal").classList.add("hide"); return; }
+    if (act === "saveDue") {
+      var dv = document.getElementById("setDue").value;
+      if (dv) { S.lmp = iso(addDays(pd(dv), -280)); save(); document.getElementById("modal").classList.add("hide"); render(); }
+      return;
+    }
+    if (act === "saveWeek") {
+      var sw = Math.max(0, Math.min(42, +document.getElementById("setW").value || 0));
+      var sd = Math.max(0, Math.min(6, +document.getElementById("setD").value || 0));
+      S.lmp = iso(addDays(today(), -(sw * 7 + sd))); save();
+      document.getElementById("modal").classList.add("hide"); render(); return;
+    }
+    if (act === "resetSet") {
+      S.lmp = DEFAULT_LMP; save(); document.getElementById("modal").classList.add("hide"); render(); return;
+    }
+  });
+
+  document.addEventListener("input", function (e) {
+    var el = e.target;
+    if (el.id === "fq") {
+      U.foodQ = el.value;
+      var list = document.getElementById("foodList");
+      if (list) list.innerHTML = foodListHTML();
+      return;
+    }
+    var m = el.dataset.memo, d = el.dataset.date;
+    if (m) {
+      var p = m.split(":"), rec = get(p[1], p[0]);
+      rec.memo = el.value; save();
+    } else if (d) {
+      var q = d.split(":"), rec2 = get(q[1], q[0]);
+      rec2.date = el.value; save();
+    }
+  });
+
+  var modal = document.getElementById("modal");
+  modal.addEventListener("click", function (e) { if (e.target === modal) modal.classList.add("hide"); });
+
+  function openSet() {
+    var st = calc();
+    document.getElementById("setDue").value = iso(st.due);
+    document.getElementById("setW").value = st.w;
+    document.getElementById("setD").value = st.d;
+    document.getElementById("setInfo").textContent = "지금 설정: " + st.w + "주 " + st.d + "일 · 예정일 " + fmtKo(st.due);
+    modal.classList.remove("hide");
+  }
+
+  /* 시작 */
+  render();
+})();
+</script>
+</body>
+</html>
